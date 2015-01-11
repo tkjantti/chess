@@ -1,0 +1,39 @@
+
+#board {
+    float: left;
+    margin: 2em 2em 2em 2em;
+    border: 2px solid black;
+}
+
+td {
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+td.white {
+    background-color: white;
+}
+
+td.black {
+    background-color: gray;
+}
+
+.side_table {
+    float: left;
+    margin: 2em 0em 2em 1em;
+}
+
+td.side {
+    background-color: #CCCCCC;
+}
+
+td.selected {
+    background-color: #BBBBFF;
+}
+
+#footer {
+    clear: both;
+    border-top: 1px solid black;
+}
