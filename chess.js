@@ -73,7 +73,6 @@ function onSquareClicked(square) {
         if (piece) {
             selectSquare(square);
         }
-        return;
     } else if (square.attr("id") === selectedSquare.attr("id")) {
         removeSelection();
     } else if (piece) {
@@ -83,7 +82,6 @@ function onSquareClicked(square) {
         var selectedPiece = getPiece(selectedSquare);
         square.append(selectedPiece);
         removeSelection();
-        return;
     }
 }
 
