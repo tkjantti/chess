@@ -1,4 +1,11 @@
 
+if (!String.prototype.includes) {
+  String.prototype.includes = function() {'use strict';
+    return String.prototype.indexOf.apply(this, arguments) !== -1;
+  };
+}
+
+
 var gridWidth = 8;
 var gridHeight = 8;
 
@@ -73,16 +80,52 @@ function onSquareClicked(square) {
         if (piece) {
             selectSquare(square);
         }
-    } else if (square.attr("id") === selectedSquare.attr("id")) {
+        return;
+    }
+
+    var selectedPiece = getPiece(selectedSquare);
+    
+    if (square.attr("id") === selectedSquare.attr("id")) {
+        removeSelection();
+    } else if (piece && (getColor(piece) !== getColor(selectedPiece))) {
+        removeFromBoard(piece);
+        move(square, selectedPiece);
         removeSelection();
     } else if (piece) {
         removeSelection();
         selectSquare(square);
     } else {
-        var selectedPiece = getPiece(selectedSquare);
-        square.append(selectedPiece);
+        move(square, selectedPiece);
         removeSelection();
     }
+}
+
+function move(square, piece) {
+    square.append(piece);
+}
+
+function removeFromBoard(piece) {
+    var freeSquare = getSideSquares(piece)
+        .filter(function(index, element) {
+            return $(element).children().length === 0;
+        }).first();
+    
+    freeSquare.append(piece);
+}
+
+function getSideSquares(piece) {
+    return $("#" + getColor(piece) + "_pieces td");
+}
+
+
+function getColor(piece) {
+    if (piece.id.includes("black")) {
+        return "black";
+    }
+    if (piece.id.includes("white")) {
+        return "white";
+    }
+    return null;
 }
 
 function selectSquare(square) {
@@ -98,12 +141,9 @@ function removeSelection() {
 
 function getPiece(square) {
     var children = square.children("img");
-    console.log("child count " + children.length);
-
     if (children.length === 0) {
         return null;
     }
-
     return children[0];
 }
 
