@@ -9,12 +9,14 @@ if (!String.prototype.includes) {
 var gridWidth = 8;
 var gridHeight = 8;
 
+var currentPlayer = "white";
 var selectedSquare = null;
 
 
 jQuery(document).ready(function() {
     addBoardClickHandlers();
     setStartingPositions();
+    setCurrentPlayer("white");
 });
 
 function Point(row, column) {
@@ -60,6 +62,11 @@ function setStartingPositions() {
     $("#square_7_7").append($("#white_rook_2"));
 }
 
+function setCurrentPlayer(color) {
+    currentPlayer = color;
+    $("#player_in_turn").text(color);
+}
+
 
 function addBoardClickHandlers() {
     $("#board td").click(function() {
@@ -77,7 +84,7 @@ function onSquareClicked(square) {
     var piece = getPiece(square);
 
     if (! selectedSquare) {
-        if (piece) {
+        if (piece && (getColor(piece) === currentPlayer)) {
             selectSquare(square);
         }
         return;
@@ -91,14 +98,22 @@ function onSquareClicked(square) {
         removeFromBoard(piece);
         move(square, selectedPiece);
         removeSelection();
+        changePlayer();
     } else if (piece) {
         removeSelection();
         selectSquare(square);
     } else {
         move(square, selectedPiece);
         removeSelection();
+        changePlayer();
     }
 }
+
+function changePlayer() {
+    var otherPlayer = (currentPlayer === "white") ? "black" : "white";
+    setCurrentPlayer(otherPlayer);
+}
+
 
 function move(square, piece) {
     square.append(piece);
