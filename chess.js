@@ -6,9 +6,6 @@ if (!String.prototype.includes) {
 }
 
 
-var gridWidth = 8;
-var gridHeight = 8;
-
 var currentPlayer = "white";
 var selectedSquare = null;
 
@@ -81,7 +78,7 @@ function addBoardClickHandlers() {
 }
 
 function onSquareClicked(square) {
-    var piece = getPiece(square);
+    var piece = getPieceOnSquare(square);
 
     if (! selectedSquare) {
         if (piece && (getColor(piece) === currentPlayer)) {
@@ -90,11 +87,16 @@ function onSquareClicked(square) {
         return;
     }
 
-    var selectedPiece = getPiece(selectedSquare);
+    var selectedPiece = getPieceOnSquare(selectedSquare);
+    var source = getSquarePosition(selectedSquare);
+    var destination = getSquarePosition(square);
     
     if (square.attr("id") === selectedSquare.attr("id")) {
         removeSelection();
     } else if (piece && (getColor(piece) !== getColor(selectedPiece))) {
+        if (! isLegalMove(getColor(selectedPiece), getType(selectedPiece), source, destination)) {
+            return;
+        }
         removeFromBoard(piece);
         move(square, selectedPiece);
         removeSelection();
@@ -103,11 +105,86 @@ function onSquareClicked(square) {
         removeSelection();
         selectSquare(square);
     } else {
+        if (! isLegalMove(getColor(selectedPiece), getType(selectedPiece), source, destination)) {
+            return;
+        }
         move(square, selectedPiece);
         removeSelection();
         changePlayer();
     }
 }
+
+function getSquarePosition(square) {
+    var stringCoordinates = square.attr("id").split("_");
+    return new Point(parseInt(stringCoordinates[1], 10), parseInt(stringCoordinates[2], 10));
+}
+
+function getType(piece) {
+    var parts = piece.id.split("_");
+    return parts[1];
+}
+
+
+function isLegalMove(color, type, source, destination) {
+    if (! isInsideBoard(destination)) {
+        return false;
+    }
+    
+    var horizontal = getHorizontalMovement(source, destination);
+    var vertical = getVerticalMovement(source, destination, color);
+
+    if (type === "pawn") {
+        var capturedPiece = getPiece(destination);
+        var isFirstMove = getVerticalPosition(color, source) === 1;
+        var isCorrectLengthForwardMove = (vertical === 1) || (isFirstMove && vertical === 2);
+        
+        if (horizontal === 0 && isCorrectLengthForwardMove && !capturedPiece) {
+            return true;
+        }
+
+        if ((horizontal === -1 || horizontal === 1) && vertical === 1 && capturedPiece) {
+            return true;
+        }
+        
+        return false;
+    }
+
+    return true;
+}
+
+function getVerticalPosition(color, position) {
+    if (color === "white") {
+        return 7 - position.row;
+    } else {
+        return position.row;
+    }
+}
+
+function isInsideBoard(position) {
+    return (0 <= position.row) && (position.row < 8) && (0 <= position.column) && (position.column < 8);
+}
+
+function getPiece(position) {
+    if (! isInsideBoard(position)) {
+        return null;
+    }
+
+    var square = $("#square_" + position.row + "_" + position.column);
+    return getPieceOnSquare(square);
+}
+
+function getHorizontalMovement(source, destination) {
+    return destination.column - source.column;
+}
+
+function getVerticalMovement(source, destination, color) {
+    if (color === "white") {
+        return source.row - destination.row;
+    } else {
+        return destination.row - source.row;
+    }
+}
+
 
 function changePlayer() {
     var otherPlayer = (currentPlayer === "white") ? "black" : "white";
@@ -154,7 +231,7 @@ function removeSelection() {
     selectedSquare = null;
 }
 
-function getPiece(square) {
+function getPieceOnSquare(square) {
     var children = square.children("img");
     if (children.length === 0) {
         return null;
