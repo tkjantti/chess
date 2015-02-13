@@ -133,7 +133,8 @@ function isLegalMove(color, type, source, destination) {
     var horizontal = getHorizontalMovement(source, destination);
     var vertical = getVerticalMovement(source, destination, color);
 
-    if (type === "pawn") {
+    switch (type) {
+    case "pawn":
         var capturedPiece = getPiece(destination);
         var isFirstMove = getVerticalPosition(color, source) === 1;
         var isCorrectLengthForwardMove = (vertical === 1) || (isFirstMove && vertical === 2);
@@ -147,9 +148,19 @@ function isLegalMove(color, type, source, destination) {
         }
         
         return false;
-    }
 
-    return true;
+    case "bishop":
+        return (Math.abs(horizontal) === Math.abs(vertical));
+        
+    case "rook":
+        return (horizontal === 0 || vertical === 0);
+
+    case "king":
+        return (Math.abs(horizontal) <= 1 && Math.abs(vertical) <= 1);
+        
+    default:
+        return true;
+    };
 }
 
 function getVerticalPosition(color, position) {
