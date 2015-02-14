@@ -150,13 +150,15 @@ function isLegalMove(color, type, source, destination) {
         return false;
 
     case "bishop":
-        return isDiagonalMove(horizontal, vertical);
+        return isDiagonalMove(source, destination);
         
     case "rook":
-        return isHorizontalOrVerticalMove(horizontal, vertical);
+        return isHorizontalMove(source, destination) || isVerticalMove(source, destination);
 
     case "queen":
-        return isDiagonalMove(horizontal, vertical) || isHorizontalOrVerticalMove(horizontal, vertical);
+        return isDiagonalMove(source, destination)
+            || isHorizontalMove(source, destination)
+            || isVerticalMove(source, destination);
         
     case "king":
         return (Math.abs(horizontal) <= 1 && Math.abs(vertical) <= 1);
@@ -166,13 +168,65 @@ function isLegalMove(color, type, source, destination) {
     };
 }
 
-function isDiagonalMove(horizontalMovement, verticalMovement) {
-    return (horizontalMovement != 0) && (Math.abs(horizontalMovement) === Math.abs(verticalMovement));
+function isDiagonalMove(source, destination) {
+    if (source.row === destination.row) {
+        return false;
+    }
+
+    if (Math.abs(destination.column - source.column) != Math.abs(destination.row - source.row)) {
+        return false;
+    }
+
+    var leftmostPoint = (source.column < destination.column) ? source : destination;
+    var rightmostPoint = (source.column > destination.column) ? source : destination;
+    var rowStep = (rightmostPoint.row > leftmostPoint.row) ? 1 : -1;
+
+    for (var r = leftmostPoint.row + rowStep, c = leftmostPoint.column + 1;
+         c < rightmostPoint.column;
+         r += rowStep, c++)
+    {
+        if (getPiece(new Point(r, c))) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
-function isHorizontalOrVerticalMove(horizontalMovement, verticalMovement) {
-    return (horizontalMovement === 0 || verticalMovement === 0);
+function isHorizontalMove(source, destination) {
+    if (source.row != destination.row) {
+        return false;
+    }
+
+    var min = Math.min(source.column, destination.column);
+    var max = Math.max(source.column, destination.column);
+
+    for (var i = min + 1; i < max; i++) {
+        if (getPiece(new Point(source.row, i))) {
+            return false;
+        }
+    }
+
+    return true;
 }
+
+function isVerticalMove(source, destination) {
+    if (source.column != destination.column) {
+        return false;
+    }
+
+    var min = Math.min(source.row, destination.row);
+    var max = Math.max(source.row, destination.row);
+
+    for (var i = min + 1; i < max; i++) {
+        if (getPiece(new Point(i, source.column))) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 
 function getVerticalPosition(color, position) {
     if (color === "white") {
