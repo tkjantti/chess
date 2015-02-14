@@ -150,17 +150,28 @@ function isLegalMove(color, type, source, destination) {
         return false;
 
     case "bishop":
-        return (Math.abs(horizontal) === Math.abs(vertical));
+        return isDiagonalMove(horizontal, vertical);
         
     case "rook":
-        return (horizontal === 0 || vertical === 0);
+        return isHorizontalOrVerticalMove(horizontal, vertical);
 
+    case "queen":
+        return isDiagonalMove(horizontal, vertical) || isHorizontalOrVerticalMove(horizontal, vertical);
+        
     case "king":
         return (Math.abs(horizontal) <= 1 && Math.abs(vertical) <= 1);
         
     default:
-        return true;
+        return false;
     };
+}
+
+function isDiagonalMove(horizontalMovement, verticalMovement) {
+    return (horizontalMovement != 0) && (Math.abs(horizontalMovement) === Math.abs(verticalMovement));
+}
+
+function isHorizontalOrVerticalMove(horizontalMovement, verticalMovement) {
+    return (horizontalMovement === 0 || verticalMovement === 0);
 }
 
 function getVerticalPosition(color, position) {
