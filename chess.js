@@ -87,31 +87,32 @@ function onSquareClicked(square) {
         return;
     }
 
-    var selectedPiece = getPieceOnSquare(selectedSquare);
-    var source = getSquarePosition(selectedSquare);
-    var destination = getSquarePosition(square);
-    
     if (square.attr("id") === selectedSquare.attr("id")) {
         removeSelection();
-    } else if (piece && (getColor(piece) !== getColor(selectedPiece))) {
-        if (! isLegalMove(getColor(selectedPiece), getType(selectedPiece), source, destination)) {
-            return;
-        }
-        removeFromBoard(piece);
-        move(square, selectedPiece);
-        removeSelection();
-        changePlayer();
-    } else if (piece) {
+        return;
+    }
+
+    var selectedPiece = getPieceOnSquare(selectedSquare);
+
+    if (piece && (getColor(piece) === getColor(selectedPiece))) {
         removeSelection();
         selectSquare(square);
-    } else {
-        if (! isLegalMove(getColor(selectedPiece), getType(selectedPiece), source, destination)) {
-            return;
-        }
-        move(square, selectedPiece);
-        removeSelection();
-        changePlayer();
     }
+
+    var source = getSquarePosition(selectedSquare);
+    var destination = getSquarePosition(square);
+
+    if (! isLegalMove(getColor(selectedPiece), getType(selectedPiece), source, destination)) {
+        return;
+    }
+
+    if (piece) {
+        removeFromBoard(piece);
+    }
+
+    move(square, selectedPiece);
+    removeSelection();
+    changePlayer();
 }
 
 function getSquarePosition(square) {
