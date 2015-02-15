@@ -149,6 +149,10 @@ function isLegalMove(color, type, source, destination) {
         
         return false;
 
+    case "knight":
+        return (Math.abs(horizontal) === 1 && Math.abs(vertical) === 2)
+            || (Math.abs(horizontal) === 2 && Math.abs(vertical) === 1);
+
     case "bishop":
         return isDiagonalMove(source, destination);
         
@@ -164,6 +168,7 @@ function isLegalMove(color, type, source, destination) {
         return (Math.abs(horizontal) <= 1 && Math.abs(vertical) <= 1);
         
     default:
+        console.log("unknown piece type: " + type);
         return false;
     };
 }
