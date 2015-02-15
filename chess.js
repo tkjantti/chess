@@ -129,21 +129,25 @@ function isLegalMove(color, type, source, destination) {
     if (! isInsideBoard(destination)) {
         return false;
     }
+
+    var pieceAtDestination = getPiece(destination);
+    if (pieceAtDestination && getColor(pieceAtDestination) === color) {
+        return false;
+    }
     
     var horizontal = getHorizontalMovement(source, destination);
     var vertical = getVerticalMovement(source, destination, color);
 
     switch (type) {
     case "pawn":
-        var capturedPiece = getPiece(destination);
         var isFirstMove = getVerticalPosition(color, source) === 1;
         var isCorrectLengthForwardMove = (vertical === 1) || (isFirstMove && vertical === 2);
         
-        if (horizontal === 0 && isCorrectLengthForwardMove && !capturedPiece) {
+        if (isCorrectLengthForwardMove && isVerticalMove(source, destination) && !pieceAtDestination) {
             return true;
         }
 
-        if ((horizontal === -1 || horizontal === 1) && vertical === 1 && capturedPiece) {
+        if ((horizontal === -1 || horizontal === 1) && vertical === 1 && pieceAtDestination) {
             return true;
         }
         
