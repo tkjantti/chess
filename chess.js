@@ -21,6 +21,46 @@ function Point(row, column) {
     this.column = column;
 }
 
+function Piece(color, type) {
+    this.color = color;
+    this.type = type;
+}
+
+function Board() {
+    this.rowCount = 8;
+    this.columnCount = 8;
+    this.rows = [
+        new Array(this.columnCount),
+        new Array(this.columnCount),
+        new Array(this.columnCount),
+        new Array(this.columnCount),
+        new Array(this.columnCount),
+        new Array(this.columnCount),
+        new Array(this.columnCount),
+        new Array(this.columnCount)
+    ];
+}
+
+Board.prototype.getPiece = function(position) {
+    return this.rows[position.row][position.column];
+};
+
+function createBoardFromPage() {
+    var board = new Board();
+
+    for (var row = 0; row < board.rowCount; row++) {
+        for (var column = 0; column < board.columnCount; column++) {
+            var position = new Point(row, column);
+            var piece = getPiece(position);
+            if (piece) {
+                board.rows[row][column] = new Piece(getColor(piece), getType(piece));
+            }
+        }
+    }
+
+    return board;
+}
+
 function setStartingPositions() {
     $("#square_0_0").append($("#black_rook_1"));
     $("#square_0_1").append($("#black_knight_1"));
@@ -78,10 +118,12 @@ function addBoardClickHandlers() {
 }
 
 function onSquareClicked(square) {
-    var piece = getPieceOnSquare(square);
+    var position = getSquarePosition(square);
+    var board = createBoardFromPage();
+    var piece = board.getPiece(position);
 
     if (! selectedSquare) {
-        if (piece && (getColor(piece) === currentPlayer)) {
+        if (piece && (piece.color === currentPlayer)) {
             selectSquare(square);
         }
         return;
@@ -92,9 +134,10 @@ function onSquareClicked(square) {
         return;
     }
 
-    var selectedPiece = getPieceOnSquare(selectedSquare);
+    var selectedPosition = getSquarePosition(selectedSquare);
+    var selectedPiece = board.getPiece(selectedPosition);
 
-    if (piece && (getColor(piece) === getColor(selectedPiece))) {
+    if (piece && (piece.color === selectedPiece.color)) {
         removeSelection();
         selectSquare(square);
     }
@@ -102,15 +145,15 @@ function onSquareClicked(square) {
     var source = getSquarePosition(selectedSquare);
     var destination = getSquarePosition(square);
 
-    if (! isLegalMove(getColor(selectedPiece), getType(selectedPiece), source, destination)) {
+    if (! isLegalMove(board, selectedPiece, source, destination)) {
         return;
     }
 
     if (piece) {
-        removeFromBoard(piece);
+        removeFromBoard(getPieceOnSquare(square));
     }
 
-    move(square, selectedPiece);
+    move(square, getPieceOnSquare(selectedSquare));
     removeSelection();
     changePlayer();
 }
@@ -126,25 +169,25 @@ function getType(piece) {
 }
 
 
-function isLegalMove(color, type, source, destination) {
+function isLegalMove(board, piece, source, destination) {
     if (! isInsideBoard(destination)) {
         return false;
     }
 
-    var pieceAtDestination = getPiece(destination);
-    if (pieceAtDestination && getColor(pieceAtDestination) === color) {
+    var pieceAtDestination = board.getPiece(destination);
+    if (pieceAtDestination && pieceAtDestination.color === piece.color) {
         return false;
     }
     
     var horizontal = getHorizontalMovement(source, destination);
-    var vertical = getVerticalMovement(source, destination, color);
+    var vertical = getVerticalMovement(source, destination, piece.color);
 
-    switch (type) {
+    switch (piece.type) {
     case "pawn":
-        var isFirstMove = getVerticalPosition(color, source) === 1;
+        var isFirstMove = getVerticalPosition(piece.color, source) === 1;
         var isCorrectLengthForwardMove = (vertical === 1) || (isFirstMove && vertical === 2);
         
-        if (isCorrectLengthForwardMove && isVerticalMove(source, destination) && !pieceAtDestination) {
+        if (isCorrectLengthForwardMove && isVerticalMove(board, source, destination) && !pieceAtDestination) {
             return true;
         }
 
@@ -159,26 +202,26 @@ function isLegalMove(color, type, source, destination) {
             || (Math.abs(horizontal) === 2 && Math.abs(vertical) === 1);
 
     case "bishop":
-        return isDiagonalMove(source, destination);
+        return isDiagonalMove(board, source, destination);
         
     case "rook":
-        return isHorizontalMove(source, destination) || isVerticalMove(source, destination);
+        return isHorizontalMove(board, source, destination) || isVerticalMove(board, source, destination);
 
     case "queen":
-        return isDiagonalMove(source, destination)
-            || isHorizontalMove(source, destination)
-            || isVerticalMove(source, destination);
+        return isDiagonalMove(board, source, destination)
+            || isHorizontalMove(board, source, destination)
+            || isVerticalMove(board, source, destination);
         
     case "king":
         return (Math.abs(horizontal) <= 1 && Math.abs(vertical) <= 1);
         
     default:
-        console.log("unknown piece type: " + type);
+        console.log("unknown piece type: " + piece.type);
         return false;
     };
 }
 
-function isDiagonalMove(source, destination) {
+function isDiagonalMove(board, source, destination) {
     if (source.row === destination.row) {
         return false;
     }
@@ -195,7 +238,7 @@ function isDiagonalMove(source, destination) {
          c < rightmostPoint.column;
          r += rowStep, c++)
     {
-        if (getPiece(new Point(r, c))) {
+        if (board.getPiece(new Point(r, c))) {
             return false;
         }
     }
@@ -203,7 +246,7 @@ function isDiagonalMove(source, destination) {
     return true;
 }
 
-function isHorizontalMove(source, destination) {
+function isHorizontalMove(board, source, destination) {
     if (source.row != destination.row) {
         return false;
     }
@@ -212,7 +255,7 @@ function isHorizontalMove(source, destination) {
     var max = Math.max(source.column, destination.column);
 
     for (var i = min + 1; i < max; i++) {
-        if (getPiece(new Point(source.row, i))) {
+        if (board.getPiece(new Point(source.row, i))) {
             return false;
         }
     }
@@ -220,7 +263,7 @@ function isHorizontalMove(source, destination) {
     return true;
 }
 
-function isVerticalMove(source, destination) {
+function isVerticalMove(board, source, destination) {
     if (source.column != destination.column) {
         return false;
     }
@@ -229,7 +272,7 @@ function isVerticalMove(source, destination) {
     var max = Math.max(source.row, destination.row);
 
     for (var i = min + 1; i < max; i++) {
-        if (getPiece(new Point(i, source.column))) {
+        if (board.getPiece(new Point(i, source.column))) {
             return false;
         }
     }
@@ -307,7 +350,7 @@ function getColor(piece) {
 }
 
 function selectSquare(square) {
-    // TODO meneekö lisätty luokka varmasti vanhan luokan edelle
+    // TODO meneekï¿½ lisï¿½tty luokka varmasti vanhan luokan edelle
     square.addClass("selected");
     selectedSquare = square;
 }
