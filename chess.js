@@ -26,6 +26,10 @@ function Piece(color, type) {
     this.type = type;
 }
 
+Piece.prototype.equals = function(another) {
+    return another.color === this.color && another.type === this.type; 
+};
+
 function Board() {
     this.rowCount = 8;
     this.columnCount = 8;
@@ -43,6 +47,45 @@ function Board() {
 
 Board.prototype.getPiece = function(position) {
     return this.rows[position.row][position.column];
+};
+
+Board.prototype.setPiece = function (position, piece) {
+    this.rows[position.row][position.column] = piece;
+};
+
+Board.prototype.getPositionOf = function(piece) {
+    for (var row = 0; row < this.rowCount; row++) {
+        for (var column = 0; column < this.columnCount; column++) {
+            var position = new Point(row, column);
+            var currentPiece = this.getPiece(position);
+            if (currentPiece && currentPiece.equals(piece)) {
+                return position;
+            }
+        }
+    }
+    return null;
+};
+
+Board.prototype.findPiece = function (predicate) {
+    for (var row = 0; row < this.rowCount; row++) {
+        for (var column = 0; column < this.columnCount; column++) {
+            var position = new Point(row, column);
+            var piece = this.getPiece(position);
+            if (piece && predicate(piece, position)) {
+                return piece;
+            }
+        }
+    }
+    return null;
+};
+
+Board.prototype.move = function (source, destination) {
+    var piece = this.getPiece(source);
+    if (!piece) {
+        console.log("Board.move: piece expected in source");
+    }
+    this.setPiece(source, null);
+    this.setPiece(destination, piece);
 };
 
 function createBoardFromPage() {
@@ -142,10 +185,13 @@ function onSquareClicked(square) {
         selectSquare(square);
     }
 
-    var source = getSquarePosition(selectedSquare);
-    var destination = getSquarePosition(square);
-
-    if (! isLegalMove(board, selectedPiece, source, destination)) {
+    if (! isLegalMove(board, selectedPiece, selectedPosition, position)) {
+        return;
+    }
+    
+    board.move(selectedPosition, position);
+    
+    if (isInCheck(board, currentPlayer)) {
         return;
     }
 
@@ -168,6 +214,14 @@ function getType(piece) {
     return parts[1];
 }
 
+function isInCheck(board, currentPlayer) {
+    var opponent = opponentPlayer(currentPlayer);
+    var positionOfKing = board.getPositionOf(new Piece(currentPlayer, "king"));
+    var attackingPiece = board.findPiece(function (piece, position) {
+        return (piece.color === opponent) && isLegalMove(board, piece, position, positionOfKing);
+    });
+    return attackingPiece;
+}
 
 function isLegalMove(board, piece, source, destination) {
     if (! isInsideBoard(destination)) {
@@ -316,10 +370,12 @@ function getVerticalMovement(source, destination, color) {
 
 
 function changePlayer() {
-    var otherPlayer = (currentPlayer === "white") ? "black" : "white";
-    setCurrentPlayer(otherPlayer);
+    setCurrentPlayer(opponentPlayer(currentPlayer));
 }
 
+function opponentPlayer(player) {
+    return (player === "white") ? "black" : "white";
+}
 
 function move(square, piece) {
     square.append(piece);
