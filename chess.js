@@ -30,6 +30,11 @@ Piece.prototype.equals = function(another) {
     return another.color === this.color && another.type === this.type; 
 };
 
+function PieceAtPosition(piece, position) {
+    this.piece = piece;
+    this.position = position;
+}
+
 function Board() {
     this.rowCount = 8;
     this.columnCount = 8;
@@ -45,7 +50,7 @@ function Board() {
     ];
 }
 
-Board.prototype.getPiece = function(position) {
+Board.prototype.getPiece = function (position) {
     return this.rows[position.row][position.column];
 };
 
@@ -53,17 +58,11 @@ Board.prototype.setPiece = function (position, piece) {
     this.rows[position.row][position.column] = piece;
 };
 
-Board.prototype.getPositionOf = function(piece) {
-    for (var row = 0; row < this.rowCount; row++) {
-        for (var column = 0; column < this.columnCount; column++) {
-            var position = new Point(row, column);
-            var currentPiece = this.getPiece(position);
-            if (currentPiece && currentPiece.equals(piece)) {
-                return position;
-            }
-        }
-    }
-    return null;
+Board.prototype.getPositionOf = function (piece) {
+    var found = this.findPiece(function (currentPiece, position) {
+        return currentPiece.equals(piece);
+    });
+    return (found ? found.position : null);
 };
 
 Board.prototype.findPiece = function (predicate) {
@@ -72,7 +71,7 @@ Board.prototype.findPiece = function (predicate) {
             var position = new Point(row, column);
             var piece = this.getPiece(position);
             if (piece && predicate(piece, position)) {
-                return piece;
+                return new PieceAtPosition(piece, position);
             }
         }
     }
@@ -191,7 +190,10 @@ function onSquareClicked(square) {
     
     board.move(selectedPosition, position);
     
-    if (isInCheck(board, currentPlayer)) {
+    var attackingPiece = isInCheck(board, currentPlayer);
+    
+    if (attackingPiece) {
+        highlightAttackingPiece(attackingPiece);
         return;
     }
 
@@ -202,6 +204,14 @@ function onSquareClicked(square) {
     move(square, getPieceOnSquare(selectedSquare));
     removeSelection();
     changePlayer();
+}
+
+function highlightAttackingPiece(pieceAtPosition) {
+    var square = getSquare(pieceAtPosition.position);
+    square.addClass("attacking");
+    window.setTimeout(function () {
+        square.removeClass("attacking");
+    }, 1000);
 }
 
 function getSquarePosition(square) {
@@ -352,8 +362,12 @@ function getPiece(position) {
         return null;
     }
 
-    var square = $("#square_" + position.row + "_" + position.column);
+    var square = getSquare(position);
     return getPieceOnSquare(square);
+}
+
+function getSquare(position) {
+    return $("#square_" + position.row + "_" + position.column);
 }
 
 function getHorizontalMovement(source, destination) {
