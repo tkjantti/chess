@@ -33,7 +33,7 @@ td.selected {
     background-color: #BBBBFF;
 }
 
-td.attacking {
+td.threat {
     background-color: red;
 }
 

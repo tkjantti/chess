@@ -190,10 +190,9 @@ function onSquareClicked(square) {
     
     board.move(selectedPosition, position);
     
-    var attackingPiece = isInCheck(board, currentPlayer);
-    
-    if (attackingPiece) {
-        highlightAttackingPiece(attackingPiece);
+    if (isInCheck(board, currentPlayer)) {
+        var positionOfKing = board.getPositionOf(new Piece(currentPlayer, "king"));
+        highlightPieceUnderThreat(positionOfKing);
         return;
     }
 
@@ -206,11 +205,11 @@ function onSquareClicked(square) {
     changePlayer();
 }
 
-function highlightAttackingPiece(pieceAtPosition) {
-    var square = getSquare(pieceAtPosition.position);
-    square.addClass("attacking");
+function highlightPieceUnderThreat(position) {
+    var square = getSquare(position);
+    square.addClass("threat");
     window.setTimeout(function () {
-        square.removeClass("attacking");
+        square.removeClass("threat");
     }, 1000);
 }
 
@@ -420,7 +419,6 @@ function getColor(piece) {
 }
 
 function selectSquare(square) {
-    // TODO meneek� lis�tty luokka varmasti vanhan luokan edelle
     square.addClass("selected");
     selectedSquare = square;
 }
