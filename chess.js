@@ -21,13 +21,13 @@ function Point(row, column) {
     this.column = column;
 }
 
-function Piece(color, type) {
-    this.color = color;
+function Piece(player, type) {
+    this.player = player;
     this.type = type;
 }
 
 Piece.prototype.equals = function(another) {
-    return another.color === this.color && another.type === this.type; 
+    return another.player === this.player && another.type === this.type; 
 };
 
 function PieceAtPosition(piece, position) {
@@ -95,7 +95,7 @@ function createBoardFromPage() {
             var position = new Point(row, column);
             var piece = getPiece(position);
             if (piece) {
-                board.rows[row][column] = new Piece(getColor(piece), getType(piece));
+                board.rows[row][column] = new Piece(getPlayerOf(piece), getType(piece));
             }
         }
     }
@@ -141,9 +141,9 @@ function setStartingPositions() {
     $("#square_7_7").append($("#white_rook_2"));
 }
 
-function setCurrentPlayer(color) {
-    currentPlayer = color;
-    $("#player_in_turn").text(color);
+function setCurrentPlayer(player) {
+    currentPlayer = player;
+    $("#player_in_turn").text(player);
 }
 
 
@@ -165,7 +165,7 @@ function onSquareClicked(square) {
     var piece = board.getPiece(position);
 
     if (! selectedSquare) {
-        if (piece && (piece.color === currentPlayer)) {
+        if (piece && (piece.player === currentPlayer)) {
             selectSquare(square);
         }
         return;
@@ -179,7 +179,7 @@ function onSquareClicked(square) {
     var selectedPosition = getSquarePosition(selectedSquare);
     var selectedPiece = board.getPiece(selectedPosition);
 
-    if (piece && (piece.color === selectedPiece.color)) {
+    if (piece && (piece.player === selectedPiece.player)) {
         removeSelection();
         selectSquare(square);
     }
@@ -227,7 +227,7 @@ function isInCheck(board, currentPlayer) {
     var opponent = opponentPlayer(currentPlayer);
     var positionOfKing = board.getPositionOf(new Piece(currentPlayer, "king"));
     var attackingPiece = board.findPiece(function (piece, position) {
-        return (piece.color === opponent) && isLegalMove(board, piece, position, positionOfKing);
+        return (piece.player === opponent) && isLegalMove(board, piece, position, positionOfKing);
     });
     return attackingPiece;
 }
@@ -238,16 +238,16 @@ function isLegalMove(board, piece, source, destination) {
     }
 
     var pieceAtDestination = board.getPiece(destination);
-    if (pieceAtDestination && pieceAtDestination.color === piece.color) {
+    if (pieceAtDestination && pieceAtDestination.player === piece.player) {
         return false;
     }
     
     var horizontal = getHorizontalMovement(source, destination);
-    var vertical = getVerticalMovement(source, destination, piece.color);
+    var vertical = getVerticalMovement(source, destination, piece.player);
 
     switch (piece.type) {
     case "pawn":
-        var isFirstMove = getVerticalPosition(piece.color, source) === 1;
+        var isFirstMove = getVerticalPosition(piece.player, source) === 1;
         var isCorrectLengthForwardMove = (vertical === 1) || (isFirstMove && vertical === 2);
         
         if (isCorrectLengthForwardMove && isVerticalMove(board, source, destination) && !pieceAtDestination) {
@@ -344,8 +344,8 @@ function isVerticalMove(board, source, destination) {
 }
 
 
-function getVerticalPosition(color, position) {
-    if (color === "white") {
+function getVerticalPosition(player, position) {
+    if (player === "white") {
         return 7 - position.row;
     } else {
         return position.row;
@@ -373,8 +373,8 @@ function getHorizontalMovement(source, destination) {
     return destination.column - source.column;
 }
 
-function getVerticalMovement(source, destination, color) {
-    if (color === "white") {
+function getVerticalMovement(source, destination, player) {
+    if (player === "white") {
         return source.row - destination.row;
     } else {
         return destination.row - source.row;
@@ -404,11 +404,11 @@ function removeFromBoard(piece) {
 }
 
 function getSideSquares(piece) {
-    return $("#" + getColor(piece) + "_pieces td");
+    return $("#" + getPlayerOf(piece) + "_pieces td");
 }
 
 
-function getColor(piece) {
+function getPlayerOf(piece) {
     if (piece.id.includes("black")) {
         return "black";
     }
