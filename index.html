@@ -1,246 +1,260 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-"http://www.w3.org/TR/2000/REC-xhtml1-20000126/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fi">
+<!DOCTYPE html>
+<html lang="en">
 
   <head>
-    <link href="style.css" rel="StyleSheet" type="text/css" />
+    <meta charset="utf-8">
+    <link href="style.css" rel="StyleSheet" type="text/css" media="screen" />
     <script src="jquery.js"></script>
-    <script src="underscore.js" type="text/javascript"></script>
-    <script src="chess.js" type="text/javascript"></script>
+    <script src="underscore.js"></script>
+    <script src="chess.js"></script>
     <title>Chess</title>
   </head>
 
   <body>
 
-    <h1>Chess</h1>
+    <header>
+      <h1>Chess</h1>
+    </header>
 
-    <p>Player in turn: <span id="player_in_turn"></span></p>
-    
-    <table id="board">
-      <tr>
-        <td class="white" id="square_0_0" />
-        <td class="black" id="square_0_1" />
-        <td class="white" id="square_0_2" />
-        <td class="black" id="square_0_3" />
-        <td class="white" id="square_0_4" />
-        <td class="black" id="square_0_5" />
-        <td class="white" id="square_0_6" />
-        <td class="black" id="square_0_7" />
-      </tr>
-      <tr>
-        <td class="black" id="square_1_0" />
-        <td class="white" id="square_1_1" />
-        <td class="black" id="square_1_2" />
-        <td class="white" id="square_1_3" />
-        <td class="black" id="square_1_4" />
-        <td class="white" id="square_1_5" />
-        <td class="black" id="square_1_6" />
-        <td class="white" id="square_1_7" />
-      </tr>
-      <tr>
-        <td class="white" id="square_2_0" />
-        <td class="black" id="square_2_1" />
-        <td class="white" id="square_2_2" />
-        <td class="black" id="square_2_3" />
-        <td class="white" id="square_2_4" />
-        <td class="black" id="square_2_5" />
-        <td class="white" id="square_2_6" />
-        <td class="black" id="square_2_7" />
-      </tr>
-      <tr>
-        <td class="black" id="square_3_0" />
-        <td class="white" id="square_3_1" />
-        <td class="black" id="square_3_2" />
-        <td class="white" id="square_3_3" />
-        <td class="black" id="square_3_4" />
-        <td class="white" id="square_3_5" />
-        <td class="black" id="square_3_6" />
-        <td class="white" id="square_3_7" />
-      </tr>
-      <tr>
-        <td class="white" id="square_4_0" />
-        <td class="black" id="square_4_1" />
-        <td class="white" id="square_4_2" />
-        <td class="black" id="square_4_3" />
-        <td class="white" id="square_4_4" />
-        <td class="black" id="square_4_5" />
-        <td class="white" id="square_4_6" />
-        <td class="black" id="square_4_7" />
-      </tr>
-      <tr>
-        <td class="black" id="square_5_0" />
-        <td class="white" id="square_5_1" />
-        <td class="black" id="square_5_2" />
-        <td class="white" id="square_5_3" />
-        <td class="black" id="square_5_4" />
-        <td class="white" id="square_5_5" />
-        <td class="black" id="square_5_6" />
-        <td class="white" id="square_5_7" />
-      </tr>
-      <tr>
-        <td class="white" id="square_6_0" />
-        <td class="black" id="square_6_1" />
-        <td class="white" id="square_6_2" />
-        <td class="black" id="square_6_3" />
-        <td class="white" id="square_6_4" />
-        <td class="black" id="square_6_5" />
-        <td class="white" id="square_6_6" />
-        <td class="black" id="square_6_7" />
-      </tr>
-      <tr>
-        <td class="black" id="square_7_0" />
-        <td class="white" id="square_7_1" />
-        <td class="black" id="square_7_2" />
-        <td class="white" id="square_7_3" />
-        <td class="black" id="square_7_4" />
-        <td class="white" id="square_7_5" />
-        <td class="black" id="square_7_6" />
-        <td class="white" id="square_7_7" />
-      </tr>
-    </table>
+    <main>
 
-    <table id="black_pieces" class="side_table">
-      <tr>
-        <td class="side" id="black_0_0">
-          <img src="images/black_king.svg" id="black_king" alt="" />
-        </td>
-        <td class="side" id="black_0_1">
-          <img src="images/black_queen.svg" id="black_queen" alt="" />
-        </td>
-      </tr>
-      <tr>
-        <td class="side" id="black_1_0">
-          <img src="images/black_rook.svg" id="black_rook_1" alt="" />
-        </td>
-        <td class="side" id="black_1_1">
-          <img src="images/black_rook.svg" id="black_rook_2" alt="" />
-        </td>
-      </tr>
-      <tr>
-        <td class="side" id="black_2_0">
-          <img src="images/black_bishop.svg" id="black_bishop_1" alt="" />
-        </td>
-        <td class="side" id="black_2_1">
-          <img src="images/black_bishop.svg" id="black_bishop_2" alt="" />
-        </td>
-      </tr>
-      <tr>
-        <td class="side" id="black_3_0">
-          <img src="images/black_knight.svg" id="black_knight_1" alt="" />
-        </td>
-        <td class="side" id="black_3_1">
-          <img src="images/black_knight.svg" id="black_knight_2" alt="" />
-        </td>
-      </tr>
-      <tr>
-        <td class="side" id="black_4_0">
-          <img src="images/black_pawn.svg" id="black_pawn_1" alt="" />
-        </td>
-        <td class="side" id="black_4_1">
-          <img src="images/black_pawn.svg" id="black_pawn_2" alt="" />
-        </td>
-      </tr>
-      <tr>
-        <td class="side" id="black_5_0">
-          <img src="images/black_pawn.svg" id="black_pawn_3" alt="" />
-        </td>
-        <td class="side" id="black_5_1">
-          <img src="images/black_pawn.svg" id="black_pawn_4" alt="" />
-        </td>
-      </tr>
-      <tr>
-        <td class="side" id="black_6_0">
-          <img src="images/black_pawn.svg" id="black_pawn_5" alt="" />
-        </td>
-        <td class="side" id="black_6_1">
-          <img src="images/black_pawn.svg" id="black_pawn_6" alt="" />
-        </td>
-      </tr>
-      <tr>
-        <td class="side" id="black_7_0">
-          <img src="images/black_pawn.svg" id="black_pawn_7" alt="" />
-        </td>
-        <td class="side" id="black_7_1">
-          <img src="images/black_pawn.svg" id="black_pawn_8" alt="" />
-        </td>
-      </tr>
-    </table>
+      <section id="gameStatus">
+        <p>
+          Player in turn:
+          <span id="player_in_turn"></span>
+        </p>
+      </section>
 
-    <table id="white_pieces" class="side_table">
-      <tr>
-        <td class="side" id="white_0_0">
-          <img src="images/white_king.svg" id="white_king" alt="" />
-        </td>
-        <td class="side" id="white_0_1">
-          <img src="images/white_queen.svg" id="white_queen" alt="" />
-        </td>
-      </tr>
-      <tr>
-        <td class="side" id="white_1_0">
-          <img src="images/white_rook.svg" id="white_rook_1" alt="" />
-        </td>
-        <td class="side" id="white_1_1">
-          <img src="images/white_rook.svg" id="white_rook_2" alt="" />
-        </td>
-      </tr>
-      <tr>
-        <td class="side" id="white_2_0">
-          <img src="images/white_bishop.svg" id="white_bishop_1" alt="" />
-        </td>
-        <td class="side" id="white_2_1">
-          <img src="images/white_bishop.svg" id="white_bishop_2" alt="" />
-        </td>
-      </tr>
-      <tr>
-        <td class="side" id="white_3_0">
-          <img src="images/white_knight.svg" id="white_knight_1" alt="" />
-        </td>
-        <td class="side" id="white_3_1">
-          <img src="images/white_knight.svg" id="white_knight_2" alt="" />
-        </td>
-      </tr>
-      <tr>
-        <td class="side" id="white_4_0">
-          <img src="images/white_pawn.svg" id="white_pawn_1" alt="" />
-        </td>
-        <td class="side" id="white_4_1">
-          <img src="images/white_pawn.svg" id="white_pawn_2" alt="" />
-        </td>
-      </tr>
-      <tr>
-        <td class="side" id="white_5_0">
-          <img src="images/white_pawn.svg" id="white_pawn_3" alt="" />
-        </td>
-        <td class="side" id="white_5_1">
-          <img src="images/white_pawn.svg" id="white_pawn_4" alt="" />
-        </td>
-      </tr>
-      <tr>
-        <td class="side" id="white_6_0">
-          <img src="images/white_pawn.svg" id="white_pawn_5" alt="" />
-        </td>
-        <td class="side" id="white_6_1">
-          <img src="images/white_pawn.svg" id="white_pawn_6" alt="" />
-        </td>
-      </tr>
-      <tr>
-        <td class="side" id="white_7_0">
-          <img src="images/white_pawn.svg" id="white_pawn_7" alt="" />
-        </td>
-        <td class="side" id="white_7_1">
-          <img src="images/white_pawn.svg" id="white_pawn_8" alt="" />
-        </td>
-      </tr>
-    </table>
+      <section id="board">
+        <table>
+          <tr>
+            <td class="white" id="square_0_0" />
+            <td class="black" id="square_0_1" />
+            <td class="white" id="square_0_2" />
+            <td class="black" id="square_0_3" />
+            <td class="white" id="square_0_4" />
+            <td class="black" id="square_0_5" />
+            <td class="white" id="square_0_6" />
+            <td class="black" id="square_0_7" />
+          </tr>
+          <tr>
+            <td class="black" id="square_1_0" />
+            <td class="white" id="square_1_1" />
+            <td class="black" id="square_1_2" />
+            <td class="white" id="square_1_3" />
+            <td class="black" id="square_1_4" />
+            <td class="white" id="square_1_5" />
+            <td class="black" id="square_1_6" />
+            <td class="white" id="square_1_7" />
+          </tr>
+          <tr>
+            <td class="white" id="square_2_0" />
+            <td class="black" id="square_2_1" />
+            <td class="white" id="square_2_2" />
+            <td class="black" id="square_2_3" />
+            <td class="white" id="square_2_4" />
+            <td class="black" id="square_2_5" />
+            <td class="white" id="square_2_6" />
+            <td class="black" id="square_2_7" />
+          </tr>
+          <tr>
+            <td class="black" id="square_3_0" />
+            <td class="white" id="square_3_1" />
+            <td class="black" id="square_3_2" />
+            <td class="white" id="square_3_3" />
+            <td class="black" id="square_3_4" />
+            <td class="white" id="square_3_5" />
+            <td class="black" id="square_3_6" />
+            <td class="white" id="square_3_7" />
+          </tr>
+          <tr>
+            <td class="white" id="square_4_0" />
+            <td class="black" id="square_4_1" />
+            <td class="white" id="square_4_2" />
+            <td class="black" id="square_4_3" />
+            <td class="white" id="square_4_4" />
+            <td class="black" id="square_4_5" />
+            <td class="white" id="square_4_6" />
+            <td class="black" id="square_4_7" />
+          </tr>
+          <tr>
+            <td class="black" id="square_5_0" />
+            <td class="white" id="square_5_1" />
+            <td class="black" id="square_5_2" />
+            <td class="white" id="square_5_3" />
+            <td class="black" id="square_5_4" />
+            <td class="white" id="square_5_5" />
+            <td class="black" id="square_5_6" />
+            <td class="white" id="square_5_7" />
+          </tr>
+          <tr>
+            <td class="white" id="square_6_0" />
+            <td class="black" id="square_6_1" />
+            <td class="white" id="square_6_2" />
+            <td class="black" id="square_6_3" />
+            <td class="white" id="square_6_4" />
+            <td class="black" id="square_6_5" />
+            <td class="white" id="square_6_6" />
+            <td class="black" id="square_6_7" />
+          </tr>
+          <tr>
+            <td class="black" id="square_7_0" />
+            <td class="white" id="square_7_1" />
+            <td class="black" id="square_7_2" />
+            <td class="white" id="square_7_3" />
+            <td class="black" id="square_7_4" />
+            <td class="white" id="square_7_5" />
+            <td class="black" id="square_7_6" />
+            <td class="white" id="square_7_7" />
+          </tr>
+        </table>
+      </section>
 
-    <div id="footer">
+      <section id="capturedPieces">
+        <table id="black_pieces" class="side_table">
+          <tr>
+            <td class="side" id="black_0_0">
+              <img src="images/black_king.svg" id="black_king" alt="" />
+            </td>
+            <td class="side" id="black_0_1">
+              <img src="images/black_queen.svg" id="black_queen" alt="" />
+            </td>
+          </tr>
+          <tr>
+            <td class="side" id="black_1_0">
+              <img src="images/black_rook.svg" id="black_rook_1" alt="" />
+            </td>
+            <td class="side" id="black_1_1">
+              <img src="images/black_rook.svg" id="black_rook_2" alt="" />
+            </td>
+          </tr>
+          <tr>
+            <td class="side" id="black_2_0">
+              <img src="images/black_bishop.svg" id="black_bishop_1" alt="" />
+            </td>
+            <td class="side" id="black_2_1">
+              <img src="images/black_bishop.svg" id="black_bishop_2" alt="" />
+            </td>
+          </tr>
+          <tr>
+            <td class="side" id="black_3_0">
+              <img src="images/black_knight.svg" id="black_knight_1" alt="" />
+            </td>
+            <td class="side" id="black_3_1">
+              <img src="images/black_knight.svg" id="black_knight_2" alt="" />
+            </td>
+          </tr>
+          <tr>
+            <td class="side" id="black_4_0">
+              <img src="images/black_pawn.svg" id="black_pawn_1" alt="" />
+            </td>
+            <td class="side" id="black_4_1">
+              <img src="images/black_pawn.svg" id="black_pawn_2" alt="" />
+            </td>
+          </tr>
+          <tr>
+            <td class="side" id="black_5_0">
+              <img src="images/black_pawn.svg" id="black_pawn_3" alt="" />
+            </td>
+            <td class="side" id="black_5_1">
+              <img src="images/black_pawn.svg" id="black_pawn_4" alt="" />
+            </td>
+          </tr>
+          <tr>
+            <td class="side" id="black_6_0">
+              <img src="images/black_pawn.svg" id="black_pawn_5" alt="" />
+            </td>
+            <td class="side" id="black_6_1">
+              <img src="images/black_pawn.svg" id="black_pawn_6" alt="" />
+            </td>
+          </tr>
+          <tr>
+            <td class="side" id="black_7_0">
+              <img src="images/black_pawn.svg" id="black_pawn_7" alt="" />
+            </td>
+            <td class="side" id="black_7_1">
+              <img src="images/black_pawn.svg" id="black_pawn_8" alt="" />
+            </td>
+          </tr>
+        </table>
+
+        <table id="white_pieces" class="side_table">
+          <tr>
+            <td class="side" id="white_0_0">
+              <img src="images/white_king.svg" id="white_king" alt="" />
+            </td>
+            <td class="side" id="white_0_1">
+              <img src="images/white_queen.svg" id="white_queen" alt="" />
+            </td>
+          </tr>
+          <tr>
+            <td class="side" id="white_1_0">
+              <img src="images/white_rook.svg" id="white_rook_1" alt="" />
+            </td>
+            <td class="side" id="white_1_1">
+              <img src="images/white_rook.svg" id="white_rook_2" alt="" />
+            </td>
+          </tr>
+          <tr>
+            <td class="side" id="white_2_0">
+              <img src="images/white_bishop.svg" id="white_bishop_1" alt="" />
+            </td>
+            <td class="side" id="white_2_1">
+              <img src="images/white_bishop.svg" id="white_bishop_2" alt="" />
+            </td>
+          </tr>
+          <tr>
+            <td class="side" id="white_3_0">
+              <img src="images/white_knight.svg" id="white_knight_1" alt="" />
+            </td>
+            <td class="side" id="white_3_1">
+              <img src="images/white_knight.svg" id="white_knight_2" alt="" />
+            </td>
+          </tr>
+          <tr>
+            <td class="side" id="white_4_0">
+              <img src="images/white_pawn.svg" id="white_pawn_1" alt="" />
+            </td>
+            <td class="side" id="white_4_1">
+              <img src="images/white_pawn.svg" id="white_pawn_2" alt="" />
+            </td>
+          </tr>
+          <tr>
+            <td class="side" id="white_5_0">
+              <img src="images/white_pawn.svg" id="white_pawn_3" alt="" />
+            </td>
+            <td class="side" id="white_5_1">
+              <img src="images/white_pawn.svg" id="white_pawn_4" alt="" />
+            </td>
+          </tr>
+          <tr>
+            <td class="side" id="white_6_0">
+              <img src="images/white_pawn.svg" id="white_pawn_5" alt="" />
+            </td>
+            <td class="side" id="white_6_1">
+              <img src="images/white_pawn.svg" id="white_pawn_6" alt="" />
+            </td>
+          </tr>
+          <tr>
+            <td class="side" id="white_7_0">
+              <img src="images/white_pawn.svg" id="white_pawn_7" alt="" />
+            </td>
+            <td class="side" id="white_7_1">
+              <img src="images/white_pawn.svg" id="white_pawn_8" alt="" />
+            </td>
+          </tr>
+        </table>
+      </section>
+
+    </main>
+
+    <footer>
       <p>
         Copyright of chess piece images: <br />
         © Colin M.L. Burnett / Wikimedia Commons / 
         <a href="http://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA-3.0</a> /
         <a href="http://en.wikipedia.org/wiki/Wikipedia:Text_of_the_GNU_Free_Documentation_License">GFDL</a>
       </p>
-    </div>
+    </footer>
   </body>
 </html>
