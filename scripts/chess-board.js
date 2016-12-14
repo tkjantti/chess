@@ -1,72 +1,72 @@
 
-function Point(row, column) {
-    this.row = row;
-    this.column = column;
+function createPoint(row, column) {
+    return {
+        row: row,
+        column: column
+    };
 }
 
-function Piece(player, type) {
-    this.player = player;
-    this.type = type;
-}
+function createPiece(player, type) {
+    return {
+        player: player,
+        type: type,
 
-Piece.prototype.equals = function(another) {
-    return another.player === this.player && another.type === this.type; 
-};
-
-function PieceAtPosition(piece, position) {
-    this.piece = piece;
-    this.position = position;
-}
-
-function Board() {
-    this.rowCount = 8;
-    this.columnCount = 8;
-    this.rows = [
-        new Array(this.columnCount),
-        new Array(this.columnCount),
-        new Array(this.columnCount),
-        new Array(this.columnCount),
-        new Array(this.columnCount),
-        new Array(this.columnCount),
-        new Array(this.columnCount),
-        new Array(this.columnCount)
-    ];
-}
-
-Board.prototype.getPiece = function (position) {
-    return this.rows[position.row][position.column];
-};
-
-Board.prototype.setPiece = function (position, piece) {
-    this.rows[position.row][position.column] = piece;
-};
-
-Board.prototype.getPositionOf = function (piece) {
-    var found = this.findPiece(function (currentPiece, position) {
-        return currentPiece.equals(piece);
-    });
-    return (found ? found.position : null);
-};
-
-Board.prototype.findPiece = function (predicate) {
-    for (var row = 0; row < this.rowCount; row++) {
-        for (var column = 0; column < this.columnCount; column++) {
-            var position = new Point(row, column);
-            var piece = this.getPiece(position);
-            if (piece && predicate(piece, position)) {
-                return new PieceAtPosition(piece, position);
-            }
+        equals: function(another) {
+            return another.player === this.player && another.type === this.type; 
         }
-    }
-    return null;
-};
+    };
+}
 
-Board.prototype.move = function (source, destination) {
-    var piece = this.getPiece(source);
-    if (!piece) {
-        console.log("Board.move: piece expected in source");
-    }
-    this.setPiece(source, null);
-    this.setPiece(destination, piece);
-};
+function createBoard() {
+    var rows = [[], [], [], [], [], [], [], []];
+
+    return {
+        getRowCount: function() { return 8; },
+        getColumnCount: function() { return 8; },
+
+        getPiece: function (position) {
+            return rows[position.row][position.column];
+        },
+
+        setPiece: function (position, piece) {
+            rows[position.row][position.column] = piece;
+        },
+
+        getPositionOf: function (piece) {
+            var found = this.findPiece(function (currentPiece, position) {
+                return currentPiece.equals(piece);
+            });
+            return (found ? found.position : null);
+        },
+
+        isInside: function(position) {
+            return (0 <= position.row) && (position.row < this.getRowCount()) && (0 <= position.column) && (position.column < this.getColumnCount());
+        },
+        
+        findPiece: function (predicate) {
+            for (var row = 0; row < this.getRowCount(); row++) {
+                for (var column = 0; column < this.getColumnCount(); column++) {
+                    var position = createPoint(row, column);
+                    var piece = this.getPiece(position);
+                    if (piece && predicate(piece, position)) {
+                        return {
+                            piece: piece,
+                            position: position
+                        };
+                    }
+                }
+            }
+            return null;
+        },
+
+        move: function (source, destination) {
+            var piece = this.getPiece(source);
+            if (!piece) {
+                console.log("Board.move: piece expected in source");
+            }
+            this.setPiece(source, null);
+            this.setPiece(destination, piece);
+        }
+    };
+}
 

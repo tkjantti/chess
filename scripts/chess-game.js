@@ -1,18 +1,18 @@
 
-var currentPlayer = "white";
-var selectedSquare = null;
-
 chessGame = function() {
+    var initialized = false;
+    var currentPlayer = "white";
+    var selectedSquare = null;
 
     function createBoardFromPage() {
-        var board = new Board();
+        var board = createBoard();
 
-        for (var row = 0; row < board.rowCount; row++) {
-            for (var column = 0; column < board.columnCount; column++) {
-                var position = new Point(row, column);
-                var piece = getPiece(position);
+        for (var row = 0; row < board.getRowCount(); row++) {
+            for (var column = 0; column < board.getColumnCount(); column++) {
+                var position = createPoint(row, column);
+                var piece = getPiece(board, position);
                 if (piece) {
-                    board.rows[row][column] = new Piece(getPlayerOf(piece), getType(piece));
+                    board.setPiece(position, createPiece(getPlayerOf(piece), getType(piece)));
                 }
             }
         }
@@ -108,7 +108,7 @@ chessGame = function() {
         board.move(selectedPosition, position);
         
         if (isInCheck(board, currentPlayer)) {
-            var positionOfKing = board.getPositionOf(new Piece(currentPlayer, "king"));
+            var positionOfKing = board.getPositionOf(createPiece(currentPlayer, "king"));
             highlightPieceUnderThreat(positionOfKing);
             return;
         }
@@ -132,7 +132,7 @@ chessGame = function() {
 
     function getSquarePosition(square) {
         var stringCoordinates = square.attr("id").split("_");
-        return new Point(parseInt(stringCoordinates[1], 10), parseInt(stringCoordinates[2], 10));
+        return createPoint(parseInt(stringCoordinates[1], 10), parseInt(stringCoordinates[2], 10));
     }
 
     function getType(piece) {
@@ -142,7 +142,7 @@ chessGame = function() {
 
     function isInCheck(board, currentPlayer) {
         var opponent = opponentPlayer(currentPlayer);
-        var positionOfKing = board.getPositionOf(new Piece(currentPlayer, "king"));
+        var positionOfKing = board.getPositionOf(createPiece(currentPlayer, "king"));
         var attackingPiece = board.findPiece(function (piece, position) {
             return (piece.player === opponent) && isLegalMove(board, piece, position, positionOfKing);
         });
@@ -150,7 +150,7 @@ chessGame = function() {
     }
 
     function isLegalMove(board, piece, source, destination) {
-        if (! isInsideBoard(destination)) {
+        if (! board.isInside(destination)) {
             return false;
         }
 
@@ -218,7 +218,7 @@ chessGame = function() {
              c < rightmostPoint.column;
              r += rowStep, c++)
         {
-            if (board.getPiece(new Point(r, c))) {
+            if (board.getPiece(createPoint(r, c))) {
                 return false;
             }
         }
@@ -235,7 +235,7 @@ chessGame = function() {
         var max = Math.max(source.column, destination.column);
 
         for (var i = min + 1; i < max; i++) {
-            if (board.getPiece(new Point(source.row, i))) {
+            if (board.getPiece(createPoint(source.row, i))) {
                 return false;
             }
         }
@@ -252,7 +252,7 @@ chessGame = function() {
         var max = Math.max(source.row, destination.row);
 
         for (var i = min + 1; i < max; i++) {
-            if (board.getPiece(new Point(i, source.column))) {
+            if (board.getPiece(createPoint(i, source.column))) {
                 return false;
             }
         }
@@ -269,12 +269,8 @@ chessGame = function() {
         }
     }
 
-    function isInsideBoard(position) {
-        return (0 <= position.row) && (position.row < 8) && (0 <= position.column) && (position.column < 8);
-    }
-
-    function getPiece(position) {
-        if (! isInsideBoard(position)) {
+    function getPiece(board, position) {
+        if (! board.isInside(position)) {
             return null;
         }
 
@@ -355,9 +351,13 @@ chessGame = function() {
     
     return {
         initialize: function initialize() {
+            if (initialized) {
+                return;
+            }
             addBoardClickHandlers();
             setStartingPositions();
             setCurrentPlayer("white");
+            initialized = true;
         }
     };
 }();
