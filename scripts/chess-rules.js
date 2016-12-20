@@ -1,7 +1,7 @@
 
-var createRules = function() {
+var createRules = function () {
 
-    var getVerticalPosition = function(player, position) {
+    var getVerticalPosition = function (player, position) {
         if (player === "white") {
             return 7 - position.row;
         } else {
@@ -9,7 +9,7 @@ var createRules = function() {
         }
     };
 
-    var getVerticalMovement = function(source, destination, player) {
+    var getVerticalMovement = function (source, destination, player) {
         if (player === "white") {
             return source.row - destination.row;
         } else {
@@ -17,11 +17,11 @@ var createRules = function() {
         }
     };
 
-    var getHorizontalMovement = function(source, destination) {
+    var getHorizontalMovement = function (source, destination) {
         return destination.column - source.column;
     };
 
-    var isHorizontalMove = function(board, source, destination) {
+    var isHorizontalMove = function (board, source, destination) {
         if (source.row != destination.row) {
             return false;
         }
@@ -38,7 +38,7 @@ var createRules = function() {
         return true;
     };
 
-    var isVerticalMove = function(board, source, destination) {
+    var isVerticalMove = function (board, source, destination) {
         if (source.column != destination.column) {
             return false;
         }
@@ -55,7 +55,7 @@ var createRules = function() {
         return true;
     };
     
-    var isDiagonalMove = function(board, source, destination) {
+    var isDiagonalMove = function (board, source, destination) {
         if (source.row === destination.row) {
             return false;
         }
@@ -81,11 +81,11 @@ var createRules = function() {
     };
     
     return {
-        opponentPlayer: function(player) {
+        opponentPlayer: function (player) {
             return (player === "white") ? "black" : "white";
         },
 
-        isInCheck: function(board, currentPlayer) {
+        isInCheck: function (board, currentPlayer) {
             var opponent = this.opponentPlayer(currentPlayer);
             var positionOfKing = board.getPositionOf(createPiece(currentPlayer, "king"));
             var that = this;
@@ -95,7 +95,7 @@ var createRules = function() {
             return attackingPiece;
         },
 
-        isLegalMove: function(board, piece, source, destination) {
+        isLegalMove: function (board, piece, source, destination) {
             if (! board.isInside(destination)) {
                 return false;
             }
