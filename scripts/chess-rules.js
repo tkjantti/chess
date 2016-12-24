@@ -24,14 +24,16 @@ CHESS_APP.createRules = function () {
     };
 
     var isHorizontalMove = function (board, source, destination) {
+        var min, max, i;
+
         if (source.row != destination.row) {
             return false;
         }
 
-        var min = Math.min(source.column, destination.column);
-        var max = Math.max(source.column, destination.column);
+        min = Math.min(source.column, destination.column);
+        max = Math.max(source.column, destination.column);
 
-        for (var i = min + 1; i < max; i++) {
+        for (i = min + 1; i < max; i++) {
             if (board.getPiece(CHESS_APP.createPoint(source.row, i))) {
                 return false;
             }
@@ -41,14 +43,16 @@ CHESS_APP.createRules = function () {
     };
 
     var isVerticalMove = function (board, source, destination) {
+        var min, max, i;
+
         if (source.column != destination.column) {
             return false;
         }
 
-        var min = Math.min(source.row, destination.row);
-        var max = Math.max(source.row, destination.row);
+        min = Math.min(source.row, destination.row);
+        max = Math.max(source.row, destination.row);
 
-        for (var i = min + 1; i < max; i++) {
+        for (i = min + 1; i < max; i++) {
             if (board.getPiece(CHESS_APP.createPoint(i, source.column))) {
                 return false;
             }
@@ -58,6 +62,8 @@ CHESS_APP.createRules = function () {
     };
     
     var isDiagonalMove = function (board, source, destination) {
+        var leftmostPoint, rightmostPoint, rowStep, r;
+
         if (source.row === destination.row) {
             return false;
         }
@@ -66,11 +72,11 @@ CHESS_APP.createRules = function () {
             return false;
         }
 
-        var leftmostPoint = (source.column < destination.column) ? source : destination;
-        var rightmostPoint = (source.column > destination.column) ? source : destination;
-        var rowStep = (rightmostPoint.row > leftmostPoint.row) ? 1 : -1;
+        leftmostPoint = (source.column < destination.column) ? source : destination;
+        rightmostPoint = (source.column > destination.column) ? source : destination;
+        rowStep = (rightmostPoint.row > leftmostPoint.row) ? 1 : -1;
 
-        for (var r = leftmostPoint.row + rowStep, c = leftmostPoint.column + 1;
+        for (r = leftmostPoint.row + rowStep, c = leftmostPoint.column + 1;
              c < rightmostPoint.column;
              r += rowStep, c++)
         {
@@ -98,22 +104,25 @@ CHESS_APP.createRules = function () {
         },
 
         isLegalMove: function (board, piece, source, destination) {
+            var pieceAtDestination, horizontal, vertical,
+                isFirstMove, isCorrectLengthForwardMove;
+
             if (! board.isInside(destination)) {
                 return false;
             }
 
-            var pieceAtDestination = board.getPiece(destination);
+            pieceAtDestination = board.getPiece(destination);
             if (pieceAtDestination && pieceAtDestination.player === piece.player) {
                 return false;
             }
             
-            var horizontal = getHorizontalMovement(source, destination);
-            var vertical = getVerticalMovement(source, destination, piece.player);
+            horizontal = getHorizontalMovement(source, destination);
+            vertical = getVerticalMovement(source, destination, piece.player);
 
             switch (piece.type) {
             case "pawn":
-                var isFirstMove = getVerticalPosition(piece.player, source) === 1;
-                var isCorrectLengthForwardMove = (vertical === 1) || (isFirstMove && vertical === 2);
+                isFirstMove = getVerticalPosition(piece.player, source) === 1;
+                isCorrectLengthForwardMove = (vertical === 1) || (isFirstMove && vertical === 2);
                 
                 if (isCorrectLengthForwardMove && isVerticalMove(board, source, destination) && !pieceAtDestination) {
                     return true;
