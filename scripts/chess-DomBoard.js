@@ -120,23 +120,31 @@ var createDomBoard = function (onSquareClicked) {
 
     that.selectSquare = function (position) {
         var square = getSquare(position);
-        square.addClass("var");
+        square.addClass("selected");
     };
 
     that.removeSelection = function () {
-        // TODO find square with selection (or remove class from all)
-        var square = getSquare(position);
-        square.removeClass("selected");
+        var row, column, position, piece, square;
+
+        for (row = 0; row < this.getRowCount(); row++) {
+            for (column = 0; column < this.getColumnCount(); column++) {
+                position = createPoint(row, column);
+                square = getSquare(position);
+                square.removeClass("selected");
+            }
+        }
     };
 
     that.removeFromBoard = function (position) {
+        var square = getSquare(position);
         var piece = this.getPiece(position);
+        var pieceImage = getPieceImage(square);
         var freeSquare = getSideSquares(piece.player)
             .filter(function (index, element) {
                 return $(element).children().length === 0;
             }).first();
         
-        freeSquare.append(piece);
+        freeSquare.append(pieceImage);
     };
 
     that.move = function (source, destination) {

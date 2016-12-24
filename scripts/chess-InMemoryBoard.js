@@ -19,10 +19,12 @@ var createInMemoryBoard = function () {
     };
 
     that.findPiece = function (predicate) {
-        for (var row = 0; row < this.getRowCount(); row++) {
-            for (var column = 0; column < this.getColumnCount(); column++) {
-                var position = createPoint(row, column);
-                var piece = this.getPiece(position);
+        var row, column, position, piece;
+
+        for (row = 0; row < this.getRowCount(); row++) {
+            for (column = 0; column < this.getColumnCount(); column++) {
+                position = createPoint(row, column);
+                piece = this.getPiece(position);
                 if (piece && predicate(piece, position)) {
                     return {
                         piece: piece,

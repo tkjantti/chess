@@ -40,7 +40,7 @@ chessGame = function () {
 
         if (piece && (piece.player === selectedPiece.player)) {
             removeSelection();
-            selectSquare(square);
+            selectSquare(position);
         }
 
         if (! rules.isLegalMove(board, selectedPiece, selectedPosition, position)) {
