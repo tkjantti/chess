@@ -1,5 +1,7 @@
 
-var createRules = function () {
+var CHESS_APP = CHESS_APP || {};
+
+CHESS_APP.createRules = function () {
 
     var getVerticalPosition = function (player, position) {
         if (player === "white") {
@@ -30,7 +32,7 @@ var createRules = function () {
         var max = Math.max(source.column, destination.column);
 
         for (var i = min + 1; i < max; i++) {
-            if (board.getPiece(createPoint(source.row, i))) {
+            if (board.getPiece(CHESS_APP.createPoint(source.row, i))) {
                 return false;
             }
         }
@@ -47,7 +49,7 @@ var createRules = function () {
         var max = Math.max(source.row, destination.row);
 
         for (var i = min + 1; i < max; i++) {
-            if (board.getPiece(createPoint(i, source.column))) {
+            if (board.getPiece(CHESS_APP.createPoint(i, source.column))) {
                 return false;
             }
         }
@@ -72,7 +74,7 @@ var createRules = function () {
              c < rightmostPoint.column;
              r += rowStep, c++)
         {
-            if (board.getPiece(createPoint(r, c))) {
+            if (board.getPiece(CHESS_APP.createPoint(r, c))) {
                 return false;
             }
         }
@@ -87,7 +89,7 @@ var createRules = function () {
 
         isInCheck: function (board, currentPlayer) {
             var opponent = this.opponentPlayer(currentPlayer);
-            var positionOfKing = board.getPositionOf(createPiece(currentPlayer, "king"));
+            var positionOfKing = board.getPositionOf(CHESS_APP.createPiece(currentPlayer, "king"));
             var that = this;
             var attackingPiece = board.findPiece(function (piece, position) {
                 return (piece.player === opponent) && that.isLegalMove(board, piece, position, positionOfKing);

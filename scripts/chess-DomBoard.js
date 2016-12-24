@@ -1,5 +1,7 @@
 
-var createDomBoard = function (onSquareClicked) {
+var CHESS_APP = CHESS_APP || {};
+
+CHESS_APP.createDomBoard = function (onSquareClicked) {
     var onSquareClickedHandler = onSquareClicked;
     
     var getSquare = function (position) {
@@ -8,7 +10,7 @@ var createDomBoard = function (onSquareClicked) {
 
     var getSquarePosition = function (square) {
         var stringCoordinates = square.attr("id").split("_");
-        return createPoint(parseInt(stringCoordinates[1], 10), parseInt(stringCoordinates[2], 10));
+        return CHESS_APP.createPoint(parseInt(stringCoordinates[1], 10), parseInt(stringCoordinates[2], 10));
     };
 
     var getPieceImage = function (square) {
@@ -91,7 +93,7 @@ var createDomBoard = function (onSquareClicked) {
         $("#square_7_7").append($("#white_rook_2"));
     };
 
-    var that = createBoard();
+    var that = CHESS_APP.createBoard();
 
     that.highlightPieceUnderThreat = function (position) {
         var square = getSquare(position);
@@ -115,7 +117,7 @@ var createDomBoard = function (onSquareClicked) {
             return null;
         }
 
-        return createPiece(getPlayerOf(pieceImage), getTypeOf(pieceImage));
+        return CHESS_APP.createPiece(getPlayerOf(pieceImage), getTypeOf(pieceImage));
     };
 
     that.selectSquare = function (position) {
@@ -128,7 +130,7 @@ var createDomBoard = function (onSquareClicked) {
 
         for (row = 0; row < this.getRowCount(); row++) {
             for (column = 0; column < this.getColumnCount(); column++) {
-                position = createPoint(row, column);
+                position = CHESS_APP.createPoint(row, column);
                 square = getSquare(position);
                 square.removeClass("selected");
             }

@@ -1,7 +1,9 @@
 
-var createInMemoryBoard = function () {
+var CHESS_APP = CHESS_APP || {};
+
+CHESS_APP.createInMemoryBoard = function () {
     var rows = [[], [], [], [], [], [], [], []];
-    var that = createBoard();
+    var that = CHESS_APP.createBoard();
 
     that.getPiece = function (position) {
         return rows[position.row][position.column];
@@ -23,7 +25,7 @@ var createInMemoryBoard = function () {
 
         for (row = 0; row < this.getRowCount(); row++) {
             for (column = 0; column < this.getColumnCount(); column++) {
-                position = createPoint(row, column);
+                position = CHESS_APP.createPoint(row, column);
                 piece = this.getPiece(position);
                 if (piece && predicate(piece, position)) {
                     return {
@@ -48,13 +50,13 @@ var createInMemoryBoard = function () {
     return that;
 };
 
-var cloneInMemoryBoard = function (another) {
-    var board = createInMemoryBoard();
+CHESS_APP.cloneInMemoryBoard = function (another) {
+    var board = CHESS_APP.createInMemoryBoard();
     var row, column, position, piece;
 
     for (row = 0; row < board.getRowCount(); row++) {
         for (column = 0; column < board.getColumnCount(); column++) {
-            position = createPoint(row, column);
+            position = CHESS_APP.createPoint(row, column);
             piece = another.getPiece(position);
             if (piece) {
                 board.setPiece(position, piece);

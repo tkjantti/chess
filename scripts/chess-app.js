@@ -1,5 +1,7 @@
 
-function createPoint(row, column) {
+var CHESS_APP = CHESS_APP || {};
+
+CHESS_APP.createPoint = function (row, column) {
     return {
         row: row,
         column: column,
@@ -8,9 +10,9 @@ function createPoint(row, column) {
             return this.row === other.row && this.column === other.column;
         }
     };
-}
+};
 
-function createPiece(player, type) {
+CHESS_APP.createPiece = function (player, type) {
     return {
         player: player,
         type: type,
@@ -19,9 +21,9 @@ function createPiece(player, type) {
             return another.player === this.player && another.type === this.type; 
         }
     };
-}
+};
 
-var createBoard = function () {
+CHESS_APP.createBoard = function () {
     return {
         getRowCount: function () { return 8; },
         getColumnCount: function () { return 8; },

@@ -1,9 +1,11 @@
 
-chessGame = function () {
+var CHESS_APP = CHESS_APP || {};
+
+CHESS_APP.game = function () {
     var initialized = false;
     var currentPlayer = "white";
     var selectedPosition = null;
-    var rules = createRules();
+    var rules = CHESS_APP.createRules();
     var domBoard = null;
 
     function setCurrentPlayer(player) {
@@ -22,7 +24,7 @@ chessGame = function () {
     };
 
     function onSquareClicked(position, piece) {
-        var board = cloneInMemoryBoard(domBoard);
+        var board = CHESS_APP.cloneInMemoryBoard(domBoard);
 
         if (! selectedPosition) {
             if (piece && (piece.player === currentPlayer)) {
@@ -50,7 +52,7 @@ chessGame = function () {
         board.move(selectedPosition, position);
         
         if (rules.isInCheck(board, currentPlayer)) {
-            var positionOfKing = board.getPositionOf(createPiece(currentPlayer, "king"));
+            var positionOfKing = board.getPositionOf(CHESS_APP.createPiece(currentPlayer, "king"));
             domBoard.highlightPieceUnderThreat(positionOfKing);
             return;
         }
@@ -74,7 +76,7 @@ chessGame = function () {
                 return;
             }
 
-            domBoard = createDomBoard(onSquareClicked);
+            domBoard = CHESS_APP.createDomBoard(onSquareClicked);
             setCurrentPlayer("white");
             initialized = true;
         }
