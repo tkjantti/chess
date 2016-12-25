@@ -1,7 +1,8 @@
+/*jslint browser:true, fudge:true, this:true, for:true */
+/*global window, $, CHESS_APP */
 
-var CHESS_APP = CHESS_APP || {};
-
-CHESS_APP.game = function () {
+CHESS_APP.game = (function () {
+    "use strict";
     var initialized = false;
     var currentPlayer = "white";
     var selectedPosition = null;
@@ -18,9 +19,13 @@ CHESS_APP.game = function () {
         selectedPosition = position;
     };
 
-    var removeSelection = function (position) {
+    var removeSelection = function () {
         domBoard.removeSelection();
         selectedPosition = null;
+    };
+
+    var changePlayer = function () {
+        setCurrentPlayer(rules.opponentPlayer(currentPlayer));
     };
 
     function onSquareClicked(position, piece) {
@@ -28,7 +33,7 @@ CHESS_APP.game = function () {
 
         board = CHESS_APP.cloneInMemoryBoard(domBoard);
 
-        if (! selectedPosition) {
+        if (!selectedPosition) {
             if (piece && (piece.player === currentPlayer)) {
                 selectSquare(position);
             }
@@ -47,12 +52,12 @@ CHESS_APP.game = function () {
             selectSquare(position);
         }
 
-        if (! rules.isLegalMove(board, selectedPiece, selectedPosition, position)) {
+        if (!rules.isLegalMove(board, selectedPiece, selectedPosition, position)) {
             return;
         }
-        
+
         board.move(selectedPosition, position);
-        
+
         if (rules.isInCheck(board, currentPlayer)) {
             positionOfKing = board.getPositionOf(CHESS_APP.createPiece(currentPlayer, "king"));
             domBoard.highlightPieceUnderThreat(positionOfKing);
@@ -68,10 +73,6 @@ CHESS_APP.game = function () {
         changePlayer();
     }
 
-    function changePlayer() {
-        setCurrentPlayer(rules.opponentPlayer(currentPlayer));
-    }
-
     return {
         initialize: function initialize() {
             if (initialized) {
@@ -83,4 +84,4 @@ CHESS_APP.game = function () {
             initialized = true;
         }
     };
-}();
+}());

@@ -1,7 +1,8 @@
-
-var CHESS_APP = CHESS_APP || {};
+/*jslint browser:true, fudge:true, this:true, for:true */
+/*global window, $, CHESS_APP */
 
 CHESS_APP.createInMemoryBoard = function () {
+    "use strict";
     var rows = [[], [], [], [], [], [], [], []];
     var that = CHESS_APP.createBoard();
 
@@ -14,17 +15,19 @@ CHESS_APP.createInMemoryBoard = function () {
     };
 
     that.getPositionOf = function (piece) {
-        var found = this.findPiece(function (currentPiece, position) {
+        var found = this.findPiece(function (currentPiece) {
             return currentPiece.equals(piece);
         });
-        return (found ? found.position : null);
+        return found
+            ? found.position
+            : null;
     };
 
     that.findPiece = function (predicate) {
         var row, column, position, piece;
 
-        for (row = 0; row < this.getRowCount(); row++) {
-            for (column = 0; column < this.getColumnCount(); column++) {
+        for (row = 0; row < this.getRowCount(); row += 1) {
+            for (column = 0; column < this.getColumnCount(); column += 1) {
                 position = CHESS_APP.createPoint(row, column);
                 piece = this.getPiece(position);
                 if (piece && predicate(piece, position)) {
@@ -51,11 +54,12 @@ CHESS_APP.createInMemoryBoard = function () {
 };
 
 CHESS_APP.cloneInMemoryBoard = function (another) {
+    "use strict";
     var board = CHESS_APP.createInMemoryBoard();
     var row, column, position, piece;
 
-    for (row = 0; row < board.getRowCount(); row++) {
-        for (column = 0; column < board.getColumnCount(); column++) {
+    for (row = 0; row < board.getRowCount(); row += 1) {
+        for (column = 0; column < board.getColumnCount(); column += 1) {
             position = CHESS_APP.createPoint(row, column);
             piece = another.getPiece(position);
             if (piece) {

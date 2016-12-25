@@ -1,9 +1,10 @@
-
-var CHESS_APP = CHESS_APP || {};
+/*jslint browser:true, fudge:true, this:true, for:true */
+/*global window, $, CHESS_APP */
 
 CHESS_APP.createDomBoard = function (onSquareClicked) {
+    "use strict";
     var onSquareClickedHandler = onSquareClicked;
-    
+
     var getSquare = function (position) {
         return $("#square_" + position.row + "_" + position.column);
     };
@@ -49,10 +50,10 @@ CHESS_APP.createDomBoard = function (onSquareClicked) {
         });
         $("#black_pieces td").click(function () {
             onSquareClicked($(this));
-        })
+        });
         $("#white_pieces td").click(function () {
             onSquareClicked($(this));
-        })
+        });
     };
 
     var setStartingPositions = function () {
@@ -106,7 +107,7 @@ CHESS_APP.createDomBoard = function (onSquareClicked) {
     that.getPiece = function (position) {
         var square, pieceImage;
 
-        if (! this.isInside(position)) {
+        if (!this.isInside(position)) {
             return null;
         }
 
@@ -126,10 +127,10 @@ CHESS_APP.createDomBoard = function (onSquareClicked) {
     };
 
     that.removeSelection = function () {
-        var row, column, position, piece, square;
+        var row, column, position, square;
 
-        for (row = 0; row < this.getRowCount(); row++) {
-            for (column = 0; column < this.getColumnCount(); column++) {
+        for (row = 0; row < this.getRowCount(); row += 1) {
+            for (column = 0; column < this.getColumnCount(); column += 1) {
                 position = CHESS_APP.createPoint(row, column);
                 square = getSquare(position);
                 square.removeClass("selected");
@@ -142,10 +143,10 @@ CHESS_APP.createDomBoard = function (onSquareClicked) {
         var piece = this.getPiece(position);
         var pieceImage = getPieceImage(square);
         var freeSquare = getSideSquares(piece.player)
-            .filter(function (index, element) {
+            .filter(function (ignore, element) {
                 return $(element).children().length === 0;
             }).first();
-        
+
         freeSquare.append(pieceImage);
     };
 
@@ -158,6 +159,6 @@ CHESS_APP.createDomBoard = function (onSquareClicked) {
 
     setStartingPositions();
     addBoardClickHandlers(that);
-    
+
     return that;
 };
