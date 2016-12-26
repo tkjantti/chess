@@ -27,15 +27,26 @@ CHESS_APP.createPiece = function (player, type) {
     };
 };
 
-CHESS_APP.createBoard = function () {
+CHESS_APP.createBoard = function (rows, columns) {
     "use strict";
+
+    var rowCount = 8;
+    var columnCount = 8;
+
+    if (rows !== undefined) {
+        rowCount = rows;
+    }
+    if (columns !== undefined) {
+        columnCount = columns;
+    }
+
     return {
         getRowCount: function () {
-            return 8;
+            return rowCount;
         },
 
         getColumnCount: function () {
-            return 8;
+            return columnCount;
         },
 
         isInside: function (position) {
