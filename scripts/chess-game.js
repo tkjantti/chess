@@ -52,7 +52,7 @@ CHESS_APP.game = (function () {
             selectSquare(position);
         }
 
-        if (!rules.isLegalMove(board, selectedPiece, selectedPosition, position)) {
+        if (!rules.isLegalMove(board, selectedPosition, position)) {
             return;
         }
 

@@ -109,18 +109,20 @@ CHESS_APP.createRules = function () {
             var positionOfKing = board.getPositionOf(CHESS_APP.createPiece(currentPlayer, "king"));
             var that = this;
             var attackingPiece = board.findPiece(function (piece, position) {
-                return (piece.player === opponent) && that.isLegalMove(board, piece, position, positionOfKing);
+                return (piece.player === opponent) && that.isLegalMove(board, position, positionOfKing);
             });
             return attackingPiece;
         },
 
-        isLegalMove: function (board, piece, source, destination) {
-            var pieceAtDestination, horizontal, vertical, isFirstMove, isCorrectLengthForwardMove;
+        isLegalMove: function (board, source, destination) {
+            var piece, pieceAtDestination;
+            var horizontal, vertical, isFirstMove, isCorrectLengthForwardMove;
 
             if (!board.isInside(destination)) {
                 return false;
             }
 
+            piece = board.getPiece(source);
             pieceAtDestination = board.getPiece(destination);
             if (pieceAtDestination && pieceAtDestination.player === piece.player) {
                 return false;
