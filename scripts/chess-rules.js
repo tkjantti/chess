@@ -4,9 +4,9 @@
 CHESS_APP.createRules = function () {
     "use strict";
 
-    var getVerticalPosition = function (player, position) {
+    var getVerticalPosition = function (board, player, position) {
         if (player === "white") {
-            return 7 - position.row;
+            return board.getRowCount() - 1 - position.row;
         } else {
             return position.row;
         }
@@ -123,6 +123,11 @@ CHESS_APP.createRules = function () {
             }
 
             piece = board.getPiece(source);
+
+            if (!piece) {
+                return false;
+            }
+
             pieceAtDestination = board.getPiece(destination);
             if (pieceAtDestination && pieceAtDestination.player === piece.player) {
                 return false;
@@ -133,7 +138,7 @@ CHESS_APP.createRules = function () {
 
             switch (piece.type) {
             case "pawn":
-                isFirstMove = getVerticalPosition(piece.player, source) === 1;
+                isFirstMove = getVerticalPosition(board, piece.player, source) === 1;
                 isCorrectLengthForwardMove = (vertical === 1) || (isFirstMove && vertical === 2);
 
                 if (isCorrectLengthForwardMove && isVerticalMove(board, source, destination) && !pieceAtDestination) {

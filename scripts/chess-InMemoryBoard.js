@@ -1,10 +1,15 @@
 /*jslint browser:true, fudge:true, this:true, for:true */
 /*global window, $, CHESS_APP */
 
-CHESS_APP.createInMemoryBoard = function () {
+CHESS_APP.createInMemoryBoard = function (rowCount, columnCount) {
     "use strict";
-    var rows = [[], [], [], [], [], [], [], []];
-    var that = CHESS_APP.createBoard();
+    var rows = [];
+    var i;
+    for (i = 0; i < rowCount; i += 1) {
+        rows.push([]);
+    }
+
+    var that = CHESS_APP.createBoard(rowCount, columnCount);
 
     that.getPiece = function (position) {
         return rows[position.row][position.column];
