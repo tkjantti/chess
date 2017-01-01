@@ -6,7 +6,7 @@ CHESS_APP.createInMemoryBoard = function (rowCount, columnCount) {
     var rows = [];
     var i;
     for (i = 0; i < rowCount; i += 1) {
-        rows.push([]);
+        rows[i] = [];
     }
 
     var that = CHESS_APP.createBoard(rowCount, columnCount);
@@ -60,7 +60,7 @@ CHESS_APP.createInMemoryBoard = function (rowCount, columnCount) {
 
 CHESS_APP.cloneInMemoryBoard = function (another) {
     "use strict";
-    var board = CHESS_APP.createInMemoryBoard();
+    var board = CHESS_APP.createInMemoryBoard(another.getRowCount(), another.getColumnCount());
     var row, column, position, piece;
 
     for (row = 0; row < board.getRowCount(); row += 1) {

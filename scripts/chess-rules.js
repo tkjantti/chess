@@ -4,14 +4,6 @@
 CHESS_APP.createRules = function () {
     "use strict";
 
-    var getVerticalPosition = function (board, player, position) {
-        if (player === "white") {
-            return board.getRowCount() - 1 - position.row;
-        } else {
-            return position.row;
-        }
-    };
-
     var getVerticalMovement = function (source, destination, player) {
         if (player === "white") {
             return source.row - destination.row;
@@ -138,7 +130,7 @@ CHESS_APP.createRules = function () {
 
             switch (piece.type) {
             case "pawn":
-                isFirstMove = getVerticalPosition(board, piece.player, source) === 1;
+                isFirstMove = board.getRelativePosition(piece.player, source).row === 1;
                 isCorrectLengthForwardMove = (vertical === 1) || (isFirstMove && vertical === 2);
 
                 if (isCorrectLengthForwardMove && isVerticalMove(board, source, destination) && !pieceAtDestination) {
