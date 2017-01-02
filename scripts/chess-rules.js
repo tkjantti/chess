@@ -96,14 +96,20 @@ CHESS_APP.createRules = function () {
                 : "white";
         },
 
-        isInCheck: function (board, currentPlayer) {
-            var opponent = this.opponentPlayer(currentPlayer);
-            var positionOfKing = board.getPositionOf(CHESS_APP.createPiece(currentPlayer, "king"));
+        /*
+         * If the given player is in check, returns the position of
+         * the piece under threat. Otherwise returns null.
+         */
+        isInCheck: function (board, player) {
+            var opponent = this.opponentPlayer(player);
+            var positionOfKing = board.getPositionOf(CHESS_APP.createPiece(player, "king"));
             var that = this;
             var attackingPiece = board.findPiece(function (piece, position) {
                 return (piece.player === opponent) && that.isLegalMove(board, position, positionOfKing);
             });
-            return attackingPiece;
+            return attackingPiece
+                ? positionOfKing
+                : null;
         },
 
         isLegalMove: function (board, source, destination) {

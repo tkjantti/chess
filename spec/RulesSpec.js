@@ -3,13 +3,13 @@
 
 describe("Rules", function () {
     "use strict";
+    var rules;
+
+    beforeEach(function () {
+        rules = CHESS_APP.createRules();
+    });
+
     describe("opponentPlayer", function () {
-        var rules;
-
-        beforeEach(function () {
-            rules = CHESS_APP.createRules();
-        });
-
         it("should return black when given white", function () {
             var opponent = rules.opponentPlayer("white");
             expect(opponent).toBe("black");
@@ -21,8 +21,60 @@ describe("Rules", function () {
         });
     });
 
+    describe('isInCheck', function() {
+        it('is when the king is under threat', function() {
+            var board = CHESS_TEST.boardState([
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "   p    ",
+                "  K     ",
+                "        ",
+                "        "
+            ]);
+
+            var result = rules.isInCheck(board, "white");
+
+            expect(result).toBeTruthy();
+        });
+
+        it('is when the king is under threat by several pieces', function() {
+            var board = CHESS_TEST.boardState([
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                " q p    ",
+                "  K    r",
+                "    n   ",
+                "        "
+            ]);
+
+            var result = rules.isInCheck(board, "white");
+
+            expect(result).toBeTruthy();
+        });
+
+        it('is not when the king is not under threat', function() {
+            var board = CHESS_TEST.boardState([
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "   r    ",
+                "  K     ",
+                "        ",
+                "        "
+            ]);
+
+            var result = rules.isInCheck(board, "white");
+
+            expect(result).toBeFalsy();
+        });
+    });
+
     describe("isLegalMove", function () {
-        var rules;
         var abs = function (board, point) {
             return board.getAbsolutePosition("white", point);
         };

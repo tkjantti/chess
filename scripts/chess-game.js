@@ -29,7 +29,7 @@ CHESS_APP.game = (function () {
     };
 
     function onSquareClicked(position, piece) {
-        var board, selectedPiece, positionOfKing;
+        var board, selectedPiece, pieceUnderThreat;
 
         board = CHESS_APP.cloneInMemoryBoard(domBoard);
 
@@ -58,9 +58,10 @@ CHESS_APP.game = (function () {
 
         board.move(selectedPosition, position);
 
-        if (rules.isInCheck(board, currentPlayer)) {
-            positionOfKing = board.getPositionOf(CHESS_APP.createPiece(currentPlayer, "king"));
-            domBoard.highlightPieceUnderThreat(positionOfKing);
+        pieceUnderThreat = rules.isInCheck(board, currentPlayer);
+
+        if (pieceUnderThreat) {
+            domBoard.highlightPieceUnderThreat(pieceUnderThreat);
             return;
         }
 
