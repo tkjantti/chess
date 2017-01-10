@@ -1,5 +1,5 @@
 /*jslint fudge:true */
-/*global window, describe, beforeEach, it, expect, CHESS_APP, CHESS_TEST */
+/*global window, $, describe, beforeEach, it, expect, CHESS_APP, CHESS_TEST */
 
 describe("Rules", function () {
     "use strict";
@@ -21,8 +21,8 @@ describe("Rules", function () {
         });
     });
 
-    describe('isInCheck', function() {
-        it('is when the king is under threat', function() {
+    describe('isInCheck', function () {
+        it('is when the king is under threat', function () {
             var board = CHESS_TEST.boardState([
                 "        ",
                 "        ",
@@ -39,7 +39,7 @@ describe("Rules", function () {
             expect(result).toBeTruthy();
         });
 
-        it('is when the king is under threat by several pieces', function() {
+        it('is when the king is under threat by several pieces', function () {
             var board = CHESS_TEST.boardState([
                 "        ",
                 "        ",
@@ -56,7 +56,7 @@ describe("Rules", function () {
             expect(result).toBeTruthy();
         });
 
-        it('is not when the king is not under threat', function() {
+        it('is not when the king is not under threat', function () {
             var board = CHESS_TEST.boardState([
                 "        ",
                 "        ",
@@ -256,11 +256,12 @@ describe("Rules", function () {
                 var resultRight = rules.isLegalMove(board, abs(board, p1), abs(board, p2));
 
                 expect(resultLeft).toBe(true);
+                expect(resultRight).toBe(true);
             });
         });
 
-        describe('Rook', function() {
-            it('can move horizontally', function() {
+        describe('Rook', function () {
+            it('can move horizontally', function () {
                 var board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
@@ -283,12 +284,12 @@ describe("Rules", function () {
                     rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 7)))
                 ];
 
-                $.each(results, function (i, result) {
+                $.each(results, function (ignore, result) {
                     expect(result).toBe(true);
                 });
             });
 
-            it('can move vertically', function() {
+            it('can move vertically', function () {
                 var board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
@@ -308,15 +309,15 @@ describe("Rules", function () {
                     rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(4, 3))),
                     rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(5, 3))),
                     rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(6, 3))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(7, 3))) 
+                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(7, 3)))
                 ];
 
-                $.each(results, function (i, result) {
+                $.each(results, function (ignore, result) {
                     expect(result).toBe(true);
                 });
             });
 
-            it('can not move diagonally', function() {
+            it('can not move diagonally', function () {
                 var board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
@@ -343,14 +344,14 @@ describe("Rules", function () {
                     rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(-2, 2)))
                 ];
 
-                $.each(results, function (i, result) {
+                $.each(results, function (ignore, result) {
                     expect(result).toBe(false);
                 });
             });
         });
 
-        describe('Bishop', function() {
-            it('can move diagonally', function() {
+        describe('Bishop', function () {
+            it('can move diagonally', function () {
                 var board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
@@ -377,12 +378,12 @@ describe("Rules", function () {
                     rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(-2, 2)))
                 ];
 
-                $.each(results, function (i, result) {
+                $.each(results, function (ignore, result) {
                     expect(result).toBe(true);
                 });
             });
 
-            it('can not move horizontally', function() {
+            it('can not move horizontally', function () {
                 var board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
@@ -405,12 +406,12 @@ describe("Rules", function () {
                     rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 7)))
                 ];
 
-                $.each(results, function (i, result) {
+                $.each(results, function (ignore, result) {
                     expect(result).toBe(false);
                 });
             });
 
-            it('can not move vertically', function() {
+            it('can not move vertically', function () {
                 var board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
@@ -430,17 +431,17 @@ describe("Rules", function () {
                     rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(4, 3))),
                     rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(5, 3))),
                     rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(6, 3))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(7, 3))) 
+                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(7, 3)))
                 ];
 
-                $.each(results, function (i, result) {
+                $.each(results, function (ignore, result) {
                     expect(result).toBe(false);
                 });
             });
         });
 
-        describe('Queen', function() {
-            it('can move horizontally', function() {
+        describe('Queen', function () {
+            it('can move horizontally', function () {
                 var board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
@@ -463,12 +464,12 @@ describe("Rules", function () {
                     rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 7)))
                 ];
 
-                $.each(results, function (i, result) {
+                $.each(results, function (ignore, result) {
                     expect(result).toBe(true);
                 });
             });
 
-            it('can move vertically', function() {
+            it('can move vertically', function () {
                 var board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
@@ -488,15 +489,15 @@ describe("Rules", function () {
                     rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(4, 3))),
                     rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(5, 3))),
                     rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(6, 3))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(7, 3))) 
+                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(7, 3)))
                 ];
 
-                $.each(results, function (i, result) {
+                $.each(results, function (ignore, result) {
                     expect(result).toBe(true);
                 });
             });
 
-            it('can move diagonally', function() {
+            it('can move diagonally', function () {
                 var board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
@@ -523,14 +524,14 @@ describe("Rules", function () {
                     rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(-2, 2)))
                 ];
 
-                $.each(results, function (i, result) {
+                $.each(results, function (ignore, result) {
                     expect(result).toBe(true);
                 });
             });
         });
 
-        describe('King', function() {
-            it('can move horizontally one square', function() {
+        describe('King', function () {
+            it('can move horizontally one square', function () {
                 var board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
@@ -545,15 +546,15 @@ describe("Rules", function () {
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
                     rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 2))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 4))),
+                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 4)))
                 ];
 
-                $.each(results, function (i, result) {
+                $.each(results, function (ignore, result) {
                     expect(result).toBe(true);
                 });
             });
 
-            it('can not move horizantally more than one square', function() {
+            it('can not move horizantally more than one square', function () {
                 var board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
@@ -574,12 +575,12 @@ describe("Rules", function () {
                     rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 7)))
                 ];
 
-                $.each(results, function (i, result) {
+                $.each(results, function (ignore, result) {
                     expect(result).toBe(false);
                 });
             });
 
-            it('can move vertically one square', function() {
+            it('can move vertically one square', function () {
                 var board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
@@ -594,15 +595,15 @@ describe("Rules", function () {
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
                     rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(2, 3))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(4, 3))),
+                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(4, 3)))
                 ];
 
-                $.each(results, function (i, result) {
+                $.each(results, function (ignore, result) {
                     expect(result).toBe(true);
                 });
             });
 
-            it('can not move vertically more than one square', function() {
+            it('can not move vertically more than one square', function () {
                 var board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
@@ -620,15 +621,15 @@ describe("Rules", function () {
                     rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(1, 3))),
                     rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(5, 3))),
                     rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(6, 3))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(7, 3))) 
+                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(7, 3)))
                 ];
 
-                $.each(results, function (i, result) {
+                $.each(results, function (ignore, result) {
                     expect(result).toBe(false);
                 });
             });
 
-            it('can move diagonally', function() {
+            it('can move diagonally', function () {
                 var board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
@@ -645,15 +646,15 @@ describe("Rules", function () {
                     rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(1, -1))),
                     rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(1, 1))),
                     rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(-1, -1))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(-1, 1))),
+                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(-1, 1)))
                 ];
 
-                $.each(results, function (i, result) {
+                $.each(results, function (ignore, result) {
                     expect(result).toBe(true);
                 });
             });
 
-            it('can not move diagonally more than one square', function() {
+            it('can not move diagonally more than one square', function () {
                 var board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
@@ -673,14 +674,14 @@ describe("Rules", function () {
                     rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(-2, 2)))
                 ];
 
-                $.each(results, function (i, result) {
+                $.each(results, function (ignore, result) {
                     expect(result).toBe(false);
                 });
             });
         });
 
-        describe('Knight', function() {
-            it('can move two steps forward and one to the side', function() {
+        describe('Knight', function () {
+            it('can move two steps forward and one to the side', function () {
                 var board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
@@ -707,12 +708,12 @@ describe("Rules", function () {
                     rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(1, 2)))
                 ];
 
-                $.each(results, function (i, result) {
+                $.each(results, function (ignore, result) {
                     expect(result).toBe(true);
                 });
             });
 
-            it('can not move horizontally', function() {
+            it('can not move horizontally', function () {
                 var board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
@@ -735,12 +736,12 @@ describe("Rules", function () {
                     rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 7)))
                 ];
 
-                $.each(results, function (i, result) {
+                $.each(results, function (ignore, result) {
                     expect(result).toBe(false);
                 });
             });
 
-            it('can not move vertically', function() {
+            it('can not move vertically', function () {
                 var board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
@@ -760,15 +761,15 @@ describe("Rules", function () {
                     rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(4, 3))),
                     rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(5, 3))),
                     rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(6, 3))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(7, 3))) 
+                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(7, 3)))
                 ];
 
-                $.each(results, function (i, result) {
+                $.each(results, function (ignore, result) {
                     expect(result).toBe(false);
                 });
             });
 
-            it('can not move diagonally', function() {
+            it('can not move diagonally', function () {
                 var board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
@@ -795,12 +796,12 @@ describe("Rules", function () {
                     rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(-2, 2)))
                 ];
 
-                $.each(results, function (i, result) {
+                $.each(results, function (ignore, result) {
                     expect(result).toBe(false);
                 });
             });
 
-            it('can move even when there are other pieces around', function() {
+            it('can move even when there are other pieces around', function () {
                 var board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
@@ -827,7 +828,7 @@ describe("Rules", function () {
                     rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(1, 2)))
                 ];
 
-                $.each(results, function (i, result) {
+                $.each(results, function (ignore, result) {
                     expect(result).toBe(true);
                 });
             });

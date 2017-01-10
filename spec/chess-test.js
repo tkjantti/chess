@@ -45,4 +45,4 @@ CHESS_TEST.boardState = function (rows) {
     }
 
     return board;
-}
+};
