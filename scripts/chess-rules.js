@@ -105,14 +105,14 @@ CHESS_APP.createRules = function () {
             var positionOfKing = board.getPositionOf(CHESS_APP.createPiece(player, "king"));
             var that = this;
             var attackingPiece = board.findPiece(function (piece, position) {
-                return (piece.player === opponent) && that.isLegalMove(board, position, positionOfKing);
+                return (piece.player === opponent) && that.isLegalMove(board, position, positionOfKing, true);
             });
             return attackingPiece
                 ? positionOfKing
                 : null;
         },
 
-        isLegalMove: function (board, source, destination) {
+        isLegalMove: function (board, source, destination, okToCaptureKing) {
             var piece, pieceAtDestination;
             var horizontal, vertical, isFirstMove, isCorrectLengthForwardMove;
 
@@ -127,8 +127,15 @@ CHESS_APP.createRules = function () {
             }
 
             pieceAtDestination = board.getPiece(destination);
-            if (pieceAtDestination && pieceAtDestination.player === piece.player) {
-                return false;
+            if (pieceAtDestination) {
+
+                if (pieceAtDestination.player === piece.player) {
+                    return false;
+                }
+
+                if ((pieceAtDestination.type === "king") && !okToCaptureKing) {
+                    return false;
+                }
             }
 
             horizontal = getHorizontalMovement(source, destination);

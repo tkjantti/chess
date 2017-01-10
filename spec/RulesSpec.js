@@ -83,6 +83,44 @@ describe("Rules", function () {
             rules = CHESS_APP.createRules();
         });
 
+        it('is not legal to capture the king', function () {
+            var board = CHESS_TEST.boardState([
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "  k     ",
+                " P      ",
+                "        ",
+                "        "
+            ]);
+
+            var p1 = CHESS_APP.createPoint(2, 1);
+            var p2 = p1.add(1, 1);
+            var result = rules.isLegalMove(board, abs(board, p1), abs(board, p2));
+
+            expect(result).toBe(false);
+        });
+
+        it('is ok to capture the king when given extra parameter', function () {
+            var board = CHESS_TEST.boardState([
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "  k     ",
+                " P      ",
+                "        ",
+                "        "
+            ]);
+
+            var p1 = CHESS_APP.createPoint(2, 1);
+            var p2 = p1.add(1, 1);
+            var result = rules.isLegalMove(board, abs(board, p1), abs(board, p2), true);
+
+            expect(result).toBe(true);
+        });
+
         describe("Pawn", function () {
             it("can move forward one step", function () {
                 var board = CHESS_TEST.boardState([
