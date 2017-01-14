@@ -84,6 +84,35 @@ CHESS_APP.createBoard = function (rows, columns) {
                 ? this.getRowCount() - 1 - relativePosition.row
                 : relativePosition.row;
             return CHESS_APP.createPoint(row, relativePosition.column);
+        },
+
+        /*
+         * Returns positions that match the given predicate.
+         */
+        getPositions: function (predicate) {
+            var positions = [];
+
+            this.forEachPosition(function (p) {
+                if (predicate(p)) {
+                    positions.push(p);
+                }
+            });
+
+            return positions;
+        },
+
+        /*
+         * Applies function f for each position.
+         */
+        forEachPosition: function (f) {
+            var row, column, p;
+
+            for (row = 0; row < this.getRowCount(); row += 1) {
+                for (column = 0; column < this.getColumnCount(); column += 1) {
+                    p = CHESS_APP.createPoint(row, column);
+                    f(p);
+                }
+            }
         }
     };
 };

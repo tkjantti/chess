@@ -1,4 +1,4 @@
-/*jslint browser:true, fudge:true, this:true, for:true */
+/*jslint browser:true, fudge:true, this:true */
 /*global window, $, CHESS_APP */
 
 CHESS_APP.game = (function () {

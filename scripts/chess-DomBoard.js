@@ -1,4 +1,4 @@
-/*jslint browser:true, fudge:true, this:true, for:true */
+/*jslint browser:true, fudge:true, this:true */
 /*global window, $, CHESS_APP */
 
 CHESS_APP.createDomBoard = function (onSquareClicked) {
@@ -127,15 +127,10 @@ CHESS_APP.createDomBoard = function (onSquareClicked) {
     };
 
     that.removeSelection = function () {
-        var row, column, position, square;
-
-        for (row = 0; row < this.getRowCount(); row += 1) {
-            for (column = 0; column < this.getColumnCount(); column += 1) {
-                position = CHESS_APP.createPoint(row, column);
-                square = getSquare(position);
-                square.removeClass("selected");
-            }
-        }
+        this.forEachPosition(function (p) {
+            var square = getSquare(p);
+            square.removeClass("selected");
+        });
     };
 
     that.removeFromBoard = function (position) {

@@ -4,19 +4,13 @@
 CHESS_APP.createRules = function () {
     "use strict";
 
+    /*
+     * Returns all legal moves from the given position.
+     */
     var getLegalMoves = function (rules, board, position) {
-        var row, column, destination, moves = [];
-
-        for (row = 0; row < board.getRowCount(); row += 1) {
-            for (column = 0; column < board.getColumnCount(); column += 1) {
-                destination = CHESS_APP.createPoint(row, column);
-                if (rules.isLegalMove(board, position, destination)) {
-                    moves.push(destination);
-                }
-            }
-        }
-
-        return moves;
+        return board.getPositions(function (destination) {
+            return rules.isLegalMove(board, position, destination);
+        });
     };
 
     var getVerticalMovement = function (source, destination, player) {
@@ -128,7 +122,7 @@ CHESS_APP.createRules = function () {
         },
 
         isInCheckMate: function (board, player) {
-            var i, j, position, legalMoves, b2;
+            var that = this;
 
             if (!this.isInCheck(board, player)) {
                 return false;
@@ -138,20 +132,17 @@ CHESS_APP.createRules = function () {
                 return piece.player === player;
             });
 
-            for (i = 0; i < ownPieces.length; i += 1) {
-                position = ownPieces[i].position;
-                legalMoves = getLegalMoves(this, board, position);
+            var canPreventChess = function (piece) {
+                var legalMoves = getLegalMoves(that, board, piece.position);
 
-                for (j = 0; j < legalMoves.length; j += 1) {
-                    b2 = CHESS_APP.cloneInMemoryBoard(board);
-                    b2.move(position, legalMoves[j]);
-                    if (!this.isInCheck(b2, player)) {
-                        return false;
-                    }
-                }
-            }
+                return legalMoves.some(function (destination) {
+                    var b2 = CHESS_APP.cloneInMemoryBoard(board);
+                    b2.move(piece.position, destination);
+                    return !that.isInCheck(b2, player);
+                });
+            };
 
-            return true;
+            return !ownPieces.some(canPreventChess);
         },
 
         isLegalMove: function (board, source, destination, okToCaptureKing) {
