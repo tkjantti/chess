@@ -74,6 +74,110 @@ describe("Rules", function () {
         });
     });
 
+    describe('isInCheckMate', function () {
+        it('not when the king is not under check', function () {
+            var board = CHESS_TEST.boardState([
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "n       ",
+                "      r ",
+                "K       "
+            ]);
+
+            var result = rules.isInCheckMate(board, "white");
+
+            expect(result).toBe(false);
+        });
+
+        it('is when the king is in check and can not escape', function () {
+            var board = CHESS_TEST.boardState([
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "  p     ",
+                " q      ",
+                "K       "
+            ]);
+
+            var result = rules.isInCheckMate(board, "white");
+
+            expect(result).toBe(true);
+        });
+
+        it('not when the king can move away from attack', function () {
+            var board = CHESS_TEST.boardState([
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "q       ",
+                "        ",
+                "K       "
+            ]);
+
+            var result = rules.isInCheckMate(board, "white");
+
+            expect(result).toBe(false);
+        });
+
+        it('not when the king can capture attacking piece', function () {
+            var board = CHESS_TEST.boardState([
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                " q      ",
+                "K       "
+            ]);
+
+            var result = rules.isInCheckMate(board, "white");
+
+            expect(result).toBe(false);
+        });
+
+        it('not when another piece can capture attacking piece', function () {
+            var board = CHESS_TEST.boardState([
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "  p     ",
+                " q     R",
+                "K       "
+            ]);
+
+            var result = rules.isInCheckMate(board, "white");
+
+            expect(result).toBe(false);
+        });
+
+        it('not when another piece can go between the king and attacking piece', function () {
+            var board = CHESS_TEST.boardState([
+                "        ",
+                "rr      ",
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "       R",
+                "K       "
+            ]);
+
+            var result = rules.isInCheckMate(board, "white");
+
+            expect(result).toBe(false);
+        });
+    });
+
     describe("isLegalMove", function () {
         var abs = function (board, point) {
             return board.getAbsolutePosition("white", point);

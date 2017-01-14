@@ -46,6 +46,24 @@ CHESS_APP.createInMemoryBoard = function (rowCount, columnCount) {
         return null;
     };
 
+    that.findPieces = function (predicate) {
+        var row, column, position, piece, pieces = [];
+
+        for (row = 0; row < this.getRowCount(); row += 1) {
+            for (column = 0; column < this.getColumnCount(); column += 1) {
+                position = CHESS_APP.createPoint(row, column);
+                piece = this.getPiece(position);
+                if (piece && predicate(piece, position)) {
+                    pieces.push({
+                        piece: piece,
+                        position: position
+                    });
+                }
+            }
+        }
+        return pieces;
+    };
+
     that.move = function (source, destination) {
         var piece = this.getPiece(source);
         if (!piece) {

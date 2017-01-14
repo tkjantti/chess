@@ -4,6 +4,21 @@
 CHESS_APP.createRules = function () {
     "use strict";
 
+    var getLegalMoves = function (rules, board, position) {
+        var row, column, destination, moves = [];
+
+        for (row = 0; row < board.getRowCount(); row += 1) {
+            for (column = 0; column < board.getColumnCount(); column += 1) {
+                destination = CHESS_APP.createPoint(row, column);
+                if (rules.isLegalMove(board, position, destination)) {
+                    moves.push(destination);
+                }
+            }
+        }
+
+        return moves;
+    };
+
     var getVerticalMovement = function (source, destination, player) {
         if (player === "white") {
             return source.row - destination.row;
@@ -110,6 +125,33 @@ CHESS_APP.createRules = function () {
             return attackingPiece
                 ? positionOfKing
                 : null;
+        },
+
+        isInCheckMate: function (board, player) {
+            var i, j, position, legalMoves, b2;
+
+            if (!this.isInCheck(board, player)) {
+                return false;
+            }
+
+            var ownPieces = board.findPieces(function (piece, ignore) {
+                return piece.player === player;
+            });
+
+            for (i = 0; i < ownPieces.length; i += 1) {
+                position = ownPieces[i].position;
+                legalMoves = getLegalMoves(this, board, position);
+
+                for (j = 0; j < legalMoves.length; j += 1) {
+                    b2 = CHESS_APP.cloneInMemoryBoard(board);
+                    b2.move(position, legalMoves[j]);
+                    if (!this.isInCheck(b2, player)) {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         },
 
         isLegalMove: function (board, source, destination, okToCaptureKing) {
