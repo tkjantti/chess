@@ -4,15 +4,9 @@
 CHESS_APP.game = (function () {
     "use strict";
     var initialized = false;
-    var currentPlayer = "white";
     var selectedPosition = null;
     var rules = CHESS_APP.createRules();
     var domBoard = null;
-
-    function setCurrentPlayer(player) {
-        currentPlayer = player;
-        $("#player_in_turn").text(player);
-    }
 
     var selectSquare = function (position) {
         domBoard.selectSquare(position);
@@ -24,15 +18,11 @@ CHESS_APP.game = (function () {
         selectedPosition = null;
     };
 
-    var changePlayer = function () {
-        setCurrentPlayer(rules.opponentPlayer(currentPlayer));
-    };
-
     function onSquareClicked(position) {
         var piece = domBoard.getPiece(position);
 
         if (!selectedPosition) {
-            if (piece && (piece.player === currentPlayer)) {
+            if (piece && (piece.player === rules.getPlayerInTurn())) {
                 selectSquare(position);
             }
             return;
@@ -50,17 +40,17 @@ CHESS_APP.game = (function () {
             selectSquare(position);
         }
 
-        var result = rules.move(domBoard, currentPlayer, selectedPosition, position);
+        var result = rules.move(domBoard, selectedPosition, position);
 
-        if (result.positionInCheck) {
-            domBoard.highlightPieceUnderThreat(result.positionInCheck);
+        if (!result.success) {
+            if (result.positionInCheck) {
+                domBoard.highlightPieceUnderThreat(result.positionInCheck);
+            }
+
             return;
         }
 
-        if (result.success) {
-            removeSelection();
-            changePlayer();
-        }
+        removeSelection();
     }
 
     return {
@@ -70,7 +60,10 @@ CHESS_APP.game = (function () {
             }
 
             domBoard = CHESS_APP.createDomBoard(onSquareClicked);
-            setCurrentPlayer("white");
+            rules.listenPlayerInTurn(function (player) {
+                $("#player_in_turn").text(player);
+            });
+
             initialized = true;
         }
     };

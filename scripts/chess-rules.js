@@ -4,6 +4,15 @@
 CHESS_APP.createRules = function () {
     "use strict";
 
+    var playerInTurn = "white";
+    var onPlayerChangedHandler = null;
+
+    var opponentPlayer = function (player) {
+        return (player === "white")
+            ? "black"
+            : "white";
+    };
+
     /*
      * Returns all legal moves from the given position.
      */
@@ -99,13 +108,21 @@ CHESS_APP.createRules = function () {
     };
 
     return {
-        opponentPlayer: function (player) {
-            return (player === "white")
-                ? "black"
-                : "white";
+        getPlayerInTurn: function () {
+            return playerInTurn;
         },
 
-        move: function (board, currentPlayer, source, destination) {
+        listenPlayerInTurn: function (onPlayerChanged) {
+            onPlayerChangedHandler = onPlayerChanged;
+            onPlayerChangedHandler(playerInTurn);
+        },
+
+        changePlayer: function () {
+            playerInTurn = opponentPlayer(playerInTurn);
+            onPlayerChangedHandler(playerInTurn);
+        },
+
+        move: function (board, source, destination) {
             var piece = board.getPiece(source);
 
             if (!piece) {
@@ -123,7 +140,7 @@ CHESS_APP.createRules = function () {
             var tempBoard = CHESS_APP.cloneInMemoryBoard(board);
             tempBoard.move(source, destination);
 
-            var positionInCheck = this.isInCheck(tempBoard, currentPlayer);
+            var positionInCheck = this.isInCheck(tempBoard, playerInTurn);
             if (positionInCheck) {
                 return {
                     success: false,
@@ -139,6 +156,8 @@ CHESS_APP.createRules = function () {
 
             board.move(source, destination);
 
+            this.changePlayer();
+
             return {
                 success: true
             };
@@ -149,7 +168,7 @@ CHESS_APP.createRules = function () {
          * the piece under threat. Otherwise returns null.
          */
         isInCheck: function (board, player) {
-            var opponent = this.opponentPlayer(player);
+            var opponent = opponentPlayer(player);
             var positionOfKing = board.getPositionOf(CHESS_APP.createPiece(player, "king"));
             var that = this;
             var attackingPiece = board.findPiece(function (piece, position) {
