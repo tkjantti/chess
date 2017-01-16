@@ -105,6 +105,45 @@ CHESS_APP.createRules = function () {
                 : "white";
         },
 
+        move: function (board, currentPlayer, source, destination) {
+            var piece = board.getPiece(source);
+
+            if (!piece) {
+                return {
+                    success: false
+                };
+            }
+
+            if (!this.isLegalMove(board, source, destination)) {
+                return {
+                    success: false
+                };
+            }
+
+            var tempBoard = CHESS_APP.cloneInMemoryBoard(board);
+            tempBoard.move(source, destination);
+
+            var positionInCheck = this.isInCheck(tempBoard, currentPlayer);
+            if (positionInCheck) {
+                return {
+                    success: false,
+                    positionInCheck: positionInCheck
+                };
+            }
+
+            var capturedPiece = board.getPiece(destination);
+
+            if (capturedPiece) {
+                board.removePiece(destination);
+            }
+
+            board.move(source, destination);
+
+            return {
+                success: true
+            };
+        },
+
         /*
          * If the given player is in check, returns the position of
          * the piece under threat. Otherwise returns null.

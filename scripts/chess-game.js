@@ -28,10 +28,8 @@ CHESS_APP.game = (function () {
         setCurrentPlayer(rules.opponentPlayer(currentPlayer));
     };
 
-    function onSquareClicked(position, piece) {
-        var board, selectedPiece, pieceUnderThreat;
-
-        board = CHESS_APP.cloneInMemoryBoard(domBoard);
+    function onSquareClicked(position) {
+        var piece = domBoard.getPiece(position);
 
         if (!selectedPosition) {
             if (piece && (piece.player === currentPlayer)) {
@@ -45,33 +43,24 @@ CHESS_APP.game = (function () {
             return;
         }
 
-        selectedPiece = board.getPiece(selectedPosition);
+        var selectedPiece = domBoard.getPiece(selectedPosition);
 
         if (piece && (piece.player === selectedPiece.player)) {
             removeSelection();
             selectSquare(position);
         }
 
-        if (!rules.isLegalMove(board, selectedPosition, position)) {
+        var result = rules.move(domBoard, currentPlayer, selectedPosition, position);
+
+        if (result.positionInCheck) {
+            domBoard.highlightPieceUnderThreat(result.positionInCheck);
             return;
         }
 
-        board.move(selectedPosition, position);
-
-        pieceUnderThreat = rules.isInCheck(board, currentPlayer);
-
-        if (pieceUnderThreat) {
-            domBoard.highlightPieceUnderThreat(pieceUnderThreat);
-            return;
+        if (result.success) {
+            removeSelection();
+            changePlayer();
         }
-
-        if (piece) {
-            domBoard.removeFromBoard(position);
-        }
-
-        domBoard.move(selectedPosition, position);
-        removeSelection();
-        changePlayer();
     }
 
     return {

@@ -41,12 +41,11 @@ CHESS_APP.createDomBoard = function (onSquareClicked) {
         return $("#" + player + "_pieces td");
     };
 
-    var addBoardClickHandlers = function (board) {
+    var addBoardClickHandlers = function () {
         $("#board td").click(function () {
             var square = $(this);
             var position = getSquarePosition(square);
-            var piece = board.getPiece(position);
-            onSquareClickedHandler(position, piece);
+            onSquareClickedHandler(position);
         });
         $("#black_pieces td").click(function () {
             onSquareClicked($(this));
@@ -133,7 +132,7 @@ CHESS_APP.createDomBoard = function (onSquareClicked) {
         });
     };
 
-    that.removeFromBoard = function (position) {
+    that.removePiece = function (position) {
         var square = getSquare(position);
         var piece = this.getPiece(position);
         var pieceImage = getPieceImage(square);
@@ -153,7 +152,7 @@ CHESS_APP.createDomBoard = function (onSquareClicked) {
     };
 
     setStartingPositions();
-    addBoardClickHandlers(that);
+    addBoardClickHandlers();
 
     return that;
 };
