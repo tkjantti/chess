@@ -1,9 +1,11 @@
 /*jslint browser:true, fudge:true, this:true */
 /*global window, $, CHESS_APP */
 
-CHESS_APP.createDomBoard = function (onSquareClicked) {
+CHESS_APP.createDomBoard = function () {
     "use strict";
-    var onSquareClickedHandler = onSquareClicked;
+    var initialized = false;
+    var selectedPosition = null;
+    var onSquareClicked = null;
 
     var getSquare = function (position) {
         return $("#square_" + position.row + "_" + position.column);
@@ -45,13 +47,9 @@ CHESS_APP.createDomBoard = function (onSquareClicked) {
         $("#board td").click(function () {
             var square = $(this);
             var position = getSquarePosition(square);
-            onSquareClickedHandler(position);
-        });
-        $("#black_pieces td").click(function () {
-            onSquareClicked($(this));
-        });
-        $("#white_pieces td").click(function () {
-            onSquareClicked($(this));
+            if (onSquareClicked) {
+                onSquareClicked(position, selectedPosition);
+            }
         });
     };
 
@@ -121,15 +119,23 @@ CHESS_APP.createDomBoard = function (onSquareClicked) {
     };
 
     that.selectSquare = function (position) {
+        this.removeSelection();
+
+        selectedPosition = position;
         var square = getSquare(position);
         square.addClass("selected");
     };
 
     that.removeSelection = function () {
+        if (!selectedPosition) {
+            return;
+        }
+
         this.forEachPosition(function (p) {
             var square = getSquare(p);
             square.removeClass("selected");
         });
+        selectedPosition = null;
     };
 
     that.removePiece = function (position) {
@@ -151,8 +157,18 @@ CHESS_APP.createDomBoard = function (onSquareClicked) {
         destinationSquare.append(piece);
     };
 
-    setStartingPositions();
-    addBoardClickHandlers();
+    that.initialize = function () {
+        if (initialized) {
+            return;
+        }
+        setStartingPositions();
+        addBoardClickHandlers();
+        initialized = true;
+    };
+
+    that.listenSquareClick = function (handler) {
+        onSquareClicked = handler;
+    };
 
     return that;
 };

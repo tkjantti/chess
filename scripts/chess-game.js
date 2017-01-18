@@ -4,53 +4,37 @@
 CHESS_APP.game = (function () {
     "use strict";
     var initialized = false;
-    var selectedPosition = null;
+    var board = CHESS_APP.createDomBoard();
     var rules = CHESS_APP.createRules();
-    var domBoard = null;
 
-    var selectSquare = function (position) {
-        domBoard.selectSquare(position);
-        selectedPosition = position;
-    };
-
-    var removeSelection = function () {
-        domBoard.removeSelection();
-        selectedPosition = null;
-    };
-
-    function onSquareClicked(position) {
-        var piece = domBoard.getPiece(position);
-
-        if (!selectedPosition) {
-            if (piece && (piece.player === rules.getPlayerInTurn())) {
-                selectSquare(position);
-            }
+    function onSquareClicked(position, previousPosition) {
+        if (position.equals(previousPosition)) {
+            board.removeSelection();
             return;
         }
 
-        if (position.equals(selectedPosition)) {
-            removeSelection();
+        var piece = board.getPiece(position);
+
+        if (piece && (piece.player === rules.getPlayerInTurn())) {
+            board.selectSquare(position);
             return;
         }
 
-        var selectedPiece = domBoard.getPiece(selectedPosition);
-
-        if (piece && (piece.player === selectedPiece.player)) {
-            removeSelection();
-            selectSquare(position);
+        if (!previousPosition) {
+            return;
         }
 
-        var result = rules.move(domBoard, selectedPosition, position);
+        var result = rules.move(board, previousPosition, position);
 
         if (!result.success) {
             if (result.positionInCheck) {
-                domBoard.highlightPieceUnderThreat(result.positionInCheck);
+                board.highlightPieceUnderThreat(result.positionInCheck);
             }
 
             return;
         }
 
-        removeSelection();
+        board.removeSelection();
     }
 
     return {
@@ -59,7 +43,9 @@ CHESS_APP.game = (function () {
                 return;
             }
 
-            domBoard = CHESS_APP.createDomBoard(onSquareClicked);
+            board.initialize();
+            board.listenSquareClick(onSquareClicked);
+
             rules.listenPlayerInTurn(function (player) {
                 $("#player_in_turn").text(player);
             });

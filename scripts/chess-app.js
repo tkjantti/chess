@@ -10,6 +10,9 @@ CHESS_APP.createPoint = function (row, column) {
         column: column,
 
         equals: function (other) {
+            if (!other) {
+                return false;
+            }
             return this.row === other.row && this.column === other.column;
         },
 
