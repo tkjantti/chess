@@ -5,7 +5,7 @@ CHESS_APP.game = (function () {
     "use strict";
     var initialized = false;
     var board = CHESS_APP.createDomBoard();
-    var rules = CHESS_APP.createRules();
+    var turn = CHESS_APP.createTurn();
 
     function onSquareClicked(position, previousPosition) {
         if (position.equals(previousPosition)) {
@@ -15,7 +15,7 @@ CHESS_APP.game = (function () {
 
         var piece = board.getPiece(position);
 
-        if (piece && (piece.player === rules.getPlayerInTurn())) {
+        if (piece && (piece.player === turn.getCurrentPlayer())) {
             board.selectSquare(position);
             return;
         }
@@ -24,7 +24,7 @@ CHESS_APP.game = (function () {
             return;
         }
 
-        var result = rules.move(board, previousPosition, position);
+        var result = turn.move(board, previousPosition, position);
 
         if (!result.success) {
             if (result.positionInCheck) {
@@ -46,7 +46,7 @@ CHESS_APP.game = (function () {
             board.initialize();
             board.listenSquareClick(onSquareClicked);
 
-            rules.listenPlayerInTurn(function (player) {
+            turn.listenCurrentPlayer(function (player) {
                 $("#player_in_turn").text(player);
             });
 

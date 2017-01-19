@@ -9,6 +9,18 @@ describe("Rules", function () {
         rules = CHESS_APP.createRules();
     });
 
+    describe("opponentPlayer", function () {
+        it("should return black when given white", function () {
+            var opponent = rules.opponentPlayer("white");
+            expect(opponent).toBe("black");
+        });
+
+        it("should return white when given black", function () {
+            var opponent = rules.opponentPlayer("black");
+            expect(opponent).toBe("white");
+        });
+    });
+
     describe('isInCheck', function () {
         it('is when the king is under threat', function () {
             var board = CHESS_TEST.boardState([
