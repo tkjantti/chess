@@ -1,5 +1,5 @@
 /*jslint fudge:true */
-/*global window, $, describe, beforeEach, it, expect, CHESS_APP, CHESS_TEST */
+/*global $, describe, beforeEach, it, expect, CHESS_APP, CHESS_TEST */
 
 describe("Rules", function () {
     "use strict";

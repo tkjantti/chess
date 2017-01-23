@@ -5,7 +5,7 @@ CHESS_APP.game = (function () {
     "use strict";
     var initialized = false;
     var board = CHESS_APP.createDomBoard();
-    var turn = CHESS_APP.createTurn();
+    var turn = CHESS_APP.createTurn(CHESS_APP.createRules());
 
     function onSquareClicked(position, previousPosition) {
         if (position.equals(previousPosition)) {

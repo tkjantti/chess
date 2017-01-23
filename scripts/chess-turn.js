@@ -1,16 +1,17 @@
 /*jslint browser:true, fudge:true, this:true */
 /*global window, $, CHESS_APP */
 
-CHESS_APP.createTurn = function () {
+CHESS_APP.createTurn = function (rules) {
     "use strict";
 
-    var rules = CHESS_APP.createRules();
     var currentPlayer = "white";
     var onPlayerChangedHandler = null;
 
     var changePlayer = function () {
         currentPlayer = rules.opponentPlayer(currentPlayer);
-        onPlayerChangedHandler(currentPlayer);
+        if (onPlayerChangedHandler) {
+            onPlayerChangedHandler(currentPlayer);
+        }
     };
 
     return {
