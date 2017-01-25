@@ -1,4 +1,4 @@
-/*jslint browser:true, fudge:true, this:true */
+/*jslint browser:true, fudge:true, this:true, for:true */
 /*global window, $, CHESS_APP */
 
 CHESS_APP.createDomBoard = function () {
@@ -116,6 +116,51 @@ CHESS_APP.createDomBoard = function () {
         }
 
         return CHESS_APP.createPiece(getPlayerOf(pieceImage), getTypeOf(pieceImage));
+    };
+
+    that.getPositionOf = function (piece) {
+        var found = this.findPiece(function (currentPiece) {
+            return currentPiece.equals(piece);
+        });
+        return found
+            ? found.position
+            : null;
+    };
+
+    that.findPiece = function (predicate) {
+        var row, column, position, piece;
+
+        for (row = 0; row < this.getRowCount(); row += 1) {
+            for (column = 0; column < this.getColumnCount(); column += 1) {
+                position = CHESS_APP.createPoint(row, column);
+                piece = this.getPiece(position);
+                if (piece && predicate(piece, position)) {
+                    return {
+                        piece: piece,
+                        position: position
+                    };
+                }
+            }
+        }
+        return null;
+    };
+
+    that.findPieces = function (predicate) {
+        var row, column, position, piece, pieces = [];
+
+        for (row = 0; row < this.getRowCount(); row += 1) {
+            for (column = 0; column < this.getColumnCount(); column += 1) {
+                position = CHESS_APP.createPoint(row, column);
+                piece = this.getPiece(position);
+                if (piece && predicate(piece, position)) {
+                    pieces.push({
+                        piece: piece,
+                        position: position
+                    });
+                }
+            }
+        }
+        return pieces;
     };
 
     that.selectSquare = function (position) {

@@ -24,15 +24,15 @@ describe('Turn', function () {
     });
 
     describe('move', function () {
-        it('returns success if the move is legal', function () {
+        it('returns good move if the move is legal', function () {
             board.setPiece(source, CHESS_APP.createPiece("white", "pawn"));
 
             spyOn(rules, "isLegalMove").and.returnValue(true);
             spyOn(rules, "isInCheck").and.returnValue(null);
 
-            var result = turn.move(board, source, destination);
+            var move = turn.move(board, source, destination);
 
-            expect(result.success).toBe(true);
+            expect(move.result).toBe("good_move");
             expect(rules.isLegalMove).toHaveBeenCalledWith(board, source, destination);
             expect(rules.isInCheck).toHaveBeenCalledWith(jasmine.anything(), "white");
         });
@@ -44,9 +44,9 @@ describe('Turn', function () {
             spyOn(rules, "isInCheck").and.returnValue(null);
             spyOn(board, "move");
 
-            var result = turn.move(board, source, destination);
+            var move = turn.move(board, source, destination);
 
-            expect(result.success).toBe(true);
+            expect(move.result).toBe("good_move");
             expect(board.move).toHaveBeenCalledWith(source, destination);
         });
 
@@ -56,9 +56,9 @@ describe('Turn', function () {
             spyOn(rules, "isLegalMove").and.returnValue(true);
             spyOn(rules, "isInCheck").and.returnValue(null);
 
-            var result = turn.move(board, source, destination);
+            var move = turn.move(board, source, destination);
 
-            expect(result.success).toBe(true);
+            expect(move.result).toBe("good_move");
             expect(turn.getCurrentPlayer()).toBe("black");
         });
 
@@ -80,9 +80,9 @@ describe('Turn', function () {
             spyOn(rules, "isInCheck").and.returnValue(null);
             spyOn(board, "move");
 
-            var result = turn.move(board, source, destination);
+            var move = turn.move(board, source, destination);
 
-            expect(result.success).toBe(false);
+            expect(move.result).toBe("bad_move");
             expect(board.move).not.toHaveBeenCalled();
         });
 
@@ -93,9 +93,9 @@ describe('Turn', function () {
             spyOn(rules, "isInCheck").and.returnValue(null);
             spyOn(board, "move");
 
-            var result = turn.move(board, source, destination);
+            var move = turn.move(board, source, destination);
 
-            expect(result.success).toBe(false);
+            expect(move.result).toBe("bad_move");
             expect(board.move).not.toHaveBeenCalled();
         });
 
@@ -107,11 +107,26 @@ describe('Turn', function () {
             spyOn(rules, "isInCheck").and.returnValue(positionInCheck);
             spyOn(board, "move");
 
-            var result = turn.move(board, source, destination);
+            var move = turn.move(board, source, destination);
 
-            expect(result.success).toBe(false);
-            expect(result.positionInCheck).toEqual(positionInCheck);
+            expect(move.result).toBe("bad_move");
+            expect(move.positionInCheck).toEqual(positionInCheck);
             expect(board.move).not.toHaveBeenCalled();
+        });
+
+        it('returns checkmate if the move results in a checkmate', function () {
+            board.setPiece(source, CHESS_APP.createPiece("white", "pawn"));
+
+            spyOn(rules, "isLegalMove").and.returnValue(true);
+            spyOn(rules, "isInCheck").and.returnValue(null);
+            spyOn(rules, "isInCheckMate").and.callFake(function (ignore, player) {
+                return player === "black";
+            });
+
+            var move = turn.move(board, source, destination);
+
+            expect(move.result).toBe("checkmate");
+            expect(rules.isInCheckMate).toHaveBeenCalledWith(jasmine.anything(), "black");
         });
     });
 });

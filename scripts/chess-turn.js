@@ -14,6 +14,16 @@ CHESS_APP.createTurn = function (rules) {
         }
     };
 
+    var createMove = function (result, positionInCheck) {
+        return {
+            result: result,
+            positionInCheck: positionInCheck,
+            isGood: function () {
+                return this.result !== "bad_move";
+            }
+        };
+    };
+
     return {
         getCurrentPlayer: function () {
             return currentPlayer;
@@ -28,15 +38,11 @@ CHESS_APP.createTurn = function (rules) {
             var piece = board.getPiece(source);
 
             if (!piece) {
-                return {
-                    success: false
-                };
+                return createMove("bad_move");
             }
 
             if (!rules.isLegalMove(board, source, destination)) {
-                return {
-                    success: false
-                };
+                return createMove("bad_move");
             }
 
             var tempBoard = CHESS_APP.cloneInMemoryBoard(board);
@@ -44,10 +50,7 @@ CHESS_APP.createTurn = function (rules) {
 
             var positionInCheck = rules.isInCheck(tempBoard, currentPlayer);
             if (positionInCheck) {
-                return {
-                    success: false,
-                    positionInCheck: positionInCheck
-                };
+                return createMove("bad_move", positionInCheck);
             }
 
             var capturedPiece = board.getPiece(destination);
@@ -58,11 +61,13 @@ CHESS_APP.createTurn = function (rules) {
 
             board.move(source, destination);
 
+            if (rules.isInCheckMate(board, rules.opponentPlayer(currentPlayer))) {
+                return createMove("checkmate");
+            }
+
             changePlayer();
 
-            return {
-                success: true
-            };
+            return createMove("good_move");
         }
     };
 };

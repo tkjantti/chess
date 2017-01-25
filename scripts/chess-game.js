@@ -24,11 +24,11 @@ CHESS_APP.game = (function () {
             return;
         }
 
-        var result = turn.move(board, previousPosition, position);
+        var move = turn.move(board, previousPosition, position);
 
-        if (!result.success) {
-            if (result.positionInCheck) {
-                board.highlightPieceUnderThreat(result.positionInCheck);
+        if (!move.isGood()) {
+            if (move.positionInCheck) {
+                board.highlightPieceUnderThreat(move.positionInCheck);
             }
 
             return;
