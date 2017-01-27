@@ -1,5 +1,5 @@
 /*jslint fudge:true */
-/*global $, describe, beforeEach, it, expect, CHESS_APP, CHESS_TEST */
+/*global $, describe, beforeEach, it, xit, expect, CHESS_APP, CHESS_TEST */
 
 describe("Rules", function () {
     "use strict";
@@ -203,7 +203,7 @@ describe("Rules", function () {
             var p2 = p1.add(1, 1);
             var result = rules.isLegalMove(board, abs(board, p1), abs(board, p2));
 
-            expect(result).toBe(false);
+            expect(result).toBeFalsy();
         });
 
         it('is ok to capture the king when given extra parameter', function () {
@@ -222,7 +222,7 @@ describe("Rules", function () {
             var p2 = p1.add(1, 1);
             var result = rules.isLegalMove(board, abs(board, p1), abs(board, p2), true);
 
-            expect(result).toBe(true);
+            expect(result).toBeTruthy();
         });
 
         describe("Pawn", function () {
@@ -242,7 +242,7 @@ describe("Rules", function () {
                 var p2 = p1.add(1, 0);
                 var result = rules.isLegalMove(board, abs(board, p1), abs(board, p2));
 
-                expect(result).toBe(true);
+                expect(result).toBeTruthy();
             });
 
             it("can not move forward more than one step from the third row", function () {
@@ -262,9 +262,9 @@ describe("Rules", function () {
                 var result3 = rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(3, 0)));
                 var result4 = rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(4, 0)));
 
-                expect(result2).toBe(false);
-                expect(result3).toBe(false);
-                expect(result4).toBe(false);
+                expect(result2).toBeFalsy();
+                expect(result3).toBeFalsy();
+                expect(result4).toBeFalsy();
             });
 
             it("can move forward two steps from second row", function () {
@@ -283,7 +283,7 @@ describe("Rules", function () {
                 var p2 = p1.add(2, 0);
                 var result = rules.isLegalMove(board, abs(board, p1), abs(board, p2));
 
-                expect(result).toBe(true);
+                expect(result).toBeTruthy();
             });
 
             it("can not move forward more than two steps from second row", function () {
@@ -304,9 +304,9 @@ describe("Rules", function () {
                 var result4 = rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(4, 0)));
                 var result5 = rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(5, 0)));
 
-                expect(result3).toBe(false);
-                expect(result4).toBe(false);
-                expect(result5).toBe(false);
+                expect(result3).toBeFalsy();
+                expect(result4).toBeFalsy();
+                expect(result5).toBeFalsy();
             });
 
             it("can not move in other direction than forward", function () {
@@ -355,7 +355,7 @@ describe("Rules", function () {
                 var p2 = p1.add(1, 0);
                 var result = rules.isLegalMove(board, abs(board, p1), abs(board, p2));
 
-                expect(result).toBe(false);
+                expect(result).toBeFalsy();
             });
 
             it("can not move when blocked by an opponent piece", function () {
@@ -374,7 +374,7 @@ describe("Rules", function () {
                 var p2 = p1.add(1, 0);
                 var result = rules.isLegalMove(board, abs(board, p1), abs(board, p2));
 
-                expect(result).toBe(false);
+                expect(result).toBeFalsy();
             });
 
             it("can capture an opponent piece diagonally forward", function () {
@@ -397,8 +397,28 @@ describe("Rules", function () {
                 p2 = p1.add(1, 1);
                 var resultRight = rules.isLegalMove(board, abs(board, p1), abs(board, p2));
 
-                expect(resultLeft).toBe(true);
-                expect(resultRight).toBe(true);
+                expect(resultLeft).toBeTruthy();
+                expect(resultRight).toBeTruthy();
+            });
+
+            it("is promoted to queen when it reaches the top of the board", function () {
+                var board = CHESS_TEST.boardState([
+                    "        ",
+                    " P      ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        "
+                ]);
+
+                var p1 = CHESS_APP.createPoint(6, 1);
+                var p2 = p1.add(1, 0);
+                var result = rules.isLegalMove(board, abs(board, p1), abs(board, p2));
+
+                expect(result.promotion).toBeDefined();
+                expect(result.promotion).toBe("queen");
             });
         });
 
@@ -427,7 +447,7 @@ describe("Rules", function () {
                 ];
 
                 $.each(results, function (ignore, result) {
-                    expect(result).toBe(true);
+                    expect(result).toBeTruthy();
                 });
             });
 
@@ -455,7 +475,7 @@ describe("Rules", function () {
                 ];
 
                 $.each(results, function (ignore, result) {
-                    expect(result).toBe(true);
+                    expect(result).toBeTruthy();
                 });
             });
 
@@ -487,7 +507,7 @@ describe("Rules", function () {
                 ];
 
                 $.each(results, function (ignore, result) {
-                    expect(result).toBe(false);
+                    expect(result).toBeFalsy();
                 });
             });
         });
@@ -521,7 +541,7 @@ describe("Rules", function () {
                 ];
 
                 $.each(results, function (ignore, result) {
-                    expect(result).toBe(true);
+                    expect(result).toBeTruthy();
                 });
             });
 
@@ -549,7 +569,7 @@ describe("Rules", function () {
                 ];
 
                 $.each(results, function (ignore, result) {
-                    expect(result).toBe(false);
+                    expect(result).toBeFalsy();
                 });
             });
 
@@ -577,7 +597,7 @@ describe("Rules", function () {
                 ];
 
                 $.each(results, function (ignore, result) {
-                    expect(result).toBe(false);
+                    expect(result).toBeFalsy();
                 });
             });
         });
@@ -607,7 +627,7 @@ describe("Rules", function () {
                 ];
 
                 $.each(results, function (ignore, result) {
-                    expect(result).toBe(true);
+                    expect(result).toBeTruthy();
                 });
             });
 
@@ -635,7 +655,7 @@ describe("Rules", function () {
                 ];
 
                 $.each(results, function (ignore, result) {
-                    expect(result).toBe(true);
+                    expect(result).toBeTruthy();
                 });
             });
 
@@ -667,7 +687,7 @@ describe("Rules", function () {
                 ];
 
                 $.each(results, function (ignore, result) {
-                    expect(result).toBe(true);
+                    expect(result).toBeTruthy();
                 });
             });
         });
@@ -692,7 +712,7 @@ describe("Rules", function () {
                 ];
 
                 $.each(results, function (ignore, result) {
-                    expect(result).toBe(true);
+                    expect(result).toBeTruthy();
                 });
             });
 
@@ -718,7 +738,7 @@ describe("Rules", function () {
                 ];
 
                 $.each(results, function (ignore, result) {
-                    expect(result).toBe(false);
+                    expect(result).toBeFalsy();
                 });
             });
 
@@ -741,7 +761,7 @@ describe("Rules", function () {
                 ];
 
                 $.each(results, function (ignore, result) {
-                    expect(result).toBe(true);
+                    expect(result).toBeTruthy();
                 });
             });
 
@@ -767,7 +787,7 @@ describe("Rules", function () {
                 ];
 
                 $.each(results, function (ignore, result) {
-                    expect(result).toBe(false);
+                    expect(result).toBeFalsy();
                 });
             });
 
@@ -792,7 +812,7 @@ describe("Rules", function () {
                 ];
 
                 $.each(results, function (ignore, result) {
-                    expect(result).toBe(true);
+                    expect(result).toBeTruthy();
                 });
             });
 
@@ -817,7 +837,7 @@ describe("Rules", function () {
                 ];
 
                 $.each(results, function (ignore, result) {
-                    expect(result).toBe(false);
+                    expect(result).toBeFalsy();
                 });
             });
         });
@@ -851,7 +871,7 @@ describe("Rules", function () {
                 ];
 
                 $.each(results, function (ignore, result) {
-                    expect(result).toBe(true);
+                    expect(result).toBeTruthy();
                 });
             });
 
@@ -879,7 +899,7 @@ describe("Rules", function () {
                 ];
 
                 $.each(results, function (ignore, result) {
-                    expect(result).toBe(false);
+                    expect(result).toBeFalsy();
                 });
             });
 
@@ -907,7 +927,7 @@ describe("Rules", function () {
                 ];
 
                 $.each(results, function (ignore, result) {
-                    expect(result).toBe(false);
+                    expect(result).toBeFalsy();
                 });
             });
 
@@ -939,7 +959,7 @@ describe("Rules", function () {
                 ];
 
                 $.each(results, function (ignore, result) {
-                    expect(result).toBe(false);
+                    expect(result).toBeFalsy();
                 });
             });
 
@@ -971,7 +991,7 @@ describe("Rules", function () {
                 ];
 
                 $.each(results, function (ignore, result) {
-                    expect(result).toBe(true);
+                    expect(result).toBeTruthy();
                 });
             });
         });

@@ -122,6 +122,17 @@ CHESS_APP.createRules = function () {
                 !!board.getPiece(destination);
     };
 
+    var getPawnMoveResult = function (board, currentPlayer, destination) {
+        var relativePosition = board.getRelativePosition(currentPlayer, destination);
+        var promotion = (relativePosition.row === board.getRowCount() - 1)
+            ? "queen"
+            : undefined;
+
+        return {
+            promotion: promotion
+        };
+    };
+
     return {
         opponentPlayer: function (player) {
             return (player === "white")
@@ -169,6 +180,12 @@ CHESS_APP.createRules = function () {
             return !ownPieces.some(canPreventChess);
         },
 
+        /*
+         * Returns a truthy value if the move is legal. In addition,
+         * if the move results in a promotion of a piece, the return
+         * value contains a field "promotion" with the type that the
+         * piece is promoted to.
+         */
         isLegalMove: function (board, source, destination, okToCaptureKing) {
             var piece, pieceAtDestination;
             var horizontal, vertical;
@@ -193,8 +210,9 @@ CHESS_APP.createRules = function () {
 
             switch (piece.type) {
             case "pawn":
-                return isCorrectForwardMoveForPawn(board, piece.player, source, destination) ||
-                        isPawnCapturingDiagonally(board, piece.player, source, destination);
+                return (isCorrectForwardMoveForPawn(board, piece.player, source, destination) ||
+                        isPawnCapturingDiagonally(board, piece.player, source, destination)) &&
+                        getPawnMoveResult(board, piece.player, destination);
 
             case "knight":
                 return (Math.abs(horizontal) === 1 && Math.abs(vertical) === 2)
