@@ -41,3 +41,8 @@ footer {
     clear: both;
     border-top: 1px solid black;
 }
+
+p.victory {
+    background-color: #22BB22;
+    color: white;
+}

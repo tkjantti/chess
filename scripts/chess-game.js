@@ -4,10 +4,20 @@
 CHESS_APP.game = (function () {
     "use strict";
     var initialized = false;
+    var state = "match";
     var board = CHESS_APP.createDomBoard();
     var turn = CHESS_APP.createTurn(CHESS_APP.createRules());
 
+    function showVictory() {
+        $('#gameState').text('Checkmate! Winner: ' + turn.getCurrentPlayer());
+        $('#gameState').addClass("victory");
+    }
+
     function onSquareClicked(position, previousPosition) {
+        if (state === "finished") {
+            return;
+        }
+
         if (position.equals(previousPosition)) {
             board.removeSelection();
             return;
@@ -32,6 +42,11 @@ CHESS_APP.game = (function () {
             }
 
             return;
+        }
+
+        if (move.result === "checkmate") {
+            showVictory();
+            state = "finished";
         }
 
         board.removeSelection();
