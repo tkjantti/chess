@@ -98,6 +98,30 @@ CHESS_APP.createRules = function () {
         return true;
     };
 
+    var canCapture = function (currentPlayer, piece, okToCaptureKing) {
+        return (piece.player !== currentPlayer) &&
+                (piece.type !== "king" || okToCaptureKing);
+    };
+
+    var isCorrectForwardMoveForPawn = function (board, currentPlayer, source, destination) {
+        var vertical = getVerticalMovement(source, destination, currentPlayer);
+        var relativePosition = board.getRelativePosition(currentPlayer, source);
+        var isAtStartingPosition = relativePosition.row === 1;
+
+        return isVerticalMove(board, source, destination) &&
+                ((vertical === 1) || (isAtStartingPosition && vertical === 2)) &&
+                !board.getPiece(destination);
+    };
+
+    var isPawnCapturingDiagonally = function (board, currentPlayer, source, destination) {
+        var horizontal = getHorizontalMovement(source, destination);
+        var vertical = getVerticalMovement(source, destination, currentPlayer);
+
+        return (horizontal === -1 || horizontal === 1) &&
+                vertical === 1 &&
+                !!board.getPiece(destination);
+    };
+
     return {
         opponentPlayer: function (player) {
             return (player === "white")
@@ -147,7 +171,7 @@ CHESS_APP.createRules = function () {
 
         isLegalMove: function (board, source, destination, okToCaptureKing) {
             var piece, pieceAtDestination;
-            var horizontal, vertical, isFirstMove, isCorrectLengthForwardMove;
+            var horizontal, vertical;
 
             if (!board.isInside(destination)) {
                 return false;
@@ -160,15 +184,8 @@ CHESS_APP.createRules = function () {
             }
 
             pieceAtDestination = board.getPiece(destination);
-            if (pieceAtDestination) {
-
-                if (pieceAtDestination.player === piece.player) {
-                    return false;
-                }
-
-                if ((pieceAtDestination.type === "king") && !okToCaptureKing) {
-                    return false;
-                }
+            if (pieceAtDestination && !canCapture(piece.player, pieceAtDestination, okToCaptureKing)) {
+                return false;
             }
 
             horizontal = getHorizontalMovement(source, destination);
@@ -176,18 +193,8 @@ CHESS_APP.createRules = function () {
 
             switch (piece.type) {
             case "pawn":
-                isFirstMove = board.getRelativePosition(piece.player, source).row === 1;
-                isCorrectLengthForwardMove = (vertical === 1) || (isFirstMove && vertical === 2);
-
-                if (isCorrectLengthForwardMove && isVerticalMove(board, source, destination) && !pieceAtDestination) {
-                    return true;
-                }
-
-                if ((horizontal === -1 || horizontal === 1) && vertical === 1 && pieceAtDestination) {
-                    return true;
-                }
-
-                return false;
+                return isCorrectForwardMoveForPawn(board, piece.player, source, destination) ||
+                        isPawnCapturingDiagonally(board, piece.player, source, destination);
 
             case "knight":
                 return (Math.abs(horizontal) === 1 && Math.abs(vertical) === 2)
