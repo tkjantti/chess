@@ -34,17 +34,17 @@ CHESS_APP.game = (function () {
             return;
         }
 
-        var move = turn.move(board, previousPosition, position);
+        var result = turn.move(board, previousPosition, position);
 
-        if (!move.isGood()) {
-            if (move.positionInCheck) {
-                board.highlightPieceUnderThreat(move.positionInCheck);
+        if (!result.isGood()) {
+            if (result.positionInCheck) {
+                board.highlightPieceUnderThreat(result.positionInCheck);
             }
 
             return;
         }
 
-        if (move.result === "checkmate") {
+        if (result.isCheckMate()) {
             showVictory();
             state = "finished";
         }

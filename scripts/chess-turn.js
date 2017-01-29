@@ -19,7 +19,10 @@ CHESS_APP.createTurn = function (rules) {
             result: result,
             positionInCheck: positionInCheck,
             isGood: function () {
-                return this.result !== "bad_move";
+                return result !== "bad_move";
+            },
+            isCheckMate: function () {
+                return result === "checkmate";
             }
         };
     };
