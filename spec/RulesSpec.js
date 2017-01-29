@@ -187,6 +187,44 @@ describe("Rules", function () {
             rules = CHESS_APP.createRules();
         });
 
+        it('is not legal if there is no piece in source', function () {
+            var board = CHESS_TEST.boardState([
+                "        ",
+                "        ",
+                "        ",
+                "       P",
+                "        ",
+                "        ",
+                "        ",
+                "        "
+            ]);
+
+            var p1 = CHESS_APP.createPoint(2, 1);
+            var p2 = p1.add(1, 1);
+            var result = rules.inspectMove(board, "white", abs(board, p1), abs(board, p2));
+
+            expect(result.isLegal).toBe(false);
+        });
+
+        it('is not legal to move opponent player', function () {
+            var board = CHESS_TEST.boardState([
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                " q      ",
+                "        ",
+                "        "
+            ]);
+
+            var p1 = CHESS_APP.createPoint(2, 1);
+            var p2 = p1.add(1, 1);
+            var result = rules.inspectMove(board, "white", abs(board, p1), abs(board, p2));
+
+            expect(result.isLegal).toBe(false);
+        });
+
         it('is not legal to capture the king', function () {
             var board = CHESS_TEST.boardState([
                 "        ",
@@ -201,7 +239,7 @@ describe("Rules", function () {
 
             var p1 = CHESS_APP.createPoint(2, 1);
             var p2 = p1.add(1, 1);
-            var result = rules.inspectMove(board, abs(board, p1), abs(board, p2));
+            var result = rules.inspectMove(board, "white", abs(board, p1), abs(board, p2));
 
             expect(result.isLegal).toBe(false);
         });
@@ -220,7 +258,7 @@ describe("Rules", function () {
 
             var p1 = CHESS_APP.createPoint(2, 1);
             var p2 = p1.add(1, 1);
-            var result = rules.inspectMove(board, abs(board, p1), abs(board, p2), true);
+            var result = rules.inspectMove(board, "white", abs(board, p1), abs(board, p2), true);
 
             expect(result.isLegal).toBe(true);
         });
@@ -240,7 +278,7 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(2, 1);
                 var p2 = p1.add(1, 0);
-                var result = rules.inspectMove(board, abs(board, p1), abs(board, p2));
+                var result = rules.inspectMove(board, "white", abs(board, p1), abs(board, p2));
 
                 expect(result.isLegal).toBe(true);
             });
@@ -258,9 +296,9 @@ describe("Rules", function () {
                 ]);
 
                 var p1 = CHESS_APP.createPoint(2, 1);
-                var result2 = rules.inspectMove(board, abs(board, p1), abs(board, p1.add(2, 0)));
-                var result3 = rules.inspectMove(board, abs(board, p1), abs(board, p1.add(3, 0)));
-                var result4 = rules.inspectMove(board, abs(board, p1), abs(board, p1.add(4, 0)));
+                var result2 = rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(2, 0)));
+                var result3 = rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(3, 0)));
+                var result4 = rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(4, 0)));
 
                 expect(result2.isLegal).toBe(false);
                 expect(result3.isLegal).toBe(false);
@@ -281,7 +319,7 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(1, 1);
                 var p2 = p1.add(2, 0);
-                var result = rules.inspectMove(board, abs(board, p1), abs(board, p2));
+                var result = rules.inspectMove(board, "white", abs(board, p1), abs(board, p2));
 
                 expect(result.isLegal).toBe(true);
             });
@@ -300,9 +338,9 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(1, 1);
 
-                var result3 = rules.inspectMove(board, abs(board, p1), abs(board, p1.add(3, 0)));
-                var result4 = rules.inspectMove(board, abs(board, p1), abs(board, p1.add(4, 0)));
-                var result5 = rules.inspectMove(board, abs(board, p1), abs(board, p1.add(5, 0)));
+                var result3 = rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(3, 0)));
+                var result4 = rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(4, 0)));
+                var result5 = rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(5, 0)));
 
                 expect(result3.isLegal).toBe(false);
                 expect(result4.isLegal).toBe(false);
@@ -322,13 +360,13 @@ describe("Rules", function () {
                 ]);
 
                 var p1 = CHESS_APP.createPoint(2, 1);
-                var diagLeftResult = rules.inspectMove(board, abs(board, p1), abs(board, p1.add(1, -1)));
-                var diagRightResult = rules.inspectMove(board, abs(board, p1), abs(board, p1.add(1, 1)));
-                var leftResult = rules.inspectMove(board, abs(board, p1), abs(board, p1.add(0, -1)));
-                var rightResult = rules.inspectMove(board, abs(board, p1), abs(board, p1.add(0, 1)));
-                var diagBackLeftResult = rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-1, -1)));
-                var diagBackRightResult = rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-1, 1)));
-                var backResult = rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-1, 0)));
+                var diagLeftResult = rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(1, -1)));
+                var diagRightResult = rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(1, 1)));
+                var leftResult = rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(0, -1)));
+                var rightResult = rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(0, 1)));
+                var diagBackLeftResult = rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-1, -1)));
+                var diagBackRightResult = rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-1, 1)));
+                var backResult = rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-1, 0)));
 
                 expect(diagLeftResult.isLegal).toEqual(false);
                 expect(diagRightResult.isLegal).toEqual(false);
@@ -353,7 +391,7 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(2, 1);
                 var p2 = p1.add(1, 0);
-                var result = rules.inspectMove(board, abs(board, p1), abs(board, p2));
+                var result = rules.inspectMove(board, "white", abs(board, p1), abs(board, p2));
 
                 expect(result.isLegal).toBe(false);
             });
@@ -372,7 +410,7 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(2, 1);
                 var p2 = p1.add(1, 0);
-                var result = rules.inspectMove(board, abs(board, p1), abs(board, p2));
+                var result = rules.inspectMove(board, "white", abs(board, p1), abs(board, p2));
 
                 expect(result.isLegal).toBe(false);
             });
@@ -391,11 +429,11 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(2, 1);
                 var p2 = p1.add(1, -1);
-                var resultLeft = rules.inspectMove(board, abs(board, p1), abs(board, p2));
+                var resultLeft = rules.inspectMove(board, "white", abs(board, p1), abs(board, p2));
 
                 p1 = CHESS_APP.createPoint(3, 5);
                 p2 = p1.add(1, 1);
-                var resultRight = rules.inspectMove(board, abs(board, p1), abs(board, p2));
+                var resultRight = rules.inspectMove(board, "white", abs(board, p1), abs(board, p2));
 
                 expect(resultLeft.isLegal).toBe(true);
                 expect(resultRight.isLegal).toBe(true);
@@ -415,7 +453,7 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(6, 1);
                 var p2 = p1.add(1, 0);
-                var result = rules.inspectMove(board, abs(board, p1), abs(board, p2));
+                var result = rules.inspectMove(board, "white", abs(board, p1), abs(board, p2));
 
                 expect(result).toEqual(jasmine.objectContaining({
                     isLegal: true,
@@ -439,13 +477,13 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 0))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 1))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 2))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 4))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 5))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 6))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 7)))
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 0))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 1))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 2))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 4))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 5))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 6))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 7)))
                 ];
 
                 $.each(results, function (ignore, result) {
@@ -467,13 +505,13 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(0, 3))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(1, 3))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(2, 3))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(4, 3))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(5, 3))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(6, 3))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(7, 3)))
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(0, 3))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(1, 3))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(2, 3))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(4, 3))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(5, 3))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(6, 3))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(7, 3)))
                 ];
 
                 $.each(results, function (ignore, result) {
@@ -495,17 +533,17 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(1, -1))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(2, -2))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(1, -1))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(2, -2))),
 
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(1, 1))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(2, 2))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(1, 1))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(2, 2))),
 
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-1, -1))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-2, -2))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-1, -1))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-2, -2))),
 
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-1, 1))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-2, 2)))
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-1, 1))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-2, 2)))
                 ];
 
                 $.each(results, function (ignore, result) {
@@ -529,17 +567,17 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(1, -1))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(2, -2))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(1, -1))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(2, -2))),
 
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(1, 1))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(2, 2))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(1, 1))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(2, 2))),
 
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-1, -1))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-2, -2))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-1, -1))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-2, -2))),
 
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-1, 1))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-2, 2)))
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-1, 1))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-2, 2)))
                 ];
 
                 $.each(results, function (ignore, result) {
@@ -561,13 +599,13 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 0))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 1))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 2))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 4))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 5))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 6))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 7)))
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 0))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 1))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 2))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 4))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 5))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 6))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 7)))
                 ];
 
                 $.each(results, function (ignore, result) {
@@ -589,13 +627,13 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(0, 3))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(1, 3))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(2, 3))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(4, 3))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(5, 3))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(6, 3))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(7, 3)))
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(0, 3))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(1, 3))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(2, 3))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(4, 3))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(5, 3))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(6, 3))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(7, 3)))
                 ];
 
                 $.each(results, function (ignore, result) {
@@ -619,13 +657,13 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 0))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 1))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 2))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 4))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 5))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 6))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 7)))
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 0))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 1))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 2))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 4))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 5))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 6))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 7)))
                 ];
 
                 $.each(results, function (ignore, result) {
@@ -647,13 +685,13 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(0, 3))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(1, 3))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(2, 3))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(4, 3))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(5, 3))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(6, 3))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(7, 3)))
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(0, 3))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(1, 3))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(2, 3))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(4, 3))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(5, 3))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(6, 3))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(7, 3)))
                 ];
 
                 $.each(results, function (ignore, result) {
@@ -675,17 +713,17 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(1, -1))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(2, -2))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(1, -1))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(2, -2))),
 
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(1, 1))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(2, 2))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(1, 1))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(2, 2))),
 
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-1, -1))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-2, -2))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-1, -1))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-2, -2))),
 
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-1, 1))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-2, 2)))
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-1, 1))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-2, 2)))
                 ];
 
                 $.each(results, function (ignore, result) {
@@ -709,8 +747,8 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 2))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 4)))
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 2))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 4)))
                 ];
 
                 $.each(results, function (ignore, result) {
@@ -732,11 +770,11 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 0))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 1))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 5))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 6))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 7)))
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 0))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 1))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 5))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 6))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 7)))
                 ];
 
                 $.each(results, function (ignore, result) {
@@ -758,8 +796,8 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(2, 3))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(4, 3)))
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(2, 3))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(4, 3)))
                 ];
 
                 $.each(results, function (ignore, result) {
@@ -781,11 +819,11 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(0, 3))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(1, 3))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(5, 3))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(6, 3))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(7, 3)))
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(0, 3))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(1, 3))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(5, 3))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(6, 3))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(7, 3)))
                 ];
 
                 $.each(results, function (ignore, result) {
@@ -807,10 +845,10 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(1, -1))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(1, 1))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-1, -1))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-1, 1)))
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(1, -1))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(1, 1))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-1, -1))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-1, 1)))
                 ];
 
                 $.each(results, function (ignore, result) {
@@ -832,10 +870,10 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(2, -2))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(2, 2))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-2, -2))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-2, 2)))
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(2, -2))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(2, 2))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-2, -2))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-2, 2)))
                 ];
 
                 $.each(results, function (ignore, result) {
@@ -859,17 +897,17 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(2, -1))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(2, 1))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(2, -1))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(2, 1))),
 
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-2, -1))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-2, 1))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-2, -1))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-2, 1))),
 
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-1, -2))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(1, -2))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-1, -2))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(1, -2))),
 
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-1, 2))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(1, 2)))
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-1, 2))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(1, 2)))
                 ];
 
                 $.each(results, function (ignore, result) {
@@ -891,13 +929,13 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 0))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 1))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 2))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 4))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 5))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 6))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 7)))
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 0))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 1))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 2))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 4))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 5))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 6))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 7)))
                 ];
 
                 $.each(results, function (ignore, result) {
@@ -919,13 +957,13 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(0, 3))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(1, 3))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(2, 3))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(4, 3))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(5, 3))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(6, 3))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(7, 3)))
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(0, 3))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(1, 3))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(2, 3))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(4, 3))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(5, 3))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(6, 3))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(7, 3)))
                 ];
 
                 $.each(results, function (ignore, result) {
@@ -947,17 +985,17 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(1, -1))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(2, -2))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(1, -1))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(2, -2))),
 
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(1, 1))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(2, 2))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(1, 1))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(2, 2))),
 
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-1, -1))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-2, -2))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-1, -1))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-2, -2))),
 
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-1, 1))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-2, 2)))
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-1, 1))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-2, 2)))
                 ];
 
                 $.each(results, function (ignore, result) {
@@ -979,17 +1017,17 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(2, -1))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(2, 1))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(2, -1))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(2, 1))),
 
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-2, -1))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-2, 1))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-2, -1))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-2, 1))),
 
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-1, -2))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(1, -2))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-1, -2))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(1, -2))),
 
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-1, 2))),
-                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(1, 2)))
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-1, 2))),
+                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(1, 2)))
                 ];
 
                 $.each(results, function (ignore, result) {

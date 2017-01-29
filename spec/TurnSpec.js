@@ -36,7 +36,7 @@ describe('Turn', function () {
             var move = turn.move(board, source, destination);
 
             expect(move.result).toBe("good_move");
-            expect(rules.inspectMove).toHaveBeenCalledWith(board, source, destination);
+            expect(rules.inspectMove).toHaveBeenCalledWith(board, "white", source, destination);
             expect(rules.isInCheck).toHaveBeenCalledWith(jasmine.anything(), "white");
         });
 
@@ -82,19 +82,6 @@ describe('Turn', function () {
             turn.move(board, source, destination);
 
             expect(board.removePiece).toHaveBeenCalledWith(destination);
-        });
-
-        it('does not move if there is no piece in source position', function () {
-            spyOn(rules, "inspectMove").and.returnValue({
-                isLegal: true
-            });
-            spyOn(rules, "isInCheck").and.returnValue(null);
-            spyOn(board, "move");
-
-            var move = turn.move(board, source, destination);
-
-            expect(move.result).toBe("bad_move");
-            expect(board.move).not.toHaveBeenCalled();
         });
 
         it('does not move if the move is not legal', function () {
