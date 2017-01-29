@@ -41,7 +41,9 @@ CHESS_APP.createTurn = function (rules) {
                 return createMove("bad_move");
             }
 
-            if (!rules.isLegalMove(board, source, destination)) {
+            var inspectionResult = rules.inspectMove(board, source, destination);
+
+            if (!inspectionResult.isLegal) {
                 return createMove("bad_move");
             }
 
@@ -71,4 +73,3 @@ CHESS_APP.createTurn = function (rules) {
         }
     };
 };
-

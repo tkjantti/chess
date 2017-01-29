@@ -9,7 +9,7 @@ CHESS_APP.createRules = function () {
      */
     var getLegalMoves = function (rules, board, position) {
         return board.getPositions(function (destination) {
-            return rules.isLegalMove(board, position, destination);
+            return rules.inspectMove(board, position, destination).isLegal;
         });
     };
 
@@ -122,15 +122,11 @@ CHESS_APP.createRules = function () {
                 !!board.getPiece(destination);
     };
 
-    var getPawnMoveResult = function (board, currentPlayer, destination) {
+    var getPawnPromotion = function (board, currentPlayer, destination) {
         var relativePosition = board.getRelativePosition(currentPlayer, destination);
-        var promotion = (relativePosition.row === board.getRowCount() - 1)
+        return (relativePosition.row === board.getRowCount() - 1)
             ? "queen"
             : undefined;
-
-        return {
-            promotion: promotion
-        };
     };
 
     return {
@@ -149,7 +145,8 @@ CHESS_APP.createRules = function () {
             var positionOfKing = board.getPositionOf(CHESS_APP.createPiece(player, "king"));
             var that = this;
             var attackingPiece = board.findPiece(function (piece, position) {
-                return (piece.player === opponent) && that.isLegalMove(board, position, positionOfKing, true);
+                return (piece.player === opponent) &&
+                        that.inspectMove(board, position, positionOfKing, true).isLegal;
             });
             return attackingPiece
                 ? positionOfKing
@@ -181,61 +178,82 @@ CHESS_APP.createRules = function () {
         },
 
         /*
-         * Returns a truthy value if the move is legal. In addition,
+         * Inspects if the move is legal. In addition,
          * if the move results in a promotion of a piece, the return
          * value contains a field "promotion" with the type that the
          * piece is promoted to.
          */
-        isLegalMove: function (board, source, destination, okToCaptureKing) {
+        inspectMove: function (board, source, destination, okToCaptureKing) {
             var piece, pieceAtDestination;
             var horizontal, vertical;
 
             if (!board.isInside(destination)) {
-                return false;
+                return {
+                    isLegal: false
+                };
             }
 
             piece = board.getPiece(source);
 
             if (!piece) {
-                return false;
+                return {
+                    isLegal: false
+                };
             }
 
             pieceAtDestination = board.getPiece(destination);
             if (pieceAtDestination && !canCapture(piece.player, pieceAtDestination, okToCaptureKing)) {
-                return false;
+                return {
+                    isLegal: false
+                };
             }
 
             horizontal = getHorizontalMovement(source, destination);
             vertical = getVerticalMovement(source, destination, piece.player);
 
+            var result = {};
+
             switch (piece.type) {
             case "pawn":
-                return (isCorrectForwardMoveForPawn(board, piece.player, source, destination) ||
-                        isPawnCapturingDiagonally(board, piece.player, source, destination)) &&
-                        getPawnMoveResult(board, piece.player, destination);
+                result.isLegal = isCorrectForwardMoveForPawn(board, piece.player, source, destination) ||
+                        isPawnCapturingDiagonally(board, piece.player, source, destination);
+
+                if (result.isLegal) {
+                    result.promotion = getPawnPromotion(board, piece.player, destination);
+                }
+                break;
 
             case "knight":
-                return (Math.abs(horizontal) === 1 && Math.abs(vertical) === 2)
+                result.isLegal = (Math.abs(horizontal) === 1 && Math.abs(vertical) === 2)
                         || (Math.abs(horizontal) === 2 && Math.abs(vertical) === 1);
+                break;
 
             case "bishop":
-                return isDiagonalMove(board, source, destination);
+                result.isLegal = isDiagonalMove(board, source, destination);
+                break;
 
             case "rook":
-                return isHorizontalMove(board, source, destination) || isVerticalMove(board, source, destination);
+                result.isLegal = isHorizontalMove(board, source, destination) ||
+                        isVerticalMove(board, source, destination);
+                break;
 
             case "queen":
-                return isDiagonalMove(board, source, destination)
-                        || isHorizontalMove(board, source, destination)
-                        || isVerticalMove(board, source, destination);
+                result.isLegal = isDiagonalMove(board, source, destination) ||
+                        isHorizontalMove(board, source, destination) ||
+                        isVerticalMove(board, source, destination);
+                break;
 
             case "king":
-                return (Math.abs(horizontal) <= 1 && Math.abs(vertical) <= 1);
+                result.isLegal = (Math.abs(horizontal) <= 1 && Math.abs(vertical) <= 1);
+                break;
 
             default:
                 console.log("unknown piece type: " + piece.type);
-                return false;
+                result.isLegal = false;
+                break;
             }
+
+            return result;
         }
     };
 };

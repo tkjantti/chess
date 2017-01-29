@@ -1,5 +1,5 @@
 /*jslint fudge:true */
-/*global $, describe, beforeEach, it, xit, expect, CHESS_APP, CHESS_TEST */
+/*global $, jasmine, describe, beforeEach, it, xit, expect, objectContaining, CHESS_APP, CHESS_TEST */
 
 describe("Rules", function () {
     "use strict";
@@ -178,7 +178,7 @@ describe("Rules", function () {
         });
     });
 
-    describe("isLegalMove", function () {
+    describe("inspectMove", function () {
         var abs = function (board, point) {
             return board.getAbsolutePosition("white", point);
         };
@@ -201,9 +201,9 @@ describe("Rules", function () {
 
             var p1 = CHESS_APP.createPoint(2, 1);
             var p2 = p1.add(1, 1);
-            var result = rules.isLegalMove(board, abs(board, p1), abs(board, p2));
+            var result = rules.inspectMove(board, abs(board, p1), abs(board, p2));
 
-            expect(result).toBeFalsy();
+            expect(result.isLegal).toBe(false);
         });
 
         it('is ok to capture the king when given extra parameter', function () {
@@ -220,9 +220,9 @@ describe("Rules", function () {
 
             var p1 = CHESS_APP.createPoint(2, 1);
             var p2 = p1.add(1, 1);
-            var result = rules.isLegalMove(board, abs(board, p1), abs(board, p2), true);
+            var result = rules.inspectMove(board, abs(board, p1), abs(board, p2), true);
 
-            expect(result).toBeTruthy();
+            expect(result.isLegal).toBe(true);
         });
 
         describe("Pawn", function () {
@@ -240,9 +240,9 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(2, 1);
                 var p2 = p1.add(1, 0);
-                var result = rules.isLegalMove(board, abs(board, p1), abs(board, p2));
+                var result = rules.inspectMove(board, abs(board, p1), abs(board, p2));
 
-                expect(result).toBeTruthy();
+                expect(result.isLegal).toBe(true);
             });
 
             it("can not move forward more than one step from the third row", function () {
@@ -258,13 +258,13 @@ describe("Rules", function () {
                 ]);
 
                 var p1 = CHESS_APP.createPoint(2, 1);
-                var result2 = rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(2, 0)));
-                var result3 = rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(3, 0)));
-                var result4 = rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(4, 0)));
+                var result2 = rules.inspectMove(board, abs(board, p1), abs(board, p1.add(2, 0)));
+                var result3 = rules.inspectMove(board, abs(board, p1), abs(board, p1.add(3, 0)));
+                var result4 = rules.inspectMove(board, abs(board, p1), abs(board, p1.add(4, 0)));
 
-                expect(result2).toBeFalsy();
-                expect(result3).toBeFalsy();
-                expect(result4).toBeFalsy();
+                expect(result2.isLegal).toBe(false);
+                expect(result3.isLegal).toBe(false);
+                expect(result4.isLegal).toBe(false);
             });
 
             it("can move forward two steps from second row", function () {
@@ -281,9 +281,9 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(1, 1);
                 var p2 = p1.add(2, 0);
-                var result = rules.isLegalMove(board, abs(board, p1), abs(board, p2));
+                var result = rules.inspectMove(board, abs(board, p1), abs(board, p2));
 
-                expect(result).toBeTruthy();
+                expect(result.isLegal).toBe(true);
             });
 
             it("can not move forward more than two steps from second row", function () {
@@ -300,13 +300,13 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(1, 1);
 
-                var result3 = rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(3, 0)));
-                var result4 = rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(4, 0)));
-                var result5 = rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(5, 0)));
+                var result3 = rules.inspectMove(board, abs(board, p1), abs(board, p1.add(3, 0)));
+                var result4 = rules.inspectMove(board, abs(board, p1), abs(board, p1.add(4, 0)));
+                var result5 = rules.inspectMove(board, abs(board, p1), abs(board, p1.add(5, 0)));
 
-                expect(result3).toBeFalsy();
-                expect(result4).toBeFalsy();
-                expect(result5).toBeFalsy();
+                expect(result3.isLegal).toBe(false);
+                expect(result4.isLegal).toBe(false);
+                expect(result5.isLegal).toBe(false);
             });
 
             it("can not move in other direction than forward", function () {
@@ -322,21 +322,21 @@ describe("Rules", function () {
                 ]);
 
                 var p1 = CHESS_APP.createPoint(2, 1);
-                var diagLeftResult = rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(1, -1)));
-                var diagRightResult = rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(1, 1)));
-                var leftResult = rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(0, -1)));
-                var rightResult = rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(0, 1)));
-                var diagBackLeftResult = rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(-1, -1)));
-                var diagBackRightResult = rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(-1, 1)));
-                var backResult = rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(-1, 0)));
+                var diagLeftResult = rules.inspectMove(board, abs(board, p1), abs(board, p1.add(1, -1)));
+                var diagRightResult = rules.inspectMove(board, abs(board, p1), abs(board, p1.add(1, 1)));
+                var leftResult = rules.inspectMove(board, abs(board, p1), abs(board, p1.add(0, -1)));
+                var rightResult = rules.inspectMove(board, abs(board, p1), abs(board, p1.add(0, 1)));
+                var diagBackLeftResult = rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-1, -1)));
+                var diagBackRightResult = rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-1, 1)));
+                var backResult = rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-1, 0)));
 
-                expect(diagLeftResult).toBe(false);
-                expect(diagRightResult).toBe(false);
-                expect(leftResult).toBe(false);
-                expect(rightResult).toBe(false);
-                expect(diagBackLeftResult).toBe(false);
-                expect(diagBackRightResult).toBe(false);
-                expect(backResult).toBe(false);
+                expect(diagLeftResult.isLegal).toEqual(false);
+                expect(diagRightResult.isLegal).toEqual(false);
+                expect(leftResult.isLegal).toEqual(false);
+                expect(rightResult.isLegal).toEqual(false);
+                expect(diagBackLeftResult.isLegal).toEqual(false);
+                expect(diagBackRightResult.isLegal).toEqual(false);
+                expect(backResult.isLegal).toEqual(false);
             });
 
             it("can not move when blocked by an own piece", function () {
@@ -353,9 +353,9 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(2, 1);
                 var p2 = p1.add(1, 0);
-                var result = rules.isLegalMove(board, abs(board, p1), abs(board, p2));
+                var result = rules.inspectMove(board, abs(board, p1), abs(board, p2));
 
-                expect(result).toBeFalsy();
+                expect(result.isLegal).toBe(false);
             });
 
             it("can not move when blocked by an opponent piece", function () {
@@ -372,9 +372,9 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(2, 1);
                 var p2 = p1.add(1, 0);
-                var result = rules.isLegalMove(board, abs(board, p1), abs(board, p2));
+                var result = rules.inspectMove(board, abs(board, p1), abs(board, p2));
 
-                expect(result).toBeFalsy();
+                expect(result.isLegal).toBe(false);
             });
 
             it("can capture an opponent piece diagonally forward", function () {
@@ -391,14 +391,14 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(2, 1);
                 var p2 = p1.add(1, -1);
-                var resultLeft = rules.isLegalMove(board, abs(board, p1), abs(board, p2));
+                var resultLeft = rules.inspectMove(board, abs(board, p1), abs(board, p2));
 
                 p1 = CHESS_APP.createPoint(3, 5);
                 p2 = p1.add(1, 1);
-                var resultRight = rules.isLegalMove(board, abs(board, p1), abs(board, p2));
+                var resultRight = rules.inspectMove(board, abs(board, p1), abs(board, p2));
 
-                expect(resultLeft).toBeTruthy();
-                expect(resultRight).toBeTruthy();
+                expect(resultLeft.isLegal).toBe(true);
+                expect(resultRight.isLegal).toBe(true);
             });
 
             it("is promoted to queen when it reaches the top of the board", function () {
@@ -415,10 +415,12 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(6, 1);
                 var p2 = p1.add(1, 0);
-                var result = rules.isLegalMove(board, abs(board, p1), abs(board, p2));
+                var result = rules.inspectMove(board, abs(board, p1), abs(board, p2));
 
-                expect(result.promotion).toBeDefined();
-                expect(result.promotion).toBe("queen");
+                expect(result).toEqual(jasmine.objectContaining({
+                    isLegal: true,
+                    promotion: "queen"
+                }));
             });
         });
 
@@ -437,17 +439,17 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 0))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 1))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 2))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 4))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 5))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 6))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 7)))
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 0))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 1))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 2))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 4))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 5))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 6))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 7)))
                 ];
 
                 $.each(results, function (ignore, result) {
-                    expect(result).toBeTruthy();
+                    expect(result.isLegal).toBe(true);
                 });
             });
 
@@ -465,17 +467,17 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(0, 3))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(1, 3))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(2, 3))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(4, 3))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(5, 3))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(6, 3))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(7, 3)))
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(0, 3))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(1, 3))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(2, 3))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(4, 3))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(5, 3))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(6, 3))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(7, 3)))
                 ];
 
                 $.each(results, function (ignore, result) {
-                    expect(result).toBeTruthy();
+                    expect(result.isLegal).toBe(true);
                 });
             });
 
@@ -493,21 +495,21 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(1, -1))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(2, -2))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(1, -1))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(2, -2))),
 
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(1, 1))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(2, 2))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(1, 1))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(2, 2))),
 
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(-1, -1))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(-2, -2))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-1, -1))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-2, -2))),
 
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(-1, 1))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(-2, 2)))
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-1, 1))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-2, 2)))
                 ];
 
                 $.each(results, function (ignore, result) {
-                    expect(result).toBeFalsy();
+                    expect(result.isLegal).toBe(false);
                 });
             });
         });
@@ -527,21 +529,21 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(1, -1))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(2, -2))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(1, -1))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(2, -2))),
 
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(1, 1))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(2, 2))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(1, 1))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(2, 2))),
 
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(-1, -1))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(-2, -2))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-1, -1))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-2, -2))),
 
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(-1, 1))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(-2, 2)))
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-1, 1))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-2, 2)))
                 ];
 
                 $.each(results, function (ignore, result) {
-                    expect(result).toBeTruthy();
+                    expect(result.isLegal).toBe(true);
                 });
             });
 
@@ -559,17 +561,17 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 0))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 1))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 2))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 4))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 5))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 6))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 7)))
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 0))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 1))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 2))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 4))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 5))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 6))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 7)))
                 ];
 
                 $.each(results, function (ignore, result) {
-                    expect(result).toBeFalsy();
+                    expect(result.isLegal).toBe(false);
                 });
             });
 
@@ -587,17 +589,17 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(0, 3))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(1, 3))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(2, 3))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(4, 3))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(5, 3))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(6, 3))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(7, 3)))
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(0, 3))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(1, 3))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(2, 3))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(4, 3))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(5, 3))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(6, 3))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(7, 3)))
                 ];
 
                 $.each(results, function (ignore, result) {
-                    expect(result).toBeFalsy();
+                    expect(result.isLegal).toBe(false);
                 });
             });
         });
@@ -617,17 +619,17 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 0))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 1))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 2))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 4))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 5))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 6))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 7)))
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 0))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 1))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 2))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 4))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 5))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 6))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 7)))
                 ];
 
                 $.each(results, function (ignore, result) {
-                    expect(result).toBeTruthy();
+                    expect(result.isLegal).toBe(true);
                 });
             });
 
@@ -645,17 +647,17 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(0, 3))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(1, 3))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(2, 3))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(4, 3))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(5, 3))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(6, 3))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(7, 3)))
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(0, 3))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(1, 3))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(2, 3))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(4, 3))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(5, 3))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(6, 3))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(7, 3)))
                 ];
 
                 $.each(results, function (ignore, result) {
-                    expect(result).toBeTruthy();
+                    expect(result.isLegal).toBe(true);
                 });
             });
 
@@ -673,21 +675,21 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(1, -1))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(2, -2))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(1, -1))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(2, -2))),
 
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(1, 1))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(2, 2))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(1, 1))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(2, 2))),
 
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(-1, -1))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(-2, -2))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-1, -1))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-2, -2))),
 
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(-1, 1))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(-2, 2)))
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-1, 1))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-2, 2)))
                 ];
 
                 $.each(results, function (ignore, result) {
-                    expect(result).toBeTruthy();
+                    expect(result.isLegal).toBe(true);
                 });
             });
         });
@@ -707,12 +709,12 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 2))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 4)))
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 2))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 4)))
                 ];
 
                 $.each(results, function (ignore, result) {
-                    expect(result).toBeTruthy();
+                    expect(result.isLegal).toBe(true);
                 });
             });
 
@@ -730,15 +732,15 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 0))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 1))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 5))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 6))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 7)))
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 0))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 1))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 5))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 6))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 7)))
                 ];
 
                 $.each(results, function (ignore, result) {
-                    expect(result).toBeFalsy();
+                    expect(result.isLegal).toBe(false);
                 });
             });
 
@@ -756,12 +758,12 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(2, 3))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(4, 3)))
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(2, 3))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(4, 3)))
                 ];
 
                 $.each(results, function (ignore, result) {
-                    expect(result).toBeTruthy();
+                    expect(result.isLegal).toBe(true);
                 });
             });
 
@@ -779,15 +781,15 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(0, 3))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(1, 3))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(5, 3))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(6, 3))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(7, 3)))
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(0, 3))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(1, 3))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(5, 3))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(6, 3))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(7, 3)))
                 ];
 
                 $.each(results, function (ignore, result) {
-                    expect(result).toBeFalsy();
+                    expect(result.isLegal).toBe(false);
                 });
             });
 
@@ -805,14 +807,14 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(1, -1))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(1, 1))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(-1, -1))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(-1, 1)))
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(1, -1))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(1, 1))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-1, -1))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-1, 1)))
                 ];
 
                 $.each(results, function (ignore, result) {
-                    expect(result).toBeTruthy();
+                    expect(result.isLegal).toBe(true);
                 });
             });
 
@@ -830,14 +832,14 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(2, -2))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(2, 2))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(-2, -2))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(-2, 2)))
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(2, -2))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(2, 2))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-2, -2))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-2, 2)))
                 ];
 
                 $.each(results, function (ignore, result) {
-                    expect(result).toBeFalsy();
+                    expect(result.isLegal).toBe(false);
                 });
             });
         });
@@ -857,21 +859,21 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(2, -1))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(2, 1))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(2, -1))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(2, 1))),
 
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(-2, -1))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(-2, 1))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-2, -1))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-2, 1))),
 
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(-1, -2))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(1, -2))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-1, -2))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(1, -2))),
 
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(-1, 2))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(1, 2)))
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-1, 2))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(1, 2)))
                 ];
 
                 $.each(results, function (ignore, result) {
-                    expect(result).toBeTruthy();
+                    expect(result.isLegal).toBe(true);
                 });
             });
 
@@ -889,17 +891,17 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 0))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 1))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 2))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 4))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 5))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 6))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 7)))
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 0))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 1))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 2))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 4))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 5))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 6))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(3, 7)))
                 ];
 
                 $.each(results, function (ignore, result) {
-                    expect(result).toBeFalsy();
+                    expect(result.isLegal).toBe(false);
                 });
             });
 
@@ -917,17 +919,17 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(0, 3))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(1, 3))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(2, 3))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(4, 3))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(5, 3))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(6, 3))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(7, 3)))
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(0, 3))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(1, 3))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(2, 3))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(4, 3))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(5, 3))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(6, 3))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, CHESS_APP.createPoint(7, 3)))
                 ];
 
                 $.each(results, function (ignore, result) {
-                    expect(result).toBeFalsy();
+                    expect(result.isLegal).toBe(false);
                 });
             });
 
@@ -945,21 +947,21 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(1, -1))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(2, -2))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(1, -1))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(2, -2))),
 
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(1, 1))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(2, 2))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(1, 1))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(2, 2))),
 
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(-1, -1))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(-2, -2))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-1, -1))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-2, -2))),
 
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(-1, 1))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(-2, 2)))
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-1, 1))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-2, 2)))
                 ];
 
                 $.each(results, function (ignore, result) {
-                    expect(result).toBeFalsy();
+                    expect(result.isLegal).toBe(false);
                 });
             });
 
@@ -977,21 +979,21 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(2, -1))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(2, 1))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(2, -1))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(2, 1))),
 
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(-2, -1))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(-2, 1))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-2, -1))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-2, 1))),
 
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(-1, -2))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(1, -2))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-1, -2))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(1, -2))),
 
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(-1, 2))),
-                    rules.isLegalMove(board, abs(board, p1), abs(board, p1.add(1, 2)))
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(-1, 2))),
+                    rules.inspectMove(board, abs(board, p1), abs(board, p1.add(1, 2)))
                 ];
 
                 $.each(results, function (ignore, result) {
-                    expect(result).toBeTruthy();
+                    expect(result.isLegal).toBe(true);
                 });
             });
         });
