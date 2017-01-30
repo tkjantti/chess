@@ -38,7 +38,9 @@ CHESS_APP.createTurn = function (rules) {
         },
 
         move: function (board, source, destination) {
-            var inspectionResult = rules.inspectMove(board, currentPlayer, source, destination);
+            var move = CHESS_APP.createMove(currentPlayer, source, destination);
+
+            var inspectionResult = rules.inspectMove(board, move);
 
             if (!inspectionResult.isLegal) {
                 return createMove("bad_move");

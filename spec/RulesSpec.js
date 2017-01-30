@@ -179,8 +179,13 @@ describe("Rules", function () {
     });
 
     describe("inspectMove", function () {
+        var board;
+
         var abs = function (board, point) {
             return board.getAbsolutePosition("white", point);
+        };
+        var getMove = function (p1, p2) {
+            return CHESS_APP.createMove("white", abs(board, p1), abs(board, p2));
         };
 
         beforeEach(function () {
@@ -188,7 +193,7 @@ describe("Rules", function () {
         });
 
         it('is not legal if there is no piece in source', function () {
-            var board = CHESS_TEST.boardState([
+            board = CHESS_TEST.boardState([
                 "        ",
                 "        ",
                 "        ",
@@ -201,13 +206,13 @@ describe("Rules", function () {
 
             var p1 = CHESS_APP.createPoint(2, 1);
             var p2 = p1.add(1, 1);
-            var result = rules.inspectMove(board, "white", abs(board, p1), abs(board, p2));
+            var result = rules.inspectMove(board, getMove(p1, p2));
 
             expect(result.isLegal).toBe(false);
         });
 
         it('is not legal to move opponent player', function () {
-            var board = CHESS_TEST.boardState([
+            board = CHESS_TEST.boardState([
                 "        ",
                 "        ",
                 "        ",
@@ -220,13 +225,13 @@ describe("Rules", function () {
 
             var p1 = CHESS_APP.createPoint(2, 1);
             var p2 = p1.add(1, 1);
-            var result = rules.inspectMove(board, "white", abs(board, p1), abs(board, p2));
+            var result = rules.inspectMove(board, getMove(p1, p2));
 
             expect(result.isLegal).toBe(false);
         });
 
         it('is not legal to capture the king', function () {
-            var board = CHESS_TEST.boardState([
+            board = CHESS_TEST.boardState([
                 "        ",
                 "        ",
                 "        ",
@@ -239,13 +244,13 @@ describe("Rules", function () {
 
             var p1 = CHESS_APP.createPoint(2, 1);
             var p2 = p1.add(1, 1);
-            var result = rules.inspectMove(board, "white", abs(board, p1), abs(board, p2));
+            var result = rules.inspectMove(board, getMove(p1, p2));
 
             expect(result.isLegal).toBe(false);
         });
 
         it('is ok to capture the king when given extra parameter', function () {
-            var board = CHESS_TEST.boardState([
+            board = CHESS_TEST.boardState([
                 "        ",
                 "        ",
                 "        ",
@@ -258,14 +263,14 @@ describe("Rules", function () {
 
             var p1 = CHESS_APP.createPoint(2, 1);
             var p2 = p1.add(1, 1);
-            var result = rules.inspectMove(board, "white", abs(board, p1), abs(board, p2), true);
+            var result = rules.inspectMove(board, getMove(p1, p2), true);
 
             expect(result.isLegal).toBe(true);
         });
 
         describe("Pawn", function () {
             it("can move forward one step", function () {
-                var board = CHESS_TEST.boardState([
+                board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
                     "        ",
@@ -278,13 +283,13 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(2, 1);
                 var p2 = p1.add(1, 0);
-                var result = rules.inspectMove(board, "white", abs(board, p1), abs(board, p2));
+                var result = rules.inspectMove(board, getMove(p1, p2));
 
                 expect(result.isLegal).toBe(true);
             });
 
             it("can not move forward more than one step from the third row", function () {
-                var board = CHESS_TEST.boardState([
+                board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
                     "        ",
@@ -296,9 +301,9 @@ describe("Rules", function () {
                 ]);
 
                 var p1 = CHESS_APP.createPoint(2, 1);
-                var result2 = rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(2, 0)));
-                var result3 = rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(3, 0)));
-                var result4 = rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(4, 0)));
+                var result2 = rules.inspectMove(board, getMove(p1, p1.add(2, 0)));
+                var result3 = rules.inspectMove(board, getMove(p1, p1.add(3, 0)));
+                var result4 = rules.inspectMove(board, getMove(p1, p1.add(4, 0)));
 
                 expect(result2.isLegal).toBe(false);
                 expect(result3.isLegal).toBe(false);
@@ -306,7 +311,7 @@ describe("Rules", function () {
             });
 
             it("can move forward two steps from second row", function () {
-                var board = CHESS_TEST.boardState([
+                board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
                     "        ",
@@ -319,13 +324,13 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(1, 1);
                 var p2 = p1.add(2, 0);
-                var result = rules.inspectMove(board, "white", abs(board, p1), abs(board, p2));
+                var result = rules.inspectMove(board, getMove(p1, p2));
 
                 expect(result.isLegal).toBe(true);
             });
 
             it("can not move forward more than two steps from second row", function () {
-                var board = CHESS_TEST.boardState([
+                board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
                     "        ",
@@ -338,9 +343,9 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(1, 1);
 
-                var result3 = rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(3, 0)));
-                var result4 = rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(4, 0)));
-                var result5 = rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(5, 0)));
+                var result3 = rules.inspectMove(board, getMove(p1, p1.add(3, 0)));
+                var result4 = rules.inspectMove(board, getMove(p1, p1.add(4, 0)));
+                var result5 = rules.inspectMove(board, getMove(p1, p1.add(5, 0)));
 
                 expect(result3.isLegal).toBe(false);
                 expect(result4.isLegal).toBe(false);
@@ -348,7 +353,7 @@ describe("Rules", function () {
             });
 
             it("can not move in other direction than forward", function () {
-                var board = CHESS_TEST.boardState([
+                board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
                     "        ",
@@ -360,13 +365,13 @@ describe("Rules", function () {
                 ]);
 
                 var p1 = CHESS_APP.createPoint(2, 1);
-                var diagLeftResult = rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(1, -1)));
-                var diagRightResult = rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(1, 1)));
-                var leftResult = rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(0, -1)));
-                var rightResult = rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(0, 1)));
-                var diagBackLeftResult = rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-1, -1)));
-                var diagBackRightResult = rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-1, 1)));
-                var backResult = rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-1, 0)));
+                var diagLeftResult = rules.inspectMove(board, getMove(p1, p1.add(1, -1)));
+                var diagRightResult = rules.inspectMove(board, getMove(p1, p1.add(1, 1)));
+                var leftResult = rules.inspectMove(board, getMove(p1, p1.add(0, -1)));
+                var rightResult = rules.inspectMove(board, getMove(p1, p1.add(0, 1)));
+                var diagBackLeftResult = rules.inspectMove(board, getMove(p1, p1.add(-1, -1)));
+                var diagBackRightResult = rules.inspectMove(board, getMove(p1, p1.add(-1, 1)));
+                var backResult = rules.inspectMove(board, getMove(p1, p1.add(-1, 0)));
 
                 expect(diagLeftResult.isLegal).toEqual(false);
                 expect(diagRightResult.isLegal).toEqual(false);
@@ -378,7 +383,7 @@ describe("Rules", function () {
             });
 
             it("can not move when blocked by an own piece", function () {
-                var board = CHESS_TEST.boardState([
+                board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
                     "        ",
@@ -391,13 +396,13 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(2, 1);
                 var p2 = p1.add(1, 0);
-                var result = rules.inspectMove(board, "white", abs(board, p1), abs(board, p2));
+                var result = rules.inspectMove(board, getMove(p1, p2));
 
                 expect(result.isLegal).toBe(false);
             });
 
             it("can not move when blocked by an opponent piece", function () {
-                var board = CHESS_TEST.boardState([
+                board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
                     "        ",
@@ -410,13 +415,13 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(2, 1);
                 var p2 = p1.add(1, 0);
-                var result = rules.inspectMove(board, "white", abs(board, p1), abs(board, p2));
+                var result = rules.inspectMove(board, getMove(p1, p2));
 
                 expect(result.isLegal).toBe(false);
             });
 
             it("can capture an opponent piece diagonally forward", function () {
-                var board = CHESS_TEST.boardState([
+                board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
                     "        ",
@@ -429,18 +434,18 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(2, 1);
                 var p2 = p1.add(1, -1);
-                var resultLeft = rules.inspectMove(board, "white", abs(board, p1), abs(board, p2));
+                var resultLeft = rules.inspectMove(board, getMove(p1, p2));
 
                 p1 = CHESS_APP.createPoint(3, 5);
                 p2 = p1.add(1, 1);
-                var resultRight = rules.inspectMove(board, "white", abs(board, p1), abs(board, p2));
+                var resultRight = rules.inspectMove(board, getMove(p1, p2));
 
                 expect(resultLeft.isLegal).toBe(true);
                 expect(resultRight.isLegal).toBe(true);
             });
 
             it("is promoted to queen when it reaches the top of the board", function () {
-                var board = CHESS_TEST.boardState([
+                board = CHESS_TEST.boardState([
                     "        ",
                     " P      ",
                     "        ",
@@ -453,7 +458,7 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(6, 1);
                 var p2 = p1.add(1, 0);
-                var result = rules.inspectMove(board, "white", abs(board, p1), abs(board, p2));
+                var result = rules.inspectMove(board, getMove(p1, p2));
 
                 expect(result).toEqual(jasmine.objectContaining({
                     isLegal: true,
@@ -464,7 +469,7 @@ describe("Rules", function () {
 
         describe('Rook', function () {
             it('can move horizontally', function () {
-                var board = CHESS_TEST.boardState([
+                board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
                     "        ",
@@ -477,13 +482,13 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 0))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 1))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 2))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 4))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 5))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 6))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 7)))
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 0))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 1))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 2))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 4))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 5))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 6))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 7)))
                 ];
 
                 $.each(results, function (ignore, result) {
@@ -492,7 +497,7 @@ describe("Rules", function () {
             });
 
             it('can move vertically', function () {
-                var board = CHESS_TEST.boardState([
+                board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
                     "        ",
@@ -505,13 +510,13 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(0, 3))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(1, 3))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(2, 3))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(4, 3))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(5, 3))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(6, 3))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(7, 3)))
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(0, 3))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(1, 3))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(2, 3))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(4, 3))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(5, 3))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(6, 3))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(7, 3)))
                 ];
 
                 $.each(results, function (ignore, result) {
@@ -520,7 +525,7 @@ describe("Rules", function () {
             });
 
             it('can not move diagonally', function () {
-                var board = CHESS_TEST.boardState([
+                board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
                     "        ",
@@ -533,17 +538,17 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(1, -1))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(2, -2))),
+                    rules.inspectMove(board, getMove(p1, p1.add(1, -1))),
+                    rules.inspectMove(board, getMove(p1, p1.add(2, -2))),
 
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(1, 1))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(2, 2))),
+                    rules.inspectMove(board, getMove(p1, p1.add(1, 1))),
+                    rules.inspectMove(board, getMove(p1, p1.add(2, 2))),
 
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-1, -1))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-2, -2))),
+                    rules.inspectMove(board, getMove(p1, p1.add(-1, -1))),
+                    rules.inspectMove(board, getMove(p1, p1.add(-2, -2))),
 
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-1, 1))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-2, 2)))
+                    rules.inspectMove(board, getMove(p1, p1.add(-1, 1))),
+                    rules.inspectMove(board, getMove(p1, p1.add(-2, 2)))
                 ];
 
                 $.each(results, function (ignore, result) {
@@ -554,7 +559,7 @@ describe("Rules", function () {
 
         describe('Bishop', function () {
             it('can move diagonally', function () {
-                var board = CHESS_TEST.boardState([
+                board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
                     "        ",
@@ -567,17 +572,17 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(1, -1))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(2, -2))),
+                    rules.inspectMove(board, getMove(p1, p1.add(1, -1))),
+                    rules.inspectMove(board, getMove(p1, p1.add(2, -2))),
 
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(1, 1))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(2, 2))),
+                    rules.inspectMove(board, getMove(p1, p1.add(1, 1))),
+                    rules.inspectMove(board, getMove(p1, p1.add(2, 2))),
 
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-1, -1))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-2, -2))),
+                    rules.inspectMove(board, getMove(p1, p1.add(-1, -1))),
+                    rules.inspectMove(board, getMove(p1, p1.add(-2, -2))),
 
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-1, 1))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-2, 2)))
+                    rules.inspectMove(board, getMove(p1, p1.add(-1, 1))),
+                    rules.inspectMove(board, getMove(p1, p1.add(-2, 2)))
                 ];
 
                 $.each(results, function (ignore, result) {
@@ -586,7 +591,7 @@ describe("Rules", function () {
             });
 
             it('can not move horizontally', function () {
-                var board = CHESS_TEST.boardState([
+                board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
                     "        ",
@@ -599,13 +604,13 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 0))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 1))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 2))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 4))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 5))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 6))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 7)))
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 0))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 1))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 2))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 4))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 5))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 6))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 7)))
                 ];
 
                 $.each(results, function (ignore, result) {
@@ -614,7 +619,7 @@ describe("Rules", function () {
             });
 
             it('can not move vertically', function () {
-                var board = CHESS_TEST.boardState([
+                board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
                     "        ",
@@ -627,13 +632,13 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(0, 3))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(1, 3))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(2, 3))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(4, 3))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(5, 3))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(6, 3))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(7, 3)))
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(0, 3))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(1, 3))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(2, 3))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(4, 3))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(5, 3))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(6, 3))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(7, 3)))
                 ];
 
                 $.each(results, function (ignore, result) {
@@ -644,7 +649,7 @@ describe("Rules", function () {
 
         describe('Queen', function () {
             it('can move horizontally', function () {
-                var board = CHESS_TEST.boardState([
+                board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
                     "        ",
@@ -657,13 +662,13 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 0))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 1))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 2))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 4))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 5))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 6))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 7)))
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 0))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 1))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 2))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 4))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 5))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 6))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 7)))
                 ];
 
                 $.each(results, function (ignore, result) {
@@ -672,7 +677,7 @@ describe("Rules", function () {
             });
 
             it('can move vertically', function () {
-                var board = CHESS_TEST.boardState([
+                board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
                     "        ",
@@ -685,13 +690,13 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(0, 3))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(1, 3))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(2, 3))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(4, 3))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(5, 3))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(6, 3))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(7, 3)))
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(0, 3))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(1, 3))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(2, 3))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(4, 3))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(5, 3))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(6, 3))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(7, 3)))
                 ];
 
                 $.each(results, function (ignore, result) {
@@ -700,7 +705,7 @@ describe("Rules", function () {
             });
 
             it('can move diagonally', function () {
-                var board = CHESS_TEST.boardState([
+                board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
                     "        ",
@@ -713,17 +718,17 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(1, -1))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(2, -2))),
+                    rules.inspectMove(board, getMove(p1, p1.add(1, -1))),
+                    rules.inspectMove(board, getMove(p1, p1.add(2, -2))),
 
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(1, 1))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(2, 2))),
+                    rules.inspectMove(board, getMove(p1, p1.add(1, 1))),
+                    rules.inspectMove(board, getMove(p1, p1.add(2, 2))),
 
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-1, -1))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-2, -2))),
+                    rules.inspectMove(board, getMove(p1, p1.add(-1, -1))),
+                    rules.inspectMove(board, getMove(p1, p1.add(-2, -2))),
 
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-1, 1))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-2, 2)))
+                    rules.inspectMove(board, getMove(p1, p1.add(-1, 1))),
+                    rules.inspectMove(board, getMove(p1, p1.add(-2, 2)))
                 ];
 
                 $.each(results, function (ignore, result) {
@@ -734,7 +739,7 @@ describe("Rules", function () {
 
         describe('King', function () {
             it('can move horizontally one square', function () {
-                var board = CHESS_TEST.boardState([
+                board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
                     "        ",
@@ -747,8 +752,8 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 2))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 4)))
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 2))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 4)))
                 ];
 
                 $.each(results, function (ignore, result) {
@@ -757,7 +762,7 @@ describe("Rules", function () {
             });
 
             it('can not move horizantally more than one square', function () {
-                var board = CHESS_TEST.boardState([
+                board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
                     "        ",
@@ -770,11 +775,11 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 0))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 1))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 5))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 6))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 7)))
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 0))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 1))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 5))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 6))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 7)))
                 ];
 
                 $.each(results, function (ignore, result) {
@@ -783,7 +788,7 @@ describe("Rules", function () {
             });
 
             it('can move vertically one square', function () {
-                var board = CHESS_TEST.boardState([
+                board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
                     "        ",
@@ -796,8 +801,8 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(2, 3))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(4, 3)))
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(2, 3))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(4, 3)))
                 ];
 
                 $.each(results, function (ignore, result) {
@@ -806,7 +811,7 @@ describe("Rules", function () {
             });
 
             it('can not move vertically more than one square', function () {
-                var board = CHESS_TEST.boardState([
+                board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
                     "        ",
@@ -819,11 +824,11 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(0, 3))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(1, 3))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(5, 3))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(6, 3))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(7, 3)))
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(0, 3))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(1, 3))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(5, 3))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(6, 3))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(7, 3)))
                 ];
 
                 $.each(results, function (ignore, result) {
@@ -832,7 +837,7 @@ describe("Rules", function () {
             });
 
             it('can move diagonally', function () {
-                var board = CHESS_TEST.boardState([
+                board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
                     "        ",
@@ -845,10 +850,10 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(1, -1))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(1, 1))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-1, -1))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-1, 1)))
+                    rules.inspectMove(board, getMove(p1, p1.add(1, -1))),
+                    rules.inspectMove(board, getMove(p1, p1.add(1, 1))),
+                    rules.inspectMove(board, getMove(p1, p1.add(-1, -1))),
+                    rules.inspectMove(board, getMove(p1, p1.add(-1, 1)))
                 ];
 
                 $.each(results, function (ignore, result) {
@@ -857,7 +862,7 @@ describe("Rules", function () {
             });
 
             it('can not move diagonally more than one square', function () {
-                var board = CHESS_TEST.boardState([
+                board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
                     "        ",
@@ -870,10 +875,10 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(2, -2))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(2, 2))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-2, -2))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-2, 2)))
+                    rules.inspectMove(board, getMove(p1, p1.add(2, -2))),
+                    rules.inspectMove(board, getMove(p1, p1.add(2, 2))),
+                    rules.inspectMove(board, getMove(p1, p1.add(-2, -2))),
+                    rules.inspectMove(board, getMove(p1, p1.add(-2, 2)))
                 ];
 
                 $.each(results, function (ignore, result) {
@@ -884,7 +889,7 @@ describe("Rules", function () {
 
         describe('Knight', function () {
             it('can move two steps forward and one to the side', function () {
-                var board = CHESS_TEST.boardState([
+                board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
                     "        ",
@@ -897,17 +902,17 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(2, -1))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(2, 1))),
+                    rules.inspectMove(board, getMove(p1, p1.add(2, -1))),
+                    rules.inspectMove(board, getMove(p1, p1.add(2, 1))),
 
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-2, -1))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-2, 1))),
+                    rules.inspectMove(board, getMove(p1, p1.add(-2, -1))),
+                    rules.inspectMove(board, getMove(p1, p1.add(-2, 1))),
 
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-1, -2))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(1, -2))),
+                    rules.inspectMove(board, getMove(p1, p1.add(-1, -2))),
+                    rules.inspectMove(board, getMove(p1, p1.add(1, -2))),
 
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-1, 2))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(1, 2)))
+                    rules.inspectMove(board, getMove(p1, p1.add(-1, 2))),
+                    rules.inspectMove(board, getMove(p1, p1.add(1, 2)))
                 ];
 
                 $.each(results, function (ignore, result) {
@@ -916,7 +921,7 @@ describe("Rules", function () {
             });
 
             it('can not move horizontally', function () {
-                var board = CHESS_TEST.boardState([
+                board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
                     "        ",
@@ -929,13 +934,13 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 0))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 1))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 2))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 4))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 5))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 6))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(3, 7)))
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 0))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 1))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 2))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 4))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 5))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 6))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 7)))
                 ];
 
                 $.each(results, function (ignore, result) {
@@ -944,7 +949,7 @@ describe("Rules", function () {
             });
 
             it('can not move vertically', function () {
-                var board = CHESS_TEST.boardState([
+                board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
                     "        ",
@@ -957,13 +962,13 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(0, 3))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(1, 3))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(2, 3))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(4, 3))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(5, 3))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(6, 3))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, CHESS_APP.createPoint(7, 3)))
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(0, 3))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(1, 3))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(2, 3))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(4, 3))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(5, 3))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(6, 3))),
+                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(7, 3)))
                 ];
 
                 $.each(results, function (ignore, result) {
@@ -972,7 +977,7 @@ describe("Rules", function () {
             });
 
             it('can not move diagonally', function () {
-                var board = CHESS_TEST.boardState([
+                board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
                     "        ",
@@ -985,17 +990,17 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(1, -1))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(2, -2))),
+                    rules.inspectMove(board, getMove(p1, p1.add(1, -1))),
+                    rules.inspectMove(board, getMove(p1, p1.add(2, -2))),
 
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(1, 1))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(2, 2))),
+                    rules.inspectMove(board, getMove(p1, p1.add(1, 1))),
+                    rules.inspectMove(board, getMove(p1, p1.add(2, 2))),
 
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-1, -1))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-2, -2))),
+                    rules.inspectMove(board, getMove(p1, p1.add(-1, -1))),
+                    rules.inspectMove(board, getMove(p1, p1.add(-2, -2))),
 
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-1, 1))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-2, 2)))
+                    rules.inspectMove(board, getMove(p1, p1.add(-1, 1))),
+                    rules.inspectMove(board, getMove(p1, p1.add(-2, 2)))
                 ];
 
                 $.each(results, function (ignore, result) {
@@ -1004,7 +1009,7 @@ describe("Rules", function () {
             });
 
             it('can move even when there are other pieces around', function () {
-                var board = CHESS_TEST.boardState([
+                board = CHESS_TEST.boardState([
                     "        ",
                     "        ",
                     "        ",
@@ -1017,17 +1022,17 @@ describe("Rules", function () {
 
                 var p1 = CHESS_APP.createPoint(3, 3);
                 var results = [
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(2, -1))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(2, 1))),
+                    rules.inspectMove(board, getMove(p1, p1.add(2, -1))),
+                    rules.inspectMove(board, getMove(p1, p1.add(2, 1))),
 
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-2, -1))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-2, 1))),
+                    rules.inspectMove(board, getMove(p1, p1.add(-2, -1))),
+                    rules.inspectMove(board, getMove(p1, p1.add(-2, 1))),
 
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-1, -2))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(1, -2))),
+                    rules.inspectMove(board, getMove(p1, p1.add(-1, -2))),
+                    rules.inspectMove(board, getMove(p1, p1.add(1, -2))),
 
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(-1, 2))),
-                    rules.inspectMove(board, "white", abs(board, p1), abs(board, p1.add(1, 2)))
+                    rules.inspectMove(board, getMove(p1, p1.add(-1, 2))),
+                    rules.inspectMove(board, getMove(p1, p1.add(1, 2)))
                 ];
 
                 $.each(results, function (ignore, result) {

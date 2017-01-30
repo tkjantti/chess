@@ -5,38 +5,28 @@ CHESS_APP.createRules = function () {
     "use strict";
 
     /*
-     * Returns all legal moves from the given position.
+     * Returns all legal moves from the given position for the given
+     * player.
      */
-    var getLegalMoves = function (rules, currentPlayer, board, position) {
+    var getLegalMoves = function (rules, player, board, position) {
         return board.getPositions(function (destination) {
-            return rules.inspectMove(board, currentPlayer, position, destination).isLegal;
+            var move = CHESS_APP.createMove(player, position, destination);
+            return rules.inspectMove(board, move).isLegal;
         });
     };
 
-    var getVerticalMovement = function (source, destination, player) {
-        if (player === "white") {
-            return source.row - destination.row;
-        } else {
-            return destination.row - source.row;
-        }
-    };
-
-    var getHorizontalMovement = function (source, destination) {
-        return destination.column - source.column;
-    };
-
-    var isHorizontalMove = function (board, source, destination) {
+    var isHorizontalMove = function (board, move) {
         var min, max, i;
 
-        if (source.row !== destination.row) {
+        if (move.source.row !== move.destination.row) {
             return false;
         }
 
-        min = Math.min(source.column, destination.column);
-        max = Math.max(source.column, destination.column);
+        min = Math.min(move.source.column, move.destination.column);
+        max = Math.max(move.source.column, move.destination.column);
 
         for (i = min + 1; i < max; i += 1) {
-            if (board.getPiece(CHESS_APP.createPoint(source.row, i))) {
+            if (board.getPiece(CHESS_APP.createPoint(move.source.row, i))) {
                 return false;
             }
         }
@@ -44,18 +34,18 @@ CHESS_APP.createRules = function () {
         return true;
     };
 
-    var isVerticalMove = function (board, source, destination) {
+    var isVerticalMove = function (board, move) {
         var min, max, i;
 
-        if (source.column !== destination.column) {
+        if (move.source.column !== move.destination.column) {
             return false;
         }
 
-        min = Math.min(source.row, destination.row);
-        max = Math.max(source.row, destination.row);
+        min = Math.min(move.source.row, move.destination.row);
+        max = Math.max(move.source.row, move.destination.row);
 
         for (i = min + 1; i < max; i += 1) {
-            if (board.getPiece(CHESS_APP.createPoint(i, source.column))) {
+            if (board.getPiece(CHESS_APP.createPoint(i, move.source.column))) {
                 return false;
             }
         }
@@ -63,8 +53,9 @@ CHESS_APP.createRules = function () {
         return true;
     };
 
-    var isDiagonalMove = function (board, source, destination) {
+    var isDiagonalMove = function (board, move) {
         var leftmostPoint, rightmostPoint, rowStep, r, c;
+        var source = move.source, destination = move.destination;
 
         if (source.row === destination.row) {
             return false;
@@ -103,27 +94,27 @@ CHESS_APP.createRules = function () {
                 (piece.type !== "king" || okToCaptureKing);
     };
 
-    var isCorrectForwardMoveForPawn = function (board, currentPlayer, source, destination) {
-        var vertical = getVerticalMovement(source, destination, currentPlayer);
-        var relativePosition = board.getRelativePosition(currentPlayer, source);
+    var isCorrectForwardMoveForPawn = function (board, move) {
+        var vertical = move.getVerticalMovement();
+        var relativePosition = board.getRelativePosition(move.player, move.source);
         var isAtStartingPosition = relativePosition.row === 1;
 
-        return isVerticalMove(board, source, destination) &&
+        return isVerticalMove(board, move) &&
                 ((vertical === 1) || (isAtStartingPosition && vertical === 2)) &&
-                !board.getPiece(destination);
+                !board.getPiece(move.destination);
     };
 
-    var isPawnCapturingDiagonally = function (board, currentPlayer, source, destination) {
-        var horizontal = getHorizontalMovement(source, destination);
-        var vertical = getVerticalMovement(source, destination, currentPlayer);
+    var isPawnCapturingDiagonally = function (board, move) {
+        var horizontal = move.getHorizontalMovement();
+        var vertical = move.getVerticalMovement();
 
         return (horizontal === -1 || horizontal === 1) &&
                 vertical === 1 &&
-                !!board.getPiece(destination);
+                !!board.getPiece(move.destination);
     };
 
-    var getPawnPromotion = function (board, currentPlayer, destination) {
-        var relativePosition = board.getRelativePosition(currentPlayer, destination);
+    var getPawnPromotion = function (board, move) {
+        var relativePosition = board.getRelativePosition(move.player, move.destination);
         return (relativePosition.row === board.getRowCount() - 1)
             ? "queen"
             : undefined;
@@ -145,8 +136,9 @@ CHESS_APP.createRules = function () {
             var positionOfKing = board.getPositionOf(CHESS_APP.createPiece(player, "king"));
             var that = this;
             var attackingPiece = board.findPiece(function (piece, position) {
+                var move = CHESS_APP.createMove(opponent, position, positionOfKing);
                 return (piece.player === opponent) &&
-                        that.inspectMove(board, opponent, position, positionOfKing, true).isLegal;
+                        that.inspectMove(board, move, true).isLegal;
             });
             return attackingPiece
                 ? positionOfKing
@@ -178,48 +170,48 @@ CHESS_APP.createRules = function () {
         },
 
         /*
-         * Inspects if the move is legal. In addition,
-         * if the move results in a promotion of a piece, the return
-         * value contains a field "promotion" with the type that the
-         * piece is promoted to.
+         * Inspects if the move is legal. In addition, if the move
+         * results in a promotion of a piece, the return value
+         * contains a field "promotion" with the type that the piece
+         * is promoted to.
          */
-        inspectMove: function (board, currentPlayer, source, destination, okToCaptureKing) {
+        inspectMove: function (board, move, okToCaptureKing) {
             var piece, pieceAtDestination;
             var horizontal, vertical;
 
-            if (!board.isInside(destination)) {
+            if (!board.isInside(move.destination)) {
                 return {
                     isLegal: false
                 };
             }
 
-            piece = board.getPiece(source);
+            piece = board.getPiece(move.source);
 
-            if (!piece || piece.player !== currentPlayer) {
+            if (!piece || piece.player !== move.player) {
                 return {
                     isLegal: false
                 };
             }
 
-            pieceAtDestination = board.getPiece(destination);
-            if (pieceAtDestination && !canCapture(currentPlayer, pieceAtDestination, okToCaptureKing)) {
+            pieceAtDestination = board.getPiece(move.destination);
+            if (pieceAtDestination && !canCapture(move.player, pieceAtDestination, okToCaptureKing)) {
                 return {
                     isLegal: false
                 };
             }
 
-            horizontal = getHorizontalMovement(source, destination);
-            vertical = getVerticalMovement(source, destination, currentPlayer);
+            horizontal = move.getHorizontalMovement();
+            vertical = move.getVerticalMovement();
 
             var result = {};
 
             switch (piece.type) {
             case "pawn":
-                result.isLegal = isCorrectForwardMoveForPawn(board, currentPlayer, source, destination) ||
-                        isPawnCapturingDiagonally(board, currentPlayer, source, destination);
+                result.isLegal = isCorrectForwardMoveForPawn(board, move) ||
+                        isPawnCapturingDiagonally(board, move);
 
                 if (result.isLegal) {
-                    result.promotion = getPawnPromotion(board, currentPlayer, destination);
+                    result.promotion = getPawnPromotion(board, move);
                 }
                 break;
 
@@ -229,18 +221,18 @@ CHESS_APP.createRules = function () {
                 break;
 
             case "bishop":
-                result.isLegal = isDiagonalMove(board, source, destination);
+                result.isLegal = isDiagonalMove(board, move);
                 break;
 
             case "rook":
-                result.isLegal = isHorizontalMove(board, source, destination) ||
-                        isVerticalMove(board, source, destination);
+                result.isLegal = isHorizontalMove(board, move) ||
+                        isVerticalMove(board, move);
                 break;
 
             case "queen":
-                result.isLegal = isDiagonalMove(board, source, destination) ||
-                        isHorizontalMove(board, source, destination) ||
-                        isVerticalMove(board, source, destination);
+                result.isLegal = isDiagonalMove(board, move) ||
+                        isHorizontalMove(board, move) ||
+                        isVerticalMove(board, move);
                 break;
 
             case "king":

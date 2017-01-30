@@ -33,10 +33,14 @@ describe('Turn', function () {
             });
             spyOn(rules, "isInCheck").and.returnValue(null);
 
-            var move = turn.move(board, source, destination);
+            var result = turn.move(board, source, destination);
 
-            expect(move.result).toBe("good_move");
-            expect(rules.inspectMove).toHaveBeenCalledWith(board, "white", source, destination);
+            expect(result.result).toBe("good_move");
+            expect(rules.inspectMove).toHaveBeenCalledWith(board, jasmine.objectContaining({
+                player: "white",
+                source: source,
+                destination: destination
+            }));
             expect(rules.isInCheck).toHaveBeenCalledWith(jasmine.anything(), "white");
         });
 
@@ -49,9 +53,9 @@ describe('Turn', function () {
             spyOn(rules, "isInCheck").and.returnValue(null);
             spyOn(board, "move");
 
-            var move = turn.move(board, source, destination);
+            var result = turn.move(board, source, destination);
 
-            expect(move.result).toBe("good_move");
+            expect(result.result).toBe("good_move");
             expect(board.move).toHaveBeenCalledWith(source, destination);
         });
 
@@ -63,9 +67,9 @@ describe('Turn', function () {
             });
             spyOn(rules, "isInCheck").and.returnValue(null);
 
-            var move = turn.move(board, source, destination);
+            var result = turn.move(board, source, destination);
 
-            expect(move.result).toBe("good_move");
+            expect(result.result).toBe("good_move");
             expect(turn.getCurrentPlayer()).toBe("black");
         });
 
@@ -93,9 +97,9 @@ describe('Turn', function () {
             spyOn(rules, "isInCheck").and.returnValue(null);
             spyOn(board, "move");
 
-            var move = turn.move(board, source, destination);
+            var result = turn.move(board, source, destination);
 
-            expect(move.result).toBe("bad_move");
+            expect(result.result).toBe("bad_move");
             expect(board.move).not.toHaveBeenCalled();
         });
 
@@ -109,10 +113,10 @@ describe('Turn', function () {
             spyOn(rules, "isInCheck").and.returnValue(positionInCheck);
             spyOn(board, "move");
 
-            var move = turn.move(board, source, destination);
+            var result = turn.move(board, source, destination);
 
-            expect(move.result).toBe("bad_move");
-            expect(move.positionInCheck).toEqual(positionInCheck);
+            expect(result.result).toBe("bad_move");
+            expect(result.positionInCheck).toEqual(positionInCheck);
             expect(board.move).not.toHaveBeenCalled();
         });
 
@@ -127,9 +131,9 @@ describe('Turn', function () {
                 return player === "black";
             });
 
-            var move = turn.move(board, source, destination);
+            var result = turn.move(board, source, destination);
 
-            expect(move.result).toBe("checkmate");
+            expect(result.result).toBe("checkmate");
             expect(rules.isInCheckMate).toHaveBeenCalledWith(jasmine.anything(), "black");
         });
     });
