@@ -27,6 +27,14 @@ CHESS_APP.createTurn = function (rules) {
         };
     };
 
+    var updateBoard = function (board, move, inspectionResult) {
+        if (inspectionResult.capturePosition) {
+            board.removePiece(inspectionResult.capturePosition);
+        }
+
+        board.move(move.source, move.destination);
+    };
+
     return {
         getCurrentPlayer: function () {
             return currentPlayer;
@@ -47,20 +55,15 @@ CHESS_APP.createTurn = function (rules) {
             }
 
             var tempBoard = CHESS_APP.cloneInMemoryBoard(board);
-            tempBoard.move(source, destination);
+            updateBoard(tempBoard, move, inspectionResult);
 
             var positionInCheck = rules.isInCheck(tempBoard, currentPlayer);
+
             if (positionInCheck) {
                 return createMove("bad_move", positionInCheck);
             }
 
-            var capturedPiece = board.getPiece(destination);
-
-            if (capturedPiece) {
-                board.removePiece(destination);
-            }
-
-            board.move(source, destination);
+            updateBoard(board, move, inspectionResult);
 
             if (rules.isInCheckMate(board, rules.opponentPlayer(currentPlayer))) {
                 return createMove("checkmate");

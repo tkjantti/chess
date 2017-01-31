@@ -268,6 +268,45 @@ describe("Rules", function () {
             expect(result.isLegal).toBe(true);
         });
 
+        it('returns a position in which a piece is captured', function () {
+            board = CHESS_TEST.boardState([
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "  r     ",
+                " P      ",
+                "        ",
+                "        "
+            ]);
+
+            var p1 = CHESS_APP.createPoint(2, 1);
+            var p2 = p1.add(1, 1);
+            var result = rules.inspectMove(board, getMove(p1, p2));
+
+            expect(result.capturePosition.row).toBe(abs(board, p2).row);
+            expect(result.capturePosition.column).toBe(abs(board, p2).column);
+        });
+
+        it('does not return a capture position if no piece is captured', function () {
+            board = CHESS_TEST.boardState([
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "   r    ",
+                " B      ",
+                "        ",
+                "        "
+            ]);
+
+            var p1 = CHESS_APP.createPoint(2, 1);
+            var p2 = p1.add(1, 1);
+            var result = rules.inspectMove(board, getMove(p1, p2));
+
+            expect(result.capturePosition).toBeFalsy();
+        });
+
         describe("Pawn", function () {
             it("can move forward one step", function () {
                 board = CHESS_TEST.boardState([

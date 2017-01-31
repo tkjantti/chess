@@ -16,12 +16,6 @@ describe('Turn', function () {
         board = CHESS_APP.createInMemoryBoard(8, 8);
         source = CHESS_APP.createPoint(4, 4);
         destination = CHESS_APP.createPoint(5, 4);
-
-        // dummy methods so that these methods can
-        // be spied on with inMemoryBoard.
-        board.removePiece = function (position) {
-            console.log(position);
-        };
     });
 
     describe('move', function () {
@@ -78,14 +72,18 @@ describe('Turn', function () {
             board.setPiece(destination, CHESS_APP.createPiece("black", "pawn"));
 
             spyOn(rules, "inspectMove").and.returnValue({
-                isLegal: true
+                isLegal: true,
+                capturePosition: CHESS_APP.createPoint(3, 6)
             });
             spyOn(rules, "isInCheck").and.returnValue(null);
             spyOn(board, "removePiece");
 
             turn.move(board, source, destination);
 
-            expect(board.removePiece).toHaveBeenCalledWith(destination);
+            expect(board.removePiece).toHaveBeenCalledWith(jasmine.objectContaining({
+                row: 3,
+                column: 6
+            }));
         });
 
         it('does not move if the move is not legal', function () {

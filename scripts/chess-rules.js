@@ -200,10 +200,14 @@ CHESS_APP.createRules = function () {
                 };
             }
 
+            var result = {};
+
+            if (pieceAtDestination) {
+                result.capturePosition = move.destination;
+            }
+
             horizontal = move.getHorizontalMovement();
             vertical = move.getVerticalMovement();
-
-            var result = {};
 
             switch (piece.type) {
             case "pawn":

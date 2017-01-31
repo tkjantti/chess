@@ -19,6 +19,10 @@ CHESS_APP.createInMemoryBoard = function (rowCount, columnCount) {
         rows[position.row][position.column] = piece;
     };
 
+    that.removePiece = function (position) {
+        this.setPiece(position, null);
+    };
+
     that.getPositionOf = function (piece) {
         var found = this.findPiece(function (currentPiece) {
             return currentPiece.equals(piece);
