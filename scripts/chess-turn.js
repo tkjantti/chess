@@ -33,6 +33,10 @@ CHESS_APP.createTurn = function (rules) {
         }
 
         board.move(move.source, move.destination);
+
+        if (inspectionResult.promotion) {
+            board.changeTypeOfPiece(move.destination, inspectionResult.promotion);
+        }
     };
 
     return {

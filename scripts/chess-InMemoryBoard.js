@@ -23,6 +23,10 @@ CHESS_APP.createInMemoryBoard = function (rowCount, columnCount) {
         this.setPiece(position, null);
     };
 
+    that.changeTypeOfPiece = function (position, type) {
+        this.getPiece(position).type = type;
+    };
+
     that.getPositionOf = function (piece) {
         var found = this.findPiece(function (currentPiece) {
             return currentPiece.equals(piece);

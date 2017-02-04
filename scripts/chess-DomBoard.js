@@ -118,6 +118,15 @@ CHESS_APP.createDomBoard = function () {
         return CHESS_APP.createPiece(getPlayerOf(pieceImage), getTypeOf(pieceImage));
     };
 
+    that.changeTypeOfPiece = function (position, type) {
+        var square = getSquare(position);
+        var pieceImage = getPieceImage(square);
+        var player = getPlayerOf(pieceImage);
+        var elt = $(pieceImage);
+        elt.attr('src', 'images/' + player + '_' + type + '.svg');
+        elt.attr('id', player + '_' + type);
+    };
+
     that.getPositionOf = function (piece) {
         var found = this.findPiece(function (currentPiece) {
             return currentPiece.equals(piece);

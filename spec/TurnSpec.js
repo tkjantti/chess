@@ -134,5 +134,22 @@ describe('Turn', function () {
             expect(result.result).toBe("checkmate");
             expect(rules.isInCheckMate).toHaveBeenCalledWith(jasmine.anything(), "black");
         });
+
+        it('changes the type of piece if a piece gets promoted', function () {
+            board.setPiece(source, CHESS_APP.createPiece("white", "pawn"));
+
+            spyOn(rules, "inspectMove").and.returnValue({
+                isLegal: true,
+                promotion: "queen"
+            });
+            spyOn(rules, "isInCheck").and.returnValue(null);
+            spyOn(board, "move");
+            spyOn(board, "changeTypeOfPiece");
+
+            turn.move(board, source, destination);
+
+            expect(board.move).toHaveBeenCalledWith(source, destination);
+            expect(board.changeTypeOfPiece).toHaveBeenCalledWith(destination, "queen");
+        });
     });
 });
