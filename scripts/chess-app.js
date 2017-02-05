@@ -9,6 +9,10 @@ CHESS_APP.createPoint = function (row, column) {
         row: row,
         column: column,
 
+        toString: function () {
+            return '(' + this.row + ', ' + this.column + ')';
+        },
+
         equals: function (other) {
             if (!other) {
                 return false;
@@ -28,12 +32,31 @@ CHESS_APP.createPoint = function (row, column) {
 
 CHESS_APP.createPiece = function (player, type) {
     "use strict";
+
+    var symbolMap = {
+        "pawn": "p",
+        "rook": "r",
+        "knight": "n",
+        "bishop": "b",
+        "queen": "q",
+        "king": "k"
+    };
+
     return {
         player: player,
         type: type,
 
         equals: function (another) {
             return another.player === this.player && another.type === this.type;
+        },
+
+        toString: function () {
+            var symbol = symbolMap[this.type];
+            if (player === "white") {
+                return symbol.toUpperCase();
+            } else {
+                return symbol;
+            }
         }
     };
 };
@@ -116,7 +139,27 @@ CHESS_APP.createBoard = function (rows, columns) {
                     f(p);
                 }
             }
+        },
+
+        toString: function () {
+            var result = "board\n";
+            var that = this;
+            var row, column, p, piece, square;
+
+            for (row = 0; row < this.getRowCount(); row += 1) {
+                for (column = 0; column < this.getColumnCount(); column += 1) {
+                    p = CHESS_APP.createPoint(row, column);
+                    piece = that.getPiece(p);
+                    if (piece) {
+                        square = piece.toString();
+                    } else {
+                        square = ' ';
+                    }
+                    result += square;
+                }
+                result += '\n';
+            }
+            return result;
         }
     };
 };
-
