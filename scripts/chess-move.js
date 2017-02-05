@@ -14,7 +14,7 @@ CHESS_APP.createMove = function (player, source, destination) {
         return '{ ' + player + ' ' + source + ' -> ' + destination + ' }';
     };
 
-    that.getVerticalMovement = function () {
+    that.getRelativeVerticalMovement = function () {
         if (player === "white") {
             return source.row - destination.row;
         } else {

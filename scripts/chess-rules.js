@@ -95,7 +95,7 @@ CHESS_APP.createRules = function () {
     };
 
     var isCorrectForwardMoveForPawn = function (board, move) {
-        var vertical = move.getVerticalMovement();
+        var vertical = move.getRelativeVerticalMovement();
         var relativePosition = board.getRelativePosition(move.player, move.source);
         var isAtStartingPosition = relativePosition.row === 1;
 
@@ -106,7 +106,7 @@ CHESS_APP.createRules = function () {
 
     var isPawnCapturingDiagonally = function (board, move) {
         var horizontal = move.getHorizontalMovement();
-        var vertical = move.getVerticalMovement();
+        var vertical = move.getRelativeVerticalMovement();
 
         return (horizontal === -1 || horizontal === 1) &&
                 vertical === 1 &&
@@ -207,7 +207,7 @@ CHESS_APP.createRules = function () {
             }
 
             horizontal = move.getHorizontalMovement();
-            vertical = move.getVerticalMovement();
+            vertical = move.getRelativeVerticalMovement();
 
             switch (piece.type) {
             case "pawn":
