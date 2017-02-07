@@ -5,6 +5,7 @@ CHESS_APP.createTurn = function (rules) {
     "use strict";
 
     var currentPlayer = "white";
+    var previousMove = null;
     var onPlayerChangedHandler = null;
 
     var changePlayer = function () {
@@ -14,7 +15,7 @@ CHESS_APP.createTurn = function (rules) {
         }
     };
 
-    var createMove = function (result, positionInCheck) {
+    var createMoveResult = function (result, positionInCheck) {
         return {
             result: result,
             positionInCheck: positionInCheck,
@@ -52,30 +53,34 @@ CHESS_APP.createTurn = function (rules) {
         move: function (board, source, destination) {
             var move = CHESS_APP.createMove(currentPlayer, source, destination);
 
-            var inspectionResult = rules.inspectMove(board, move);
+            var inspectionResult = rules.inspectMove(board, move, previousMove);
 
             if (!inspectionResult.isLegal) {
-                return createMove("bad_move");
+                return createMoveResult("bad_move");
             }
 
             var tempBoard = CHESS_APP.cloneInMemoryBoard(board);
             updateBoard(tempBoard, move, inspectionResult);
 
-            var positionInCheck = rules.isInCheck(tempBoard, currentPlayer);
+            var positionInCheck = rules.isInCheck(tempBoard, currentPlayer, previousMove);
 
             if (positionInCheck) {
-                return createMove("bad_move", positionInCheck);
+                return createMoveResult("bad_move", positionInCheck);
             }
 
             updateBoard(board, move, inspectionResult);
 
-            if (rules.isInCheckMate(board, rules.opponentPlayer(currentPlayer))) {
-                return createMove("checkmate");
+            var result;
+
+            if (rules.isInCheckMate(board, rules.opponentPlayer(currentPlayer), previousMove)) {
+                result = createMoveResult("checkmate");
+            } else {
+                result = createMoveResult("good_move");
+                changePlayer();
             }
 
-            changePlayer();
-
-            return createMove("good_move");
+            previousMove = move;
+            return result;
         }
     };
 };

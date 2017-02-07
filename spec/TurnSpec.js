@@ -9,6 +9,7 @@ describe('Turn', function () {
     var board;
     var source;
     var destination;
+    var previousMove = null;
 
     beforeEach(function () {
         rules = CHESS_APP.createRules();
@@ -16,6 +17,7 @@ describe('Turn', function () {
         board = CHESS_APP.createInMemoryBoard(8, 8);
         source = CHESS_APP.createPoint(4, 4);
         destination = CHESS_APP.createPoint(5, 4);
+        previousMove = null;
     });
 
     describe('move', function () {
@@ -34,8 +36,8 @@ describe('Turn', function () {
                 player: "white",
                 source: source,
                 destination: destination
-            }));
-            expect(rules.isInCheck).toHaveBeenCalledWith(jasmine.anything(), "white");
+            }), previousMove);
+            expect(rules.isInCheck).toHaveBeenCalledWith(jasmine.anything(), "white", previousMove);
         });
 
         it('makes the move if it is legal', function () {
@@ -132,7 +134,7 @@ describe('Turn', function () {
             var result = turn.move(board, source, destination);
 
             expect(result.result).toBe("checkmate");
-            expect(rules.isInCheckMate).toHaveBeenCalledWith(jasmine.anything(), "black");
+            expect(rules.isInCheckMate).toHaveBeenCalledWith(jasmine.anything(), "black", previousMove);
         });
 
         it('changes the type of piece if a piece gets promoted', function () {
@@ -150,6 +152,30 @@ describe('Turn', function () {
 
             expect(board.move).toHaveBeenCalledWith(source, destination);
             expect(board.changeTypeOfPiece).toHaveBeenCalledWith(destination, "queen");
+        });
+
+        it('passes previous move to inspectMove', function () {
+            var white_source = CHESS_APP.createPoint(6, 0);
+            var white_destination = CHESS_APP.createPoint(5, 0);
+
+            var black_source = CHESS_APP.createPoint(1, 1);
+            var black_destination = CHESS_APP.createPoint(2, 1);
+
+            board.setPiece(white_source, CHESS_APP.createPiece("white", "pawn"));
+            board.setPiece(black_source, CHESS_APP.createPiece("black", "pawn"));
+
+            spyOn(rules, "inspectMove").and.returnValue({
+                isLegal: true
+            });
+            spyOn(rules, "isInCheck").and.returnValue(null);
+
+            turn.move(board, white_source, white_destination);
+            turn.move(board, black_source, black_destination);
+
+            var actualPreviousMove = rules.inspectMove.calls.mostRecent().args[2];
+            expect(actualPreviousMove.player).toBe("white");
+            expect(actualPreviousMove.source).toEqual(white_source);
+            expect(actualPreviousMove.destination).toEqual(white_destination);
         });
     });
 });
