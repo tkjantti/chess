@@ -4,10 +4,10 @@
 CHESS_APP.createRules = function () {
     "use strict";
 
-    var isHorizontalMove = function (board, move) {
+    var isNonBlockedHorizontalMove = function (board, move) {
         var min, max, i;
 
-        if (move.source.row !== move.destination.row) {
+        if (!move.isHorizontal()) {
             return false;
         }
 
@@ -23,10 +23,10 @@ CHESS_APP.createRules = function () {
         return true;
     };
 
-    var isVerticalMove = function (board, move) {
+    var isNonBlockedVerticalMove = function (board, move) {
         var min, max, i;
 
-        if (move.source.column !== move.destination.column) {
+        if (!move.isVertical()) {
             return false;
         }
 
@@ -42,24 +42,19 @@ CHESS_APP.createRules = function () {
         return true;
     };
 
-    var isDiagonalMove = function (board, move) {
+    var isNonBlockedDiagonalMove = function (board, move) {
         var leftmostPoint, rightmostPoint, rowStep, r, c;
-        var source = move.source, destination = move.destination;
 
-        if (source.row === destination.row) {
+        if (!move.isDiagonal()) {
             return false;
         }
 
-        if (Math.abs(destination.column - source.column) !== Math.abs(destination.row - source.row)) {
-            return false;
-        }
-
-        leftmostPoint = (source.column < destination.column)
-            ? source
-            : destination;
-        rightmostPoint = (source.column > destination.column)
-            ? source
-            : destination;
+        leftmostPoint = (move.source.column < move.destination.column)
+            ? move.source
+            : move.destination;
+        rightmostPoint = (move.source.column > move.destination.column)
+            ? move.source
+            : move.destination;
         rowStep = (rightmostPoint.row > leftmostPoint.row)
             ? 1
             : -1;
@@ -88,7 +83,7 @@ CHESS_APP.createRules = function () {
         var relativePosition = board.getRelativePosition(move.player, move.source);
         var isAtStartingPosition = relativePosition.row === 1;
 
-        return isVerticalMove(board, move) &&
+        return isNonBlockedVerticalMove(board, move) &&
                 ((vertical === 1) || (isAtStartingPosition && vertical === 2)) &&
                 !board.getPiece(move.destination);
     };
@@ -275,18 +270,18 @@ CHESS_APP.createRules = function () {
                 break;
 
             case "bishop":
-                result.isLegal = isDiagonalMove(board, move);
+                result.isLegal = isNonBlockedDiagonalMove(board, move);
                 break;
 
             case "rook":
-                result.isLegal = isHorizontalMove(board, move) ||
-                        isVerticalMove(board, move);
+                result.isLegal = isNonBlockedHorizontalMove(board, move) ||
+                        isNonBlockedVerticalMove(board, move);
                 break;
 
             case "queen":
-                result.isLegal = isDiagonalMove(board, move) ||
-                        isHorizontalMove(board, move) ||
-                        isVerticalMove(board, move);
+                result.isLegal = isNonBlockedDiagonalMove(board, move) ||
+                        isNonBlockedHorizontalMove(board, move) ||
+                        isNonBlockedVerticalMove(board, move);
                 break;
 
             case "king":

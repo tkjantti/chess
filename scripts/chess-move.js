@@ -26,5 +26,20 @@ CHESS_APP.createMove = function (player, source, destination) {
         return destination.column - source.column;
     };
 
+    that.isHorizontal = function () {
+        return this.source.row === this.destination.row &&
+                this.source.column !== this.destination.column;
+    };
+
+    that.isVertical = function () {
+        return this.source.column === this.destination.column &&
+                this.source.row !== this.destination.row;
+    };
+
+    that.isDiagonal = function () {
+        return (this.source.row !== this.destination.row) &&
+                Math.abs(this.destination.column - this.source.column) === Math.abs(this.destination.row - this.source.row);
+    };
+
     return that;
 };
