@@ -13,6 +13,11 @@ CHESS_APP.game = (function () {
         $('#gameState').addClass("victory");
     }
 
+    function showDraw() {
+        $('#gameState').text("Draw!");
+        $('#gameState').addClass("draw");
+    }
+
     function onSquareClicked(position, previousPosition) {
         if (state === "finished") {
             return;
@@ -46,6 +51,9 @@ CHESS_APP.game = (function () {
 
         if (result.isCheckMate()) {
             showVictory();
+            state = "finished";
+        } else if (result.isDraw()) {
+            showDraw();
             state = "finished";
         }
 

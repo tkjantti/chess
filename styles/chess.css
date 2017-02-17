@@ -46,3 +46,8 @@ p.victory {
     background-color: #22BB22;
     color: white;
 }
+
+p.draw {
+    background-color: #2222BB;
+    color: white;
+}

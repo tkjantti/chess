@@ -24,6 +24,9 @@ CHESS_APP.createTurn = function (rules) {
             },
             isCheckMate: function () {
                 return result === "checkmate";
+            },
+            isDraw: function () {
+                return result === "draw";
             }
         };
     };
