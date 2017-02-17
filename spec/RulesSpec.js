@@ -178,6 +178,82 @@ describe("Rules", function () {
         });
     });
 
+    describe('isInStalemate', function () {
+        var previousMove;
+
+        beforeEach(function () {
+            previousMove = null;
+        });
+
+        it('is not when the player can make a legal move', function () {
+            var board = CHESS_TEST.boardState([
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "       r",
+                "K       "
+            ]);
+
+            var result = rules.isInStalemate(board, "white", previousMove);
+
+            expect(result).toBe(false);
+        });
+
+        it('is not when the player can not make a legal move but is in check', function () {
+            var board = CHESS_TEST.boardState([
+                "qr      ",
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "       r",
+                "K       "
+            ]);
+
+            var result = rules.isInStalemate(board, "white", previousMove);
+
+            expect(result).toBe(false);
+        });
+
+        it('is when the player can not make a legal move', function () {
+            var board = CHESS_TEST.boardState([
+                " r      ",
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "       r",
+                "K      P"
+            ]);
+
+            var result = rules.isInStalemate(board, "white", previousMove);
+
+            expect(result).toBe(true);
+        });
+
+        it('is when the player can not move without becoming in a check position', function () {
+            var board = CHESS_TEST.boardState([
+                " r      ",
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "       r",
+                "K       "
+            ]);
+
+            var result = rules.isInStalemate(board, "white", previousMove);
+
+            expect(result).toBe(true);
+        });
+    });
+
     describe("inspectMove", function () {
         var board;
         var previousMove;
@@ -190,7 +266,6 @@ describe("Rules", function () {
         };
 
         beforeEach(function () {
-            rules = CHESS_APP.createRules();
             previousMove = null;
         });
 

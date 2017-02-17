@@ -145,6 +145,13 @@ CHESS_APP.createRules = function () {
             : undefined;
     };
 
+    var getLegalMovesForPiece = function (rules, player, board, position, previousMove) {
+        return board.getPositions(function (destination) {
+            var move = CHESS_APP.createMove(player, position, destination);
+            return rules.inspectMove(board, move, previousMove).isLegal;
+        });
+    };
+
     return {
         opponentPlayer: function (player) {
             return (player === "white")
@@ -157,8 +164,11 @@ CHESS_APP.createRules = function () {
          * the piece under threat. Otherwise returns null.
          */
         isInCheck: function (board, player, previousMove) {
-            var opponent = this.opponentPlayer(player);
             var positionOfKing = board.getPositionOf(CHESS_APP.createPiece(player, "king"));
+            if (!positionOfKing) {
+                throw "No king found from the board!";
+            }
+            var opponent = this.opponentPlayer(player);
             var that = this;
             var attackingPiece = board.findPiece(function (piece, position) {
                 var move = CHESS_APP.createMove(opponent, position, positionOfKing);
@@ -181,15 +191,8 @@ CHESS_APP.createRules = function () {
                 return piece.player === player;
             });
 
-            var getLegalMoves = function (player, board, position, previousMove) {
-                return board.getPositions(function (destination) {
-                    var move = CHESS_APP.createMove(player, position, destination);
-                    return that.inspectMove(board, move, previousMove).isLegal;
-                });
-            };
-
             var canPreventChess = function (piece) {
-                var legalMoves = getLegalMoves(player, board, piece.position, previousMove);
+                var legalMoves = getLegalMovesForPiece(that, player, board, piece.position, previousMove);
 
                 return legalMoves.some(function (destination) {
                     var b2 = CHESS_APP.cloneInMemoryBoard(board);
@@ -199,6 +202,25 @@ CHESS_APP.createRules = function () {
             };
 
             return !ownPieces.some(canPreventChess);
+        },
+
+        isInStalemate: function (board, player, previousMove) {
+            var that = this;
+            var ownPieces = board.findPieces(function (piece, ignore) {
+                return piece.player === player;
+            });
+
+            var canMove = function (piece) {
+                var legalMoves = getLegalMovesForPiece(that, player, board, piece.position, previousMove);
+                return legalMoves.some(function (destination) {
+                    var b2 = CHESS_APP.cloneInMemoryBoard(board);
+                    var move = CHESS_APP.createMove(player, piece.position, destination);
+                    b2.move(piece.position, destination);
+                    return !that.isInCheck(b2, player, move);
+                });
+            };
+
+            return !this.isInCheck(board, player, previousMove) && !ownPieces.some(canMove);
         },
 
         /*
