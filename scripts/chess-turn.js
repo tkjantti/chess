@@ -70,16 +70,20 @@ CHESS_APP.createTurn = function (rules) {
 
             updateBoard(board, move, inspectionResult);
 
-            var result;
+            previousMove = move;
 
-            if (rules.isInCheckMate(board, rules.opponentPlayer(currentPlayer), previousMove)) {
+            var result;
+            var opponent = rules.opponentPlayer(currentPlayer);
+
+            if (rules.isInCheckMate(board, opponent, previousMove)) {
                 result = createMoveResult("checkmate");
+            } else if (rules.isInStalemate(board, opponent, previousMove)) {
+                result = createMoveResult("draw");
             } else {
                 result = createMoveResult("good_move");
                 changePlayer();
             }
 
-            previousMove = move;
             return result;
         }
     };

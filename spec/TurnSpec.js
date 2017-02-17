@@ -18,6 +18,8 @@ describe('Turn', function () {
         source = CHESS_APP.createPoint(4, 4);
         destination = CHESS_APP.createPoint(5, 4);
         previousMove = null;
+
+        spyOn(rules, "isInStalemate").and.returnValue(false);
     });
 
     describe('move', function () {
@@ -134,7 +136,10 @@ describe('Turn', function () {
             var result = turn.move(board, source, destination);
 
             expect(result.result).toBe("checkmate");
-            expect(rules.isInCheckMate).toHaveBeenCalledWith(jasmine.anything(), "black", previousMove);
+            expect(rules.isInCheckMate).toHaveBeenCalledWith(
+                jasmine.anything(),
+                "black",
+                jasmine.anything());
         });
 
         it('changes the type of piece if a piece gets promoted', function () {
@@ -176,6 +181,42 @@ describe('Turn', function () {
             expect(actualPreviousMove.player).toBe("white");
             expect(actualPreviousMove.source).toEqual(white_source);
             expect(actualPreviousMove.destination).toEqual(white_destination);
+        });
+
+        it('returns draw if the next player is in stalemate', function () {
+            board.setPiece(source, CHESS_APP.createPiece("white", "pawn"));
+
+            spyOn(rules, "inspectMove").and.returnValue({
+                isLegal: true
+            });
+            spyOn(rules, "isInCheck").and.returnValue(null);
+
+            rules.isInStalemate.and.callFake(function (ignore, player) {
+                if (player === "black") {
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+
+            var result = turn.move(board, source, destination);
+
+            expect(result.result).toBe("draw");
+        });
+
+        it('does not return draw if the next player is not in stalemate', function () {
+            board.setPiece(source, CHESS_APP.createPiece("white", "pawn"));
+
+            spyOn(rules, "inspectMove").and.returnValue({
+                isLegal: true
+            });
+            spyOn(rules, "isInCheck").and.returnValue(null);
+
+            rules.isInStalemate.and.returnValue(false);
+
+            var result = turn.move(board, source, destination);
+
+            expect(result.result).not.toBe("draw");
         });
     });
 });
