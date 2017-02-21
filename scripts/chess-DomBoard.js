@@ -172,6 +172,12 @@ CHESS_APP.createDomBoard = function () {
         return pieces;
     };
 
+    that.getPieces = function () {
+        return this.findPieces(function () {
+            return true;
+        });
+    };
+
     that.selectSquare = function (position) {
         this.removeSelection();
 

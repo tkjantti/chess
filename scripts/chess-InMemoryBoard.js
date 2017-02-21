@@ -1,26 +1,52 @@
-/*jslint browser:true, fudge:true, this:true, for:true */
+/*jslint browser:true, fudge:true, this:true */
 /*global window, $, CHESS_APP */
 
 CHESS_APP.createInMemoryBoard = function (rowCount, columnCount) {
     "use strict";
-    var rows = [];
-    var i;
-    for (i = 0; i < rowCount; i += 1) {
-        rows[i] = [];
-    }
+    var pieces = []; // A list of piece, position pairs.
 
     var that = CHESS_APP.createBoard(rowCount, columnCount);
 
     that.getPiece = function (position) {
-        return rows[position.row][position.column];
+        var found = pieces.find(function (p) {
+            return p.position.equals(position);
+        });
+
+        return found
+            ? found.piece
+            : null;
     };
 
     that.setPiece = function (position, piece) {
-        rows[position.row][position.column] = piece;
+        if (position === null) {
+            throw "position is null";
+        }
+        if (piece === null) {
+            throw "piece is null";
+        }
+
+        var existing = pieces.find(function (p) {
+            return p.position.equals(position);
+        });
+
+        if (existing) {
+            existing.piece = piece;
+        } else {
+            pieces.push({
+                piece: piece,
+                position: position
+            });
+        }
     };
 
     that.removePiece = function (position) {
-        this.setPiece(position, null);
+        var i = pieces.findIndex(function (p) {
+            return p.position.equals(position);
+        });
+
+        if (i >= 0) {
+            pieces.splice(i, 1);
+        }
     };
 
     that.changeTypeOfPiece = function (position, type) {
@@ -28,8 +54,8 @@ CHESS_APP.createInMemoryBoard = function (rowCount, columnCount) {
     };
 
     that.getPositionOf = function (piece) {
-        var found = this.findPiece(function (currentPiece) {
-            return currentPiece.equals(piece);
+        var found = this.findPiece(function (p, ignore) {
+            return p.equals(piece);
         });
         return found
             ? found.position
@@ -37,47 +63,28 @@ CHESS_APP.createInMemoryBoard = function (rowCount, columnCount) {
     };
 
     that.findPiece = function (predicate) {
-        var row, column, position, piece;
-
-        for (row = 0; row < this.getRowCount(); row += 1) {
-            for (column = 0; column < this.getColumnCount(); column += 1) {
-                position = CHESS_APP.createPoint(row, column);
-                piece = this.getPiece(position);
-                if (piece && predicate(piece, position)) {
-                    return {
-                        piece: piece,
-                        position: position
-                    };
-                }
-            }
-        }
-        return null;
+        return pieces.find(function (p) {
+            return predicate(p.piece, p.position);
+        });
     };
 
     that.findPieces = function (predicate) {
-        var row, column, position, piece, pieces = [];
+        return pieces.filter(function (p) {
+            return predicate(p.piece, p.position);
+        });
+    };
 
-        for (row = 0; row < this.getRowCount(); row += 1) {
-            for (column = 0; column < this.getColumnCount(); column += 1) {
-                position = CHESS_APP.createPoint(row, column);
-                piece = this.getPiece(position);
-                if (piece && predicate(piece, position)) {
-                    pieces.push({
-                        piece: piece,
-                        position: position
-                    });
-                }
-            }
-        }
+    that.getPieces = function () {
         return pieces;
     };
 
     that.move = function (source, destination) {
         var piece = this.getPiece(source);
         if (!piece) {
-            console.log("Board.move: piece expected in source");
+            throw "no piece in source position";
         }
-        this.setPiece(source, null);
+
+        this.removePiece(source);
         this.setPiece(destination, piece);
     };
 
@@ -87,18 +94,10 @@ CHESS_APP.createInMemoryBoard = function (rowCount, columnCount) {
 CHESS_APP.cloneInMemoryBoard = function (another) {
     "use strict";
     var board = CHESS_APP.createInMemoryBoard(another.getRowCount(), another.getColumnCount());
-    var row, column, position, piece;
 
-    for (row = 0; row < board.getRowCount(); row += 1) {
-        for (column = 0; column < board.getColumnCount(); column += 1) {
-            position = CHESS_APP.createPoint(row, column);
-            piece = another.getPiece(position);
-            if (piece) {
-                board.setPiece(position, piece);
-            }
-        }
-    }
+    another.getPieces().forEach(function (p) {
+        board.setPiece(p.position, p.piece);
+    });
 
     return board;
 };
-
