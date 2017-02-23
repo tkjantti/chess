@@ -178,79 +178,194 @@ describe("Rules", function () {
         });
     });
 
-    describe('isInStalemate', function () {
+    describe('Draw', function () {
         var previousMove;
 
         beforeEach(function () {
             previousMove = null;
         });
 
-        it('is not when the player can make a legal move', function () {
-            var board = CHESS_TEST.boardState([
-                "        ",
-                "        ",
-                "        ",
-                "        ",
-                "        ",
-                "        ",
-                "       r",
-                "K       "
-            ]);
+        describe('Stalemate', function () {
+            it('is not when the player can make a legal move', function () {
+                var board = CHESS_TEST.boardState([
+                    "    k   ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "       r",
+                    "K       "
+                ]);
 
-            var result = rules.isInStalemate(board, "white", previousMove);
+                var result = rules.isDraw(board, "white", previousMove);
 
-            expect(result).toBe(false);
+                expect(result).toBe(false);
+            });
+
+            it('is not when the player can not make a legal move but is in check', function () {
+                var board = CHESS_TEST.boardState([
+                    "qr      ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "       r",
+                    "K       "
+                ]);
+
+                var result = rules.isDraw(board, "white", previousMove);
+
+                expect(result).toBe(false);
+            });
+
+            it('is when the player can not make a legal move', function () {
+                var board = CHESS_TEST.boardState([
+                    " r      ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "       r",
+                    "K      P"
+                ]);
+
+                var result = rules.isDraw(board, "white", previousMove);
+
+                expect(result).toBe(true);
+            });
+
+            it('is when the player can not move without becoming in a check position', function () {
+                var board = CHESS_TEST.boardState([
+                    " r      ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "       r",
+                    "K       "
+                ]);
+
+                var result = rules.isDraw(board, "white", previousMove);
+
+                expect(result).toBe(true);
+            });
         });
 
-        it('is not when the player can not make a legal move but is in check', function () {
-            var board = CHESS_TEST.boardState([
-                "qr      ",
-                "        ",
-                "        ",
-                "        ",
-                "        ",
-                "        ",
-                "       r",
-                "K       "
-            ]);
+        describe('No possibility of checkmate', function () {
+            it('is with king against king', function () {
+                var board = CHESS_TEST.boardState([
+                    "        ",
+                    "   k    ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "   K    ",
+                    "        "
+                ]);
 
-            var result = rules.isInStalemate(board, "white", previousMove);
+                var result = rules.isDraw(board, "white", previousMove);
 
-            expect(result).toBe(false);
-        });
+                expect(result).toBe(true);
+            });
 
-        it('is when the player can not make a legal move', function () {
-            var board = CHESS_TEST.boardState([
-                " r      ",
-                "        ",
-                "        ",
-                "        ",
-                "        ",
-                "        ",
-                "       r",
-                "K      P"
-            ]);
+            it('is with king against king and bishop', function () {
+                var board1 = CHESS_TEST.boardState([
+                    "        ",
+                    "   k b  ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "   K    ",
+                    "        "
+                ]);
 
-            var result = rules.isInStalemate(board, "white", previousMove);
+                var board2 = CHESS_TEST.boardState([
+                    "        ",
+                    "   k    ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "   K B  ",
+                    "        "
+                ]);
 
-            expect(result).toBe(true);
-        });
+                var result1 = rules.isDraw(board1, "white", previousMove);
+                var result2 = rules.isDraw(board2, "white", previousMove);
 
-        it('is when the player can not move without becoming in a check position', function () {
-            var board = CHESS_TEST.boardState([
-                " r      ",
-                "        ",
-                "        ",
-                "        ",
-                "        ",
-                "        ",
-                "       r",
-                "K       "
-            ]);
+                expect(result1).toBe(true);
+                expect(result2).toBe(true);
+            });
 
-            var result = rules.isInStalemate(board, "white", previousMove);
+            it('is with king against king and knight', function () {
+                var board1 = CHESS_TEST.boardState([
+                    "        ",
+                    "   k n  ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "   K    ",
+                    "        "
+                ]);
 
-            expect(result).toBe(true);
+                var board2 = CHESS_TEST.boardState([
+                    "        ",
+                    "   k    ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "   K N  ",
+                    "        "
+                ]);
+
+                var result1 = rules.isDraw(board1, "white", previousMove);
+                var result2 = rules.isDraw(board2, "white", previousMove);
+
+                expect(result1).toBe(true);
+                expect(result2).toBe(true);
+            });
+
+            it('is not if the current player has enough pieces for checkmate', function () {
+                var board = CHESS_TEST.boardState([
+                    "        ",
+                    "   k    ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "   K R  ",
+                    "        "
+                ]);
+
+                var result = rules.isDraw(board, "white", previousMove);
+
+                expect(result).toBe(false);
+            });
+
+            it('is not if the opposite player has enough pieces for checkmate', function () {
+                var board = CHESS_TEST.boardState([
+                    "        ",
+                    "   k r  ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "   K    ",
+                    "        "
+                ]);
+
+                var result = rules.isDraw(board, "white", previousMove);
+
+                expect(result).toBe(false);
+            });
         });
     });
 

@@ -80,7 +80,7 @@ CHESS_APP.createTurn = function (rules) {
 
             if (rules.isInCheckMate(board, opponent, previousMove)) {
                 result = createMoveResult("checkmate");
-            } else if (rules.isInStalemate(board, opponent, previousMove)) {
+            } else if (rules.isDraw(board, opponent, previousMove)) {
                 result = createMoveResult("draw");
             } else {
                 result = createMoveResult("good_move");

@@ -19,7 +19,7 @@ describe('Turn', function () {
         destination = CHESS_APP.createPoint(5, 4);
         previousMove = null;
 
-        spyOn(rules, "isInStalemate").and.returnValue(false);
+        spyOn(rules, "isDraw").and.returnValue(false);
     });
 
     describe('move', function () {
@@ -183,7 +183,7 @@ describe('Turn', function () {
             expect(actualPreviousMove.destination).toEqual(white_destination);
         });
 
-        it('returns draw if the next player is in stalemate', function () {
+        it('returns draw if the move results in a draw', function () {
             board.setPiece(source, CHESS_APP.createPiece("white", "pawn"));
 
             spyOn(rules, "inspectMove").and.returnValue({
@@ -191,7 +191,7 @@ describe('Turn', function () {
             });
             spyOn(rules, "isInCheck").and.returnValue(null);
 
-            rules.isInStalemate.and.callFake(function (ignore, player) {
+            rules.isDraw.and.callFake(function (ignore, player) {
                 if (player === "black") {
                     return true;
                 } else {
@@ -204,7 +204,7 @@ describe('Turn', function () {
             expect(result.result).toBe("draw");
         });
 
-        it('does not return draw if the next player is not in stalemate', function () {
+        it('does not return draw if the move does not result in a draw', function () {
             board.setPiece(source, CHESS_APP.createPiece("white", "pawn"));
 
             spyOn(rules, "inspectMove").and.returnValue({
@@ -212,7 +212,7 @@ describe('Turn', function () {
             });
             spyOn(rules, "isInCheck").and.returnValue(null);
 
-            rules.isInStalemate.and.returnValue(false);
+            rules.isDraw.and.returnValue(false);
 
             var result = turn.move(board, source, destination);
 

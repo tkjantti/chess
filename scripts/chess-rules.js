@@ -152,6 +152,87 @@ CHESS_APP.createRules = function () {
         });
     };
 
+    var isInStalemate = function (rules, board, player, previousMove) {
+        var ownPieces = board.findPieces(function (piece, ignore) {
+            return piece.player === player;
+        });
+
+        var canMove = function (piece) {
+            var legalMoves = getLegalMovesForPiece(rules, player, board, piece.position, previousMove);
+            return legalMoves.some(function (destination) {
+                var b2 = CHESS_APP.cloneInMemoryBoard(board);
+                var move = CHESS_APP.createMove(player, piece.position, destination);
+                b2.move(piece.position, destination);
+                return !rules.isInCheck(b2, player, move);
+            });
+        };
+
+        return !rules.isInCheck(board, player, previousMove) && !ownPieces.some(canMove);
+    };
+
+    var isNoPossibilityOfCheckMate = function (board) {
+        var allPieces = board.getPieces().map(function (p) {
+            return p.piece;
+        });
+        var white = allPieces.filter(function (piece) {
+            return piece.player === "white";
+        }).map(function (piece) {
+            return piece.type;
+        });
+
+        var black = allPieces.filter(function (piece) {
+            return piece.player === "black";
+        }).map(function (piece) {
+            return piece.type;
+        });
+
+        var onlyKing = function (pieces) {
+            return pieces.length === 1 && pieces[0] === "king";
+        };
+
+        var arrayEquals = function (a1, a2) {
+            var i;
+
+            if (a1.length !== a2.length) {
+                return false;
+            }
+
+            for (i = 0; i < a1.length; i += 1) {
+                if (a1[i] !== a2[i]) {
+                    return false;
+                }
+            }
+
+            return true;
+        };
+
+        var onlyTwoPieces = function (pieces, p1, p2) {
+            return arrayEquals(pieces, [p1, p2]) || arrayEquals(pieces, [p2, p1]);
+        };
+
+        if (onlyKing(white) && onlyKing(black)) {
+            return true;
+        }
+
+        if (onlyKing(white) && onlyTwoPieces(black, "king", "bishop")) {
+            return true;
+        }
+
+        if (onlyTwoPieces(white, "king", "bishop") && onlyKing(black)) {
+            return true;
+        }
+
+        if (onlyKing(white) && onlyTwoPieces(black, "king", "knight")) {
+            return true;
+        }
+
+        if (onlyTwoPieces(white, "king", "knight") && onlyKing(black)) {
+            return true;
+        }
+
+        return false;
+    };
+
     return {
         opponentPlayer: function (player) {
             return (player === "white")
@@ -204,23 +285,9 @@ CHESS_APP.createRules = function () {
             return !ownPieces.some(canPreventChess);
         },
 
-        isInStalemate: function (board, player, previousMove) {
-            var that = this;
-            var ownPieces = board.findPieces(function (piece, ignore) {
-                return piece.player === player;
-            });
-
-            var canMove = function (piece) {
-                var legalMoves = getLegalMovesForPiece(that, player, board, piece.position, previousMove);
-                return legalMoves.some(function (destination) {
-                    var b2 = CHESS_APP.cloneInMemoryBoard(board);
-                    var move = CHESS_APP.createMove(player, piece.position, destination);
-                    b2.move(piece.position, destination);
-                    return !that.isInCheck(b2, player, move);
-                });
-            };
-
-            return !this.isInCheck(board, player, previousMove) && !ownPieces.some(canMove);
+        isDraw: function (board, player, previousMove) {
+            return isInStalemate(this, board, player, previousMove) ||
+                    isNoPossibilityOfCheckMate(board);
         },
 
         /*
