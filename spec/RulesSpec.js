@@ -697,252 +697,273 @@ describe("Rules", function () {
                 }));
             });
 
-            it("can not capture en passant if previous move is null", function () {
+            it("is not promoted to queen when it does not reach the top of the board", function () {
                 board = CHESS_TEST.boardState([
                     "        ",
-                    "       r",
                     "        ",
-                    " Pp     ",
+                    " P      ",
+                    "        ",
                     "        ",
                     "        ",
                     "        ",
                     "        "
                 ]);
 
-                var p1 = CHESS_APP.createPoint(3, 1);
-                var p2 = CHESS_APP.createPoint(2, 2);
+                var p1 = CHESS_APP.createPoint(5, 1);
+                var p2 = p1.add(1, 0);
+                var result = rules.inspectMove(board, getMove(p1, p2), previousMove);
 
-                var move = CHESS_APP.createMove("white", p1, p2);
-                previousMove = null;
-
-                var resultLeft = rules.inspectMove(board, move, previousMove);
-
-                expect(resultLeft.isLegal).toBe(false);
+                expect(result.promotion).toBeFalsy();
             });
 
-            it("can not capture en passant if previous move was not by a pawn", function () {
-                board = CHESS_TEST.boardState([
-                    "        ",
-                    "       r",
-                    "        ",
-                    " Pp     ",
-                    "        ",
-                    "        ",
-                    "        ",
-                    "        "
-                ]);
+            describe('En passant capture', function () {
+                it("is not if previous move is null", function () {
+                    board = CHESS_TEST.boardState([
+                        "        ",
+                        "       r",
+                        "        ",
+                        " Pp     ",
+                        "        ",
+                        "        ",
+                        "        ",
+                        "        "
+                    ]);
 
-                var move = CHESS_APP.createMove(
-                    "white",
-                    CHESS_APP.createPoint(3, 1),
-                    CHESS_APP.createPoint(2, 2)
-                );
-                previousMove = CHESS_APP.createMove(
-                    "black",
-                    CHESS_APP.createPoint(0, 7),
-                    CHESS_APP.createPoint(1, 7)
-                );
+                    var p1 = CHESS_APP.createPoint(3, 1);
+                    var p2 = CHESS_APP.createPoint(2, 2);
 
-                var resultLeft = rules.inspectMove(board, move, previousMove);
+                    var move = CHESS_APP.createMove("white", p1, p2);
+                    previousMove = null;
 
-                expect(resultLeft.isLegal).toBe(false);
-            });
+                    var resultLeft = rules.inspectMove(board, move, previousMove);
 
-            it("can not capture en passant if the captured piece is not a pawn", function () {
-                board = CHESS_TEST.boardState([
-                    "        ",
-                    "        ",
-                    "        ",
-                    " Pr     ",
-                    "        ",
-                    "        ",
-                    "        ",
-                    "        "
-                ]);
+                    expect(resultLeft.isLegal).toBe(false);
+                });
 
-                var move = CHESS_APP.createMove(
-                    "white",
-                    CHESS_APP.createPoint(3, 1),
-                    CHESS_APP.createPoint(2, 2)
-                );
-                previousMove = CHESS_APP.createMove(
-                    "black",
-                    CHESS_APP.createPoint(1, 2),
-                    CHESS_APP.createPoint(3, 2)
-                );
+                it("is not if previous move was not by a pawn", function () {
+                    board = CHESS_TEST.boardState([
+                        "        ",
+                        "       r",
+                        "        ",
+                        " Pp     ",
+                        "        ",
+                        "        ",
+                        "        ",
+                        "        "
+                    ]);
 
-                var resultLeft = rules.inspectMove(board, move, previousMove);
+                    var move = CHESS_APP.createMove(
+                        "white",
+                        CHESS_APP.createPoint(3, 1),
+                        CHESS_APP.createPoint(2, 2)
+                    );
+                    previousMove = CHESS_APP.createMove(
+                        "black",
+                        CHESS_APP.createPoint(0, 7),
+                        CHESS_APP.createPoint(1, 7)
+                    );
 
-                expect(resultLeft.isLegal).toBe(false);
-            });
+                    var resultLeft = rules.inspectMove(board, move, previousMove);
 
-            it("can not capture en passant if previous move was not two steps by a pawn", function () {
-                board = CHESS_TEST.boardState([
-                    "        ",
-                    "        ",
-                    "        ",
-                    " Pp     ",
-                    "        ",
-                    "        ",
-                    "        ",
-                    "        "
-                ]);
+                    expect(resultLeft.isLegal).toBe(false);
+                });
 
-                var move = CHESS_APP.createMove(
-                    "white",
-                    CHESS_APP.createPoint(3, 1),
-                    CHESS_APP.createPoint(2, 2)
-                );
-                previousMove = CHESS_APP.createMove(
-                    "black",
-                    CHESS_APP.createPoint(2, 3),
-                    CHESS_APP.createPoint(3, 3)
-                );
+                it("is not if the captured piece is not a pawn", function () {
+                    board = CHESS_TEST.boardState([
+                        "        ",
+                        "        ",
+                        "        ",
+                        " Pr     ",
+                        "        ",
+                        "        ",
+                        "        ",
+                        "        "
+                    ]);
 
-                var resultLeft = rules.inspectMove(board, move, previousMove);
+                    var move = CHESS_APP.createMove(
+                        "white",
+                        CHESS_APP.createPoint(3, 1),
+                        CHESS_APP.createPoint(2, 2)
+                    );
+                    previousMove = CHESS_APP.createMove(
+                        "black",
+                        CHESS_APP.createPoint(1, 2),
+                        CHESS_APP.createPoint(3, 2)
+                    );
 
-                expect(resultLeft.isLegal).toBe(false);
-            });
+                    var resultLeft = rules.inspectMove(board, move, previousMove);
 
-            it("can not capture en passant if opponent pawn is not next to own", function () {
-                board = CHESS_TEST.boardState([
-                    "        ",
-                    "        ",
-                    "        ",
-                    "P p     ",
-                    "        ",
-                    "        ",
-                    "        ",
-                    "        "
-                ]);
+                    expect(resultLeft.isLegal).toBe(false);
+                });
 
-                var move = CHESS_APP.createMove(
-                    "white",
-                    CHESS_APP.createPoint(3, 0),
-                    CHESS_APP.createPoint(2, 1)
-                );
-                previousMove = CHESS_APP.createMove(
-                    "black",
-                    CHESS_APP.createPoint(1, 3),
-                    CHESS_APP.createPoint(3, 3)
-                );
+                it("is not if previous move was not two steps by a pawn", function () {
+                    board = CHESS_TEST.boardState([
+                        "        ",
+                        "        ",
+                        "        ",
+                        " Pp     ",
+                        "        ",
+                        "        ",
+                        "        ",
+                        "        "
+                    ]);
 
-                var resultLeft = rules.inspectMove(board, move, previousMove);
+                    var move = CHESS_APP.createMove(
+                        "white",
+                        CHESS_APP.createPoint(3, 1),
+                        CHESS_APP.createPoint(2, 2)
+                    );
+                    previousMove = CHESS_APP.createMove(
+                        "black",
+                        CHESS_APP.createPoint(2, 3),
+                        CHESS_APP.createPoint(3, 3)
+                    );
 
-                expect(resultLeft.isLegal).toBe(false);
-            });
+                    var resultLeft = rules.inspectMove(board, move, previousMove);
 
-            it("can not capture en passant if opponent pawn is on the wrong side", function () {
-                board = CHESS_TEST.boardState([
-                    "        ",
-                    "        ",
-                    "        ",
-                    " Pp     ",
-                    "        ",
-                    "        ",
-                    "        ",
-                    "        "
-                ]);
+                    expect(resultLeft.isLegal).toBe(false);
+                });
 
-                var move = CHESS_APP.createMove(
-                    "white",
-                    CHESS_APP.createPoint(3, 1),
-                    CHESS_APP.createPoint(2, 0)
-                );
-                previousMove = CHESS_APP.createMove(
-                    "black",
-                    CHESS_APP.createPoint(1, 2),
-                    CHESS_APP.createPoint(3, 2)
-                );
+                it("is not if opponent pawn is not next to own", function () {
+                    board = CHESS_TEST.boardState([
+                        "        ",
+                        "        ",
+                        "        ",
+                        "P p     ",
+                        "        ",
+                        "        ",
+                        "        ",
+                        "        "
+                    ]);
 
-                var resultLeft = rules.inspectMove(board, move, previousMove);
+                    var move = CHESS_APP.createMove(
+                        "white",
+                        CHESS_APP.createPoint(3, 0),
+                        CHESS_APP.createPoint(2, 1)
+                    );
+                    previousMove = CHESS_APP.createMove(
+                        "black",
+                        CHESS_APP.createPoint(1, 3),
+                        CHESS_APP.createPoint(3, 3)
+                    );
 
-                expect(resultLeft.isLegal).toBe(false);
-            });
+                    var resultLeft = rules.inspectMove(board, move, previousMove);
 
-            it("can capture en passant if previous move was two steps by a pawn on the right", function () {
-                board = CHESS_TEST.boardState([
-                    "        ",
-                    "        ",
-                    "        ",
-                    " Pp     ",
-                    "        ",
-                    "        ",
-                    "        ",
-                    "        "
-                ]);
+                    expect(resultLeft.isLegal).toBe(false);
+                });
 
-                var move = CHESS_APP.createMove(
-                    "white",
-                    CHESS_APP.createPoint(3, 1),
-                    CHESS_APP.createPoint(2, 2)
-                );
-                previousMove = CHESS_APP.createMove(
-                    "black",
-                    CHESS_APP.createPoint(1, 2),
-                    CHESS_APP.createPoint(3, 2)
-                );
+                it("is not if opponent pawn is on the wrong side", function () {
+                    board = CHESS_TEST.boardState([
+                        "        ",
+                        "        ",
+                        "        ",
+                        " Pp     ",
+                        "        ",
+                        "        ",
+                        "        ",
+                        "        "
+                    ]);
 
-                var resultLeft = rules.inspectMove(board, move, previousMove);
+                    var move = CHESS_APP.createMove(
+                        "white",
+                        CHESS_APP.createPoint(3, 1),
+                        CHESS_APP.createPoint(2, 0)
+                    );
+                    previousMove = CHESS_APP.createMove(
+                        "black",
+                        CHESS_APP.createPoint(1, 2),
+                        CHESS_APP.createPoint(3, 2)
+                    );
 
-                expect(resultLeft.isLegal).toBe(true);
-            });
+                    var resultLeft = rules.inspectMove(board, move, previousMove);
 
-            it("can capture en passant if previous move was two steps by a pawn on the left", function () {
-                board = CHESS_TEST.boardState([
-                    "        ",
-                    "        ",
-                    "        ",
-                    "pP      ",
-                    "        ",
-                    "        ",
-                    "        ",
-                    "        "
-                ]);
+                    expect(resultLeft.isLegal).toBe(false);
+                });
 
-                var move = CHESS_APP.createMove(
-                    "white",
-                    CHESS_APP.createPoint(3, 1),
-                    CHESS_APP.createPoint(2, 0)
-                );
-                previousMove = CHESS_APP.createMove(
-                    "black",
-                    CHESS_APP.createPoint(1, 0),
-                    CHESS_APP.createPoint(3, 0)
-                );
+                it("is if previous move was two steps by a pawn on the right", function () {
+                    board = CHESS_TEST.boardState([
+                        "        ",
+                        "        ",
+                        "        ",
+                        " Pp     ",
+                        "        ",
+                        "        ",
+                        "        ",
+                        "        "
+                    ]);
 
-                var resultLeft = rules.inspectMove(board, move, previousMove);
+                    var move = CHESS_APP.createMove(
+                        "white",
+                        CHESS_APP.createPoint(3, 1),
+                        CHESS_APP.createPoint(2, 2)
+                    );
+                    previousMove = CHESS_APP.createMove(
+                        "black",
+                        CHESS_APP.createPoint(1, 2),
+                        CHESS_APP.createPoint(3, 2)
+                    );
 
-                expect(resultLeft.isLegal).toBe(true);
-            });
+                    var resultLeft = rules.inspectMove(board, move, previousMove);
 
-            it("sets capture position correctly when capturing en passant", function () {
-                board = CHESS_TEST.boardState([
-                    "        ",
-                    "        ",
-                    "        ",
-                    " Pp     ",
-                    "        ",
-                    "        ",
-                    "        ",
-                    "        "
-                ]);
+                    expect(resultLeft.isLegal).toBe(true);
+                });
 
-                var move = CHESS_APP.createMove(
-                    "white",
-                    CHESS_APP.createPoint(3, 1),
-                    CHESS_APP.createPoint(2, 2)
-                );
-                previousMove = CHESS_APP.createMove(
-                    "black",
-                    CHESS_APP.createPoint(1, 2),
-                    CHESS_APP.createPoint(3, 2)
-                );
+                it("is if previous move was two steps by a pawn on the left", function () {
+                    board = CHESS_TEST.boardState([
+                        "        ",
+                        "        ",
+                        "        ",
+                        "pP      ",
+                        "        ",
+                        "        ",
+                        "        ",
+                        "        "
+                    ]);
 
-                var resultLeft = rules.inspectMove(board, move, previousMove);
+                    var move = CHESS_APP.createMove(
+                        "white",
+                        CHESS_APP.createPoint(3, 1),
+                        CHESS_APP.createPoint(2, 0)
+                    );
+                    previousMove = CHESS_APP.createMove(
+                        "black",
+                        CHESS_APP.createPoint(1, 0),
+                        CHESS_APP.createPoint(3, 0)
+                    );
 
-                expect(resultLeft.capturePosition.row).toEqual(3);
-                expect(resultLeft.capturePosition.column).toEqual(2);
+                    var resultLeft = rules.inspectMove(board, move, previousMove);
+
+                    expect(resultLeft.isLegal).toBe(true);
+                });
+
+                it("sets capture position correctly when capturing en passant", function () {
+                    board = CHESS_TEST.boardState([
+                        "        ",
+                        "        ",
+                        "        ",
+                        " Pp     ",
+                        "        ",
+                        "        ",
+                        "        ",
+                        "        "
+                    ]);
+
+                    var move = CHESS_APP.createMove(
+                        "white",
+                        CHESS_APP.createPoint(3, 1),
+                        CHESS_APP.createPoint(2, 2)
+                    );
+                    previousMove = CHESS_APP.createMove(
+                        "black",
+                        CHESS_APP.createPoint(1, 2),
+                        CHESS_APP.createPoint(3, 2)
+                    );
+
+                    var resultLeft = rules.inspectMove(board, move, previousMove);
+
+                    expect(resultLeft.capturePosition.row).toEqual(3);
+                    expect(resultLeft.capturePosition.column).toEqual(2);
+                });
             });
         });
 
