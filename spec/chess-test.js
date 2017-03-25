@@ -3,6 +3,15 @@
 
 var CHESS_TEST = {};
 
+CHESS_TEST.pointEquality = function (p1, p2) {
+    "use strict";
+    if ((p1.row !== undefined) && (p1.column !== undefined)) {
+        return p1.equals(p2);
+    }
+
+    return undefined;
+};
+
 CHESS_TEST.boardState = function (rows) {
     "use strict";
     var rowCount = rows.length;

@@ -6,6 +6,7 @@ describe("Rules", function () {
     var rules;
 
     beforeEach(function () {
+        jasmine.addCustomEqualityTester(CHESS_TEST.pointEquality);
         rules = CHESS_APP.createRules();
     });
 
@@ -476,8 +477,7 @@ describe("Rules", function () {
             var p2 = p1.add(1, 1);
             var result = rules.inspectMove(board, getMove(p1, p2), previousMove);
 
-            expect(result.capturePosition.row).toBe(abs(board, p2).row);
-            expect(result.capturePosition.column).toBe(abs(board, p2).column);
+            expect(result.capturePosition).toEqual(abs(board, p2));
         });
 
         it('does not return a capture position if no piece is captured', function () {
@@ -961,8 +961,7 @@ describe("Rules", function () {
 
                     var resultLeft = rules.inspectMove(board, move, previousMove);
 
-                    expect(resultLeft.capturePosition.row).toEqual(3);
-                    expect(resultLeft.capturePosition.column).toEqual(2);
+                    expect(resultLeft.capturePosition).toEqual(CHESS_APP.createPoint(3, 2));
                 });
             });
         });
