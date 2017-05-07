@@ -1,40 +1,43 @@
 
 #board {
-    float: left;
-    margin: 2em 2em 2em 2em;
+    display: inline-block;
+    margin: 1em 2em 1em 2em;
     border: 2px solid black;
 }
 
-td {
+#board td {
     width: 50px;
     height: 50px;
     text-align: center;
     vertical-align: middle;
 }
 
-td.white {
+#board td.white {
     background-color: white;
 }
 
-td.black {
+#board td.black {
     background-color: gray;
 }
 
-.side_table {
-    float: left;
-    margin: 2em 0em 2em 1em;
-}
-
-td.side {
-    background-color: #CCCCCC;
-}
-
-td.selected {
+#board td.selected {
     background-color: #BBBBFF;
 }
 
-td.threat {
+#board td.threat {
     background-color: red;
+}
+
+#capturedPieces table {
+    margin: 1em 0em 1em 2em;
+}
+
+#capturedPieces td {
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    vertical-align: middle;
+    background-color: #CCCCCC;
 }
 
 footer {

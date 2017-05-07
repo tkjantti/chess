@@ -40,7 +40,7 @@ CHESS_APP.createDomBoard = function () {
     };
 
     var getSideSquares = function (player) {
-        return $("#" + player + "_pieces td");
+        return $("#" + player + "CapturedPieces td");
     };
 
     var addBoardClickHandlers = function () {
