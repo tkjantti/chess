@@ -18,6 +18,21 @@ CHESS_APP.game = (function () {
         $('#gameState').addClass("draw");
     }
 
+    function addMoveResultToList(moveResult) {
+        if (moveResult.getPlayer() === "white") {
+            $('#moves').find('tbody')
+                .append($('<tr>')
+                    .append($('<td>')
+                        .text(moveResult.toString())
+                    )
+                );
+        } else {
+            $('#moves tr:last').append($('<td>')
+                .text(moveResult.toString())
+            );
+        }
+    }
+
     function onSquareClicked(position, previousPosition) {
         if (state === "finished") {
             return;
@@ -48,6 +63,8 @@ CHESS_APP.game = (function () {
 
             return;
         }
+
+        addMoveResultToList(result);
 
         if (result.isCheckMate()) {
             showVictory();
