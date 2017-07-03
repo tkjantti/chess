@@ -499,6 +499,47 @@ describe("Rules", function () {
             expect(result.capturePosition).toBeFalsy();
         });
 
+        it('does not return piece if the move is not legal', function () {
+            board = CHESS_TEST.boardState([
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                " B      ",
+                "        ",
+                "        "
+            ]);
+
+            var p1 = CHESS_APP.createPoint(2, 1);
+            var p2 = p1.add(1, 0);
+            var result = rules.inspectMove(board, getMove(p1, p2), previousMove);
+
+            expect(result.piece).toBeFalsy();
+        });
+
+        it('returns the piece that was moved when the move is legal', function () {
+            board = CHESS_TEST.boardState([
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "   r    ",
+                " B      ",
+                "        ",
+                "        "
+            ]);
+
+            var p1 = CHESS_APP.createPoint(2, 1);
+            var p2 = p1.add(1, 1);
+            var result = rules.inspectMove(board, getMove(p1, p2), previousMove);
+
+            expect(result.piece).toEqual(jasmine.objectContaining({
+                player: "white",
+                type: "bishop"
+            }));
+        });
+
         describe("Pawn", function () {
             it("can move forward one step", function () {
                 board = CHESS_TEST.boardState([

@@ -11,19 +11,19 @@ CHESS_APP.createMove = function (player, source, destination) {
     };
 
     that.toString = function () {
-        return '{ ' + player + ' ' + source + ' -> ' + destination + ' }';
+        return '{ ' + this.player + ' ' + this.source + ' -> ' + this.destination + ' }';
     };
 
     that.getRelativeVerticalMovement = function () {
         if (player === "white") {
-            return source.row - destination.row;
+            return this.source.row - this.destination.row;
         } else {
-            return destination.row - source.row;
+            return this.destination.row - this.source.row;
         }
     };
 
     that.getHorizontalMovement = function () {
-        return destination.column - source.column;
+        return this.destination.column - this.source.column;
     };
 
     that.isHorizontal = function () {

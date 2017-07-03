@@ -383,6 +383,10 @@ CHESS_APP.createRules = function () {
                 break;
             }
 
+            if (result.isLegal) {
+                result.piece = piece;
+            }
+
             return result;
         }
     };

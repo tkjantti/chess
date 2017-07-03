@@ -1,11 +1,14 @@
 /*jslint browser:true, fudge:true, this:true, for:true */
 /*global window, $, CHESS_APP */
 
+CHESS_APP.defaultRowCount = 8;
+CHESS_APP.defaultColumnCount = 8;
+
 CHESS_APP.createBoard = function (rows, columns) {
     "use strict";
 
-    var rowCount = 8;
-    var columnCount = 8;
+    var rowCount = CHESS_APP.defaultRowCount;
+    var columnCount = CHESS_APP.defaultColumnCount;
 
     if (rows !== undefined) {
         rowCount = rows;

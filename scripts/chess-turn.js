@@ -15,22 +15,6 @@ CHESS_APP.createTurn = function (rules) {
         }
     };
 
-    var createMoveResult = function (result, positionInCheck) {
-        return {
-            result: result,
-            positionInCheck: positionInCheck,
-            isGood: function () {
-                return result !== "bad_move";
-            },
-            isCheckMate: function () {
-                return result === "checkmate";
-            },
-            isDraw: function () {
-                return result === "draw";
-            }
-        };
-    };
-
     var updateBoard = function (board, move, inspectionResult) {
         if (inspectionResult.capturePosition) {
             board.removePiece(inspectionResult.capturePosition);
@@ -59,7 +43,7 @@ CHESS_APP.createTurn = function (rules) {
             var inspectionResult = rules.inspectMove(board, move, previousMove);
 
             if (!inspectionResult.isLegal) {
-                return createMoveResult("bad_move");
+                return CHESS_APP.createMoveResult(move, "bad_move");
             }
 
             var tempBoard = CHESS_APP.cloneInMemoryBoard(board);
@@ -68,7 +52,7 @@ CHESS_APP.createTurn = function (rules) {
             var positionInCheck = rules.isInCheck(tempBoard, currentPlayer, previousMove);
 
             if (positionInCheck) {
-                return createMoveResult("bad_move", positionInCheck);
+                return CHESS_APP.createMoveResult(move, "bad_move", null, positionInCheck);
             }
 
             updateBoard(board, move, inspectionResult);
@@ -79,11 +63,11 @@ CHESS_APP.createTurn = function (rules) {
             var opponent = rules.opponentPlayer(currentPlayer);
 
             if (rules.isInCheckMate(board, opponent, previousMove)) {
-                result = createMoveResult("checkmate");
+                result = CHESS_APP.createMoveResult(move, "checkmate", inspectionResult.piece);
             } else if (rules.isDraw(board, opponent, previousMove)) {
-                result = createMoveResult("draw");
+                result = CHESS_APP.createMoveResult(move, "draw", inspectionResult.piece);
             } else {
-                result = createMoveResult("good_move");
+                result = CHESS_APP.createMoveResult(move, "good_move", inspectionResult.piece);
                 changePlayer();
             }
 
