@@ -1,5 +1,5 @@
-/*jslint browser:true, fudge:true, this:true */
-/*global window, $, CHESS_APP */
+/* jshint jquery:true */
+/* global CHESS_APP */
 
 CHESS_APP.game = (function () {
     "use strict";

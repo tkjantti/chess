@@ -1,5 +1,5 @@
-/*jslint fudge:true */
-/*global $, jasmine, describe, beforeEach, it, expect, spyOn, CHESS_APP, CHESS_TEST */
+/* jshint jasmine:true */
+/* global CHESS_APP */
 
 describe('Turn', function () {
     "use strict";

@@ -12,7 +12,7 @@ if (!Array.prototype.some) {
   Array.prototype.some = function(fun/*, thisArg*/) {
     'use strict';
 
-    if (this == null) {
+    if (this == null) { // jshint ignore:line
       throw new TypeError('Array.prototype.some called on null or undefined');
     }
 
@@ -21,7 +21,7 @@ if (!Array.prototype.some) {
     }
 
     var t = Object(this);
-    var len = t.length >>> 0;
+    var len = t.length >>> 0; // jshint ignore:line
 
     var thisArg = arguments.length >= 2 ? arguments[1] : void 0;
     for (var i = 0; i < len; i++) {

@@ -1,5 +1,4 @@
-/*jslint browser:true, fudge:true, this:true, for:true */
-/*global window, $, CHESS_APP */
+/* global CHESS_APP */
 
 CHESS_APP.defaultRowCount = 8;
 CHESS_APP.defaultColumnCount = 8;
@@ -27,10 +26,10 @@ CHESS_APP.createBoard = function (rows, columns) {
         },
 
         isInside: function (position) {
-            return (0 <= position.row)
-                    && (position.row < this.getRowCount())
-                    && (0 <= position.column)
-                    && (position.column < this.getColumnCount());
+            return (0 <= position.row) &&
+                    (position.row < this.getRowCount()) &&
+                    (0 <= position.column) &&
+                    (position.column < this.getColumnCount());
         },
 
         /*
@@ -38,8 +37,8 @@ CHESS_APP.createBoard = function (rows, columns) {
          * player.
          */
         getRelativePosition: function (player, absolutePosition) {
-            var row = (player === "white")
-                ? this.getRowCount() - 1 - absolutePosition.row
+            var row = (player === "white") ?
+                this.getRowCount() - 1 - absolutePosition.row
                 : absolutePosition.row;
             return CHESS_APP.createPoint(row, absolutePosition.column);
         },
@@ -49,8 +48,8 @@ CHESS_APP.createBoard = function (rows, columns) {
          * on the viewpoint of the player.
          */
         getAbsolutePosition: function (player, relativePosition) {
-            var row = (player === "white")
-                ? this.getRowCount() - 1 - relativePosition.row
+            var row = (player === "white") ?
+                this.getRowCount() - 1 - relativePosition.row
                 : relativePosition.row;
             return CHESS_APP.createPoint(row, relativePosition.column);
         },

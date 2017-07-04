@@ -1,5 +1,4 @@
-/*jslint browser:true, fudge:true, this:true, for:true */
-/*global window, $, CHESS_APP */
+/* global CHESS_APP */
 
 CHESS_APP.createRules = function () {
     "use strict";
@@ -49,15 +48,13 @@ CHESS_APP.createRules = function () {
             return false;
         }
 
-        leftmostPoint = (move.source.column < move.destination.column)
-            ? move.source
-            : move.destination;
-        rightmostPoint = (move.source.column > move.destination.column)
-            ? move.source
-            : move.destination;
-        rowStep = (rightmostPoint.row > leftmostPoint.row)
-            ? 1
-            : -1;
+        leftmostPoint = (move.source.column < move.destination.column) ?
+                move.source
+                : move.destination;
+        rightmostPoint = (move.source.column > move.destination.column) ?
+                move.source
+                : move.destination;
+        rowStep = (rightmostPoint.row > leftmostPoint.row) ? 1 : -1;
 
         r = leftmostPoint.row + rowStep;
         c = leftmostPoint.column + 1;
@@ -140,9 +137,7 @@ CHESS_APP.createRules = function () {
 
     var getPawnPromotion = function (board, move) {
         var relativePosition = board.getRelativePosition(move.player, move.destination);
-        return (relativePosition.row === board.getRowCount() - 1)
-            ? "queen"
-            : undefined;
+        return (relativePosition.row === board.getRowCount() - 1) ? "queen" : undefined;
     };
 
     var getLegalMovesForPiece = function (rules, player, board, position, previousMove) {
@@ -153,7 +148,7 @@ CHESS_APP.createRules = function () {
     };
 
     var isInStalemate = function (rules, board, player, previousMove) {
-        var ownPieces = board.findPieces(function (piece, ignore) {
+        var ownPieces = board.findPieces(function (piece) {
             return piece.player === player;
         });
 
@@ -235,9 +230,7 @@ CHESS_APP.createRules = function () {
 
     return {
         opponentPlayer: function (player) {
-            return (player === "white")
-                ? "black"
-                : "white";
+            return (player === "white") ? "black" : "white";
         },
 
         /*
@@ -256,9 +249,7 @@ CHESS_APP.createRules = function () {
                 return (piece.player === opponent) &&
                         that.inspectMove(board, move, previousMove, true).isLegal;
             });
-            return attackingPiece
-                ? positionOfKing
-                : null;
+            return attackingPiece ? positionOfKing : null;
         },
 
         isInCheckMate: function (board, player, previousMove) {
@@ -268,7 +259,7 @@ CHESS_APP.createRules = function () {
                 return false;
             }
 
-            var ownPieces = board.findPieces(function (piece, ignore) {
+            var ownPieces = board.findPieces(function (piece) {
                 return piece.player === player;
             });
 
@@ -354,8 +345,8 @@ CHESS_APP.createRules = function () {
                 break;
 
             case "knight":
-                result.isLegal = (Math.abs(horizontal) === 1 && Math.abs(vertical) === 2)
-                        || (Math.abs(horizontal) === 2 && Math.abs(vertical) === 1);
+                result.isLegal = (Math.abs(horizontal) === 1 && Math.abs(vertical) === 2) ||
+                        (Math.abs(horizontal) === 2 && Math.abs(vertical) === 1);
                 break;
 
             case "bishop":
@@ -378,9 +369,7 @@ CHESS_APP.createRules = function () {
                 break;
 
             default:
-                console.log("unknown piece type: " + piece.type);
-                result.isLegal = false;
-                break;
+                throw "unknown piece type: " + piece.type;
             }
 
             if (result.isLegal) {

@@ -1,5 +1,5 @@
-/*jslint fudge:true */
-/*global $, jasmine, describe, beforeEach, it, xit, expect, objectContaining, CHESS_APP, CHESS_TEST */
+/* jshint jasmine:true */
+/* global CHESS_APP, CHESS_TEST */
 
 describe('InMemoryBoard', function () {
     "use strict";

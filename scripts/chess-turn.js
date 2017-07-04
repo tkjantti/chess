@@ -1,5 +1,4 @@
-/*jslint browser:true, fudge:true, this:true */
-/*global window, $, CHESS_APP */
+/* global CHESS_APP */
 
 CHESS_APP.createTurn = function (rules) {
     "use strict";

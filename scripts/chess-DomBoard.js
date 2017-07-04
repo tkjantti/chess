@@ -1,5 +1,5 @@
-/*jslint browser:true, fudge:true, this:true, for:true */
-/*global window, $, CHESS_APP */
+/* jshint browser:true, jquery:true */
+/* global CHESS_APP */
 
 CHESS_APP.createDomBoard = function () {
     "use strict";
@@ -131,9 +131,7 @@ CHESS_APP.createDomBoard = function () {
         var found = this.findPiece(function (currentPiece) {
             return currentPiece.equals(piece);
         });
-        return found
-            ? found.position
-            : null;
+        return found ? found.position : null;
     };
 
     that.findPiece = function (predicate) {

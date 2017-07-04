@@ -1,5 +1,4 @@
-/*jslint browser:true, fudge:true, this:true */
-/*global window, $, CHESS_APP */
+/* global CHESS_APP */
 
 CHESS_APP.createInMemoryBoard = function (rowCount, columnCount) {
     "use strict";
@@ -12,9 +11,7 @@ CHESS_APP.createInMemoryBoard = function (rowCount, columnCount) {
             return p.position.equals(position);
         });
 
-        return found
-            ? found.piece
-            : null;
+        return found ? found.piece : null;
     };
 
     that.setPiece = function (position, piece) {
@@ -54,12 +51,10 @@ CHESS_APP.createInMemoryBoard = function (rowCount, columnCount) {
     };
 
     that.getPositionOf = function (piece) {
-        var found = this.findPiece(function (p, ignore) {
+        var found = this.findPiece(function (p) {
             return p.equals(piece);
         });
-        return found
-            ? found.position
-            : null;
+        return found ? found.position : null;
     };
 
     that.findPiece = function (predicate) {

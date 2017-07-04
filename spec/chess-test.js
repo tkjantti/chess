@@ -1,5 +1,4 @@
-/*jslint fudge:true, for:true */
-/*global CHESS_APP */
+/* global CHESS_APP */
 
 var CHESS_TEST = {};
 

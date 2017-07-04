@@ -1,5 +1,5 @@
-/*jslint fudge:true */
-/*global $, jasmine, describe, beforeEach, it, xit, expect, objectContaining, CHESS_APP, CHESS_TEST */
+/* jshint jasmine:true */
+/* global CHESS_APP, CHESS_TEST */
 
 describe("Rules", function () {
     "use strict";
@@ -1031,7 +1031,7 @@ describe("Rules", function () {
                     rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 7)))
                 ];
 
-                $.each(results, function (ignore, result) {
+                results.forEach(function (result) {
                     expect(result.isLegal).toBe(true);
                 });
             });
@@ -1059,7 +1059,7 @@ describe("Rules", function () {
                     rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(7, 3)))
                 ];
 
-                $.each(results, function (ignore, result) {
+                results.forEach(function (result) {
                     expect(result.isLegal).toBe(true);
                 });
             });
@@ -1091,7 +1091,7 @@ describe("Rules", function () {
                     rules.inspectMove(board, getMove(p1, p1.add(-2, 2)))
                 ];
 
-                $.each(results, function (ignore, result) {
+                results.forEach(function (result) {
                     expect(result.isLegal).toBe(false);
                 });
             });
@@ -1125,7 +1125,7 @@ describe("Rules", function () {
                     rules.inspectMove(board, getMove(p1, p1.add(-2, 2)))
                 ];
 
-                $.each(results, function (ignore, result) {
+                results.forEach(function (result) {
                     expect(result.isLegal).toBe(true);
                 });
             });
@@ -1153,7 +1153,7 @@ describe("Rules", function () {
                     rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 7)))
                 ];
 
-                $.each(results, function (ignore, result) {
+                results.forEach(function (result) {
                     expect(result.isLegal).toBe(false);
                 });
             });
@@ -1181,7 +1181,7 @@ describe("Rules", function () {
                     rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(7, 3)))
                 ];
 
-                $.each(results, function (ignore, result) {
+                results.forEach(function (result) {
                     expect(result.isLegal).toBe(false);
                 });
             });
@@ -1211,7 +1211,7 @@ describe("Rules", function () {
                     rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 7)))
                 ];
 
-                $.each(results, function (ignore, result) {
+                results.forEach(function (result) {
                     expect(result.isLegal).toBe(true);
                 });
             });
@@ -1239,7 +1239,7 @@ describe("Rules", function () {
                     rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(7, 3)))
                 ];
 
-                $.each(results, function (ignore, result) {
+                results.forEach(function (result) {
                     expect(result.isLegal).toBe(true);
                 });
             });
@@ -1271,7 +1271,7 @@ describe("Rules", function () {
                     rules.inspectMove(board, getMove(p1, p1.add(-2, 2)))
                 ];
 
-                $.each(results, function (ignore, result) {
+                results.forEach(function (result) {
                     expect(result.isLegal).toBe(true);
                 });
             });
@@ -1296,7 +1296,7 @@ describe("Rules", function () {
                     rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 4)))
                 ];
 
-                $.each(results, function (ignore, result) {
+                results.forEach(function (result) {
                     expect(result.isLegal).toBe(true);
                 });
             });
@@ -1322,7 +1322,7 @@ describe("Rules", function () {
                     rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 7)))
                 ];
 
-                $.each(results, function (ignore, result) {
+                results.forEach(function (result) {
                     expect(result.isLegal).toBe(false);
                 });
             });
@@ -1345,7 +1345,7 @@ describe("Rules", function () {
                     rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(4, 3)))
                 ];
 
-                $.each(results, function (ignore, result) {
+                results.forEach(function (result) {
                     expect(result.isLegal).toBe(true);
                 });
             });
@@ -1371,7 +1371,7 @@ describe("Rules", function () {
                     rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(7, 3)))
                 ];
 
-                $.each(results, function (ignore, result) {
+                results.forEach(function (result) {
                     expect(result.isLegal).toBe(false);
                 });
             });
@@ -1396,7 +1396,7 @@ describe("Rules", function () {
                     rules.inspectMove(board, getMove(p1, p1.add(-1, 1)))
                 ];
 
-                $.each(results, function (ignore, result) {
+                results.forEach(function (result) {
                     expect(result.isLegal).toBe(true);
                 });
             });
@@ -1421,7 +1421,7 @@ describe("Rules", function () {
                     rules.inspectMove(board, getMove(p1, p1.add(-2, 2)))
                 ];
 
-                $.each(results, function (ignore, result) {
+                results.forEach(function (result) {
                     expect(result.isLegal).toBe(false);
                 });
             });
@@ -1455,7 +1455,7 @@ describe("Rules", function () {
                     rules.inspectMove(board, getMove(p1, p1.add(1, 2)))
                 ];
 
-                $.each(results, function (ignore, result) {
+                results.forEach(function (result) {
                     expect(result.isLegal).toBe(true);
                 });
             });
@@ -1483,7 +1483,7 @@ describe("Rules", function () {
                     rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 7)))
                 ];
 
-                $.each(results, function (ignore, result) {
+                results.forEach(function (result) {
                     expect(result.isLegal).toBe(false);
                 });
             });
@@ -1511,7 +1511,7 @@ describe("Rules", function () {
                     rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(7, 3)))
                 ];
 
-                $.each(results, function (ignore, result) {
+                results.forEach(function (result) {
                     expect(result.isLegal).toBe(false);
                 });
             });
@@ -1543,7 +1543,7 @@ describe("Rules", function () {
                     rules.inspectMove(board, getMove(p1, p1.add(-2, 2)))
                 ];
 
-                $.each(results, function (ignore, result) {
+                results.forEach(function (result) {
                     expect(result.isLegal).toBe(false);
                 });
             });
@@ -1575,7 +1575,7 @@ describe("Rules", function () {
                     rules.inspectMove(board, getMove(p1, p1.add(1, 2)))
                 ];
 
-                $.each(results, function (ignore, result) {
+                results.forEach(function (result) {
                     expect(result.isLegal).toBe(true);
                 });
             });
