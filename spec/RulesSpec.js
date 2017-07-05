@@ -7,7 +7,7 @@ describe("Rules", function () {
 
     beforeEach(function () {
         jasmine.addCustomEqualityTester(CHESS_TEST.pointEquality);
-        rules = CHESS_APP.createRules();
+        rules = new CHESS_APP.Rules();
     });
 
     describe("opponentPlayer", function () {
@@ -378,7 +378,7 @@ describe("Rules", function () {
             return board.getAbsolutePosition("white", point);
         };
         var getMove = function (p1, p2) {
-            return CHESS_APP.createMove("white", abs(board, p1), abs(board, p2));
+            return new CHESS_APP.Move("white", abs(board, p1), abs(board, p2));
         };
 
         beforeEach(function () {
@@ -397,7 +397,7 @@ describe("Rules", function () {
                 "        "
             ]);
 
-            var p1 = CHESS_APP.createPoint(2, 1);
+            var p1 = new CHESS_APP.Point(2, 1);
             var p2 = p1.add(1, 1);
             var result = rules.inspectMove(board, getMove(p1, p2), previousMove);
 
@@ -416,7 +416,7 @@ describe("Rules", function () {
                 "        "
             ]);
 
-            var p1 = CHESS_APP.createPoint(2, 1);
+            var p1 = new CHESS_APP.Point(2, 1);
             var p2 = p1.add(1, 1);
             var result = rules.inspectMove(board, getMove(p1, p2), previousMove);
 
@@ -435,7 +435,7 @@ describe("Rules", function () {
                 "        "
             ]);
 
-            var p1 = CHESS_APP.createPoint(2, 1);
+            var p1 = new CHESS_APP.Point(2, 1);
             var p2 = p1.add(1, 1);
             var result = rules.inspectMove(board, getMove(p1, p2), previousMove);
 
@@ -454,7 +454,7 @@ describe("Rules", function () {
                 "        "
             ]);
 
-            var p1 = CHESS_APP.createPoint(2, 1);
+            var p1 = new CHESS_APP.Point(2, 1);
             var p2 = p1.add(1, 1);
             var result = rules.inspectMove(board, getMove(p1, p2), previousMove, true);
 
@@ -473,7 +473,7 @@ describe("Rules", function () {
                 "        "
             ]);
 
-            var p1 = CHESS_APP.createPoint(2, 1);
+            var p1 = new CHESS_APP.Point(2, 1);
             var p2 = p1.add(1, 1);
             var result = rules.inspectMove(board, getMove(p1, p2), previousMove);
 
@@ -492,7 +492,7 @@ describe("Rules", function () {
                 "        "
             ]);
 
-            var p1 = CHESS_APP.createPoint(2, 1);
+            var p1 = new CHESS_APP.Point(2, 1);
             var p2 = p1.add(1, 1);
             var result = rules.inspectMove(board, getMove(p1, p2), previousMove);
 
@@ -511,7 +511,7 @@ describe("Rules", function () {
                 "        "
             ]);
 
-            var p1 = CHESS_APP.createPoint(2, 1);
+            var p1 = new CHESS_APP.Point(2, 1);
             var p2 = p1.add(1, 0);
             var result = rules.inspectMove(board, getMove(p1, p2), previousMove);
 
@@ -530,7 +530,7 @@ describe("Rules", function () {
                 "        "
             ]);
 
-            var p1 = CHESS_APP.createPoint(2, 1);
+            var p1 = new CHESS_APP.Point(2, 1);
             var p2 = p1.add(1, 1);
             var result = rules.inspectMove(board, getMove(p1, p2), previousMove);
 
@@ -553,7 +553,7 @@ describe("Rules", function () {
                     "        "
                 ]);
 
-                var p1 = CHESS_APP.createPoint(2, 1);
+                var p1 = new CHESS_APP.Point(2, 1);
                 var p2 = p1.add(1, 0);
                 var result = rules.inspectMove(board, getMove(p1, p2), previousMove);
 
@@ -572,7 +572,7 @@ describe("Rules", function () {
                     "        "
                 ]);
 
-                var p1 = CHESS_APP.createPoint(2, 1);
+                var p1 = new CHESS_APP.Point(2, 1);
                 var result2 = rules.inspectMove(board, getMove(p1, p1.add(2, 0)), previousMove);
                 var result3 = rules.inspectMove(board, getMove(p1, p1.add(3, 0)), previousMove);
                 var result4 = rules.inspectMove(board, getMove(p1, p1.add(4, 0)), previousMove);
@@ -594,7 +594,7 @@ describe("Rules", function () {
                     "        "
                 ]);
 
-                var p1 = CHESS_APP.createPoint(1, 1);
+                var p1 = new CHESS_APP.Point(1, 1);
                 var p2 = p1.add(2, 0);
                 var result = rules.inspectMove(board, getMove(p1, p2), previousMove);
 
@@ -613,7 +613,7 @@ describe("Rules", function () {
                     "        "
                 ]);
 
-                var p1 = CHESS_APP.createPoint(1, 1);
+                var p1 = new CHESS_APP.Point(1, 1);
 
                 var result3 = rules.inspectMove(board, getMove(p1, p1.add(3, 0)), previousMove);
                 var result4 = rules.inspectMove(board, getMove(p1, p1.add(4, 0)), previousMove);
@@ -636,7 +636,7 @@ describe("Rules", function () {
                     "        "
                 ]);
 
-                var p1 = CHESS_APP.createPoint(2, 1);
+                var p1 = new CHESS_APP.Point(2, 1);
                 var diagLeftResult = rules.inspectMove(board, getMove(p1, p1.add(1, -1)), previousMove);
                 var diagRightResult = rules.inspectMove(board, getMove(p1, p1.add(1, 1)), previousMove);
                 var leftResult = rules.inspectMove(board, getMove(p1, p1.add(0, -1)), previousMove);
@@ -666,7 +666,7 @@ describe("Rules", function () {
                     "        "
                 ]);
 
-                var p1 = CHESS_APP.createPoint(2, 1);
+                var p1 = new CHESS_APP.Point(2, 1);
                 var p2 = p1.add(1, 0);
                 var result = rules.inspectMove(board, getMove(p1, p2), previousMove);
 
@@ -685,7 +685,7 @@ describe("Rules", function () {
                     "        "
                 ]);
 
-                var p1 = CHESS_APP.createPoint(2, 1);
+                var p1 = new CHESS_APP.Point(2, 1);
                 var p2 = p1.add(1, 0);
                 var result = rules.inspectMove(board, getMove(p1, p2), previousMove);
 
@@ -704,11 +704,11 @@ describe("Rules", function () {
                     "        "
                 ]);
 
-                var p1 = CHESS_APP.createPoint(2, 1);
+                var p1 = new CHESS_APP.Point(2, 1);
                 var p2 = p1.add(1, -1);
                 var resultLeft = rules.inspectMove(board, getMove(p1, p2), previousMove);
 
-                p1 = CHESS_APP.createPoint(3, 5);
+                p1 = new CHESS_APP.Point(3, 5);
                 p2 = p1.add(1, 1);
                 var resultRight = rules.inspectMove(board, getMove(p1, p2), previousMove);
 
@@ -728,7 +728,7 @@ describe("Rules", function () {
                     "        "
                 ]);
 
-                var p1 = CHESS_APP.createPoint(6, 1);
+                var p1 = new CHESS_APP.Point(6, 1);
                 var p2 = p1.add(1, 0);
                 var result = rules.inspectMove(board, getMove(p1, p2), previousMove);
 
@@ -750,7 +750,7 @@ describe("Rules", function () {
                     "        "
                 ]);
 
-                var p1 = CHESS_APP.createPoint(5, 1);
+                var p1 = new CHESS_APP.Point(5, 1);
                 var p2 = p1.add(1, 0);
                 var result = rules.inspectMove(board, getMove(p1, p2), previousMove);
 
@@ -770,10 +770,10 @@ describe("Rules", function () {
                         "        "
                     ]);
 
-                    var p1 = CHESS_APP.createPoint(3, 1);
-                    var p2 = CHESS_APP.createPoint(2, 2);
+                    var p1 = new CHESS_APP.Point(3, 1);
+                    var p2 = new CHESS_APP.Point(2, 2);
 
-                    var move = CHESS_APP.createMove("white", p1, p2);
+                    var move = new CHESS_APP.Move("white", p1, p2);
                     previousMove = null;
 
                     var resultLeft = rules.inspectMove(board, move, previousMove);
@@ -793,15 +793,15 @@ describe("Rules", function () {
                         "        "
                     ]);
 
-                    var move = CHESS_APP.createMove(
+                    var move = new CHESS_APP.Move(
                         "white",
-                        CHESS_APP.createPoint(3, 1),
-                        CHESS_APP.createPoint(2, 2)
+                        new CHESS_APP.Point(3, 1),
+                        new CHESS_APP.Point(2, 2)
                     );
-                    previousMove = CHESS_APP.createMove(
+                    previousMove = new CHESS_APP.Move(
                         "black",
-                        CHESS_APP.createPoint(0, 7),
-                        CHESS_APP.createPoint(1, 7)
+                        new CHESS_APP.Point(0, 7),
+                        new CHESS_APP.Point(1, 7)
                     );
 
                     var resultLeft = rules.inspectMove(board, move, previousMove);
@@ -821,15 +821,15 @@ describe("Rules", function () {
                         "        "
                     ]);
 
-                    var move = CHESS_APP.createMove(
+                    var move = new CHESS_APP.Move(
                         "white",
-                        CHESS_APP.createPoint(3, 1),
-                        CHESS_APP.createPoint(2, 2)
+                        new CHESS_APP.Point(3, 1),
+                        new CHESS_APP.Point(2, 2)
                     );
-                    previousMove = CHESS_APP.createMove(
+                    previousMove = new CHESS_APP.Move(
                         "black",
-                        CHESS_APP.createPoint(1, 2),
-                        CHESS_APP.createPoint(3, 2)
+                        new CHESS_APP.Point(1, 2),
+                        new CHESS_APP.Point(3, 2)
                     );
 
                     var resultLeft = rules.inspectMove(board, move, previousMove);
@@ -849,15 +849,15 @@ describe("Rules", function () {
                         "        "
                     ]);
 
-                    var move = CHESS_APP.createMove(
+                    var move = new CHESS_APP.Move(
                         "white",
-                        CHESS_APP.createPoint(3, 1),
-                        CHESS_APP.createPoint(2, 2)
+                        new CHESS_APP.Point(3, 1),
+                        new CHESS_APP.Point(2, 2)
                     );
-                    previousMove = CHESS_APP.createMove(
+                    previousMove = new CHESS_APP.Move(
                         "black",
-                        CHESS_APP.createPoint(2, 3),
-                        CHESS_APP.createPoint(3, 3)
+                        new CHESS_APP.Point(2, 3),
+                        new CHESS_APP.Point(3, 3)
                     );
 
                     var resultLeft = rules.inspectMove(board, move, previousMove);
@@ -877,15 +877,15 @@ describe("Rules", function () {
                         "        "
                     ]);
 
-                    var move = CHESS_APP.createMove(
+                    var move = new CHESS_APP.Move(
                         "white",
-                        CHESS_APP.createPoint(3, 0),
-                        CHESS_APP.createPoint(2, 1)
+                        new CHESS_APP.Point(3, 0),
+                        new CHESS_APP.Point(2, 1)
                     );
-                    previousMove = CHESS_APP.createMove(
+                    previousMove = new CHESS_APP.Move(
                         "black",
-                        CHESS_APP.createPoint(1, 3),
-                        CHESS_APP.createPoint(3, 3)
+                        new CHESS_APP.Point(1, 3),
+                        new CHESS_APP.Point(3, 3)
                     );
 
                     var resultLeft = rules.inspectMove(board, move, previousMove);
@@ -905,15 +905,15 @@ describe("Rules", function () {
                         "        "
                     ]);
 
-                    var move = CHESS_APP.createMove(
+                    var move = new CHESS_APP.Move(
                         "white",
-                        CHESS_APP.createPoint(3, 1),
-                        CHESS_APP.createPoint(2, 0)
+                        new CHESS_APP.Point(3, 1),
+                        new CHESS_APP.Point(2, 0)
                     );
-                    previousMove = CHESS_APP.createMove(
+                    previousMove = new CHESS_APP.Move(
                         "black",
-                        CHESS_APP.createPoint(1, 2),
-                        CHESS_APP.createPoint(3, 2)
+                        new CHESS_APP.Point(1, 2),
+                        new CHESS_APP.Point(3, 2)
                     );
 
                     var resultLeft = rules.inspectMove(board, move, previousMove);
@@ -933,15 +933,15 @@ describe("Rules", function () {
                         "        "
                     ]);
 
-                    var move = CHESS_APP.createMove(
+                    var move = new CHESS_APP.Move(
                         "white",
-                        CHESS_APP.createPoint(3, 1),
-                        CHESS_APP.createPoint(2, 2)
+                        new CHESS_APP.Point(3, 1),
+                        new CHESS_APP.Point(2, 2)
                     );
-                    previousMove = CHESS_APP.createMove(
+                    previousMove = new CHESS_APP.Move(
                         "black",
-                        CHESS_APP.createPoint(1, 2),
-                        CHESS_APP.createPoint(3, 2)
+                        new CHESS_APP.Point(1, 2),
+                        new CHESS_APP.Point(3, 2)
                     );
 
                     var resultLeft = rules.inspectMove(board, move, previousMove);
@@ -961,15 +961,15 @@ describe("Rules", function () {
                         "        "
                     ]);
 
-                    var move = CHESS_APP.createMove(
+                    var move = new CHESS_APP.Move(
                         "white",
-                        CHESS_APP.createPoint(3, 1),
-                        CHESS_APP.createPoint(2, 0)
+                        new CHESS_APP.Point(3, 1),
+                        new CHESS_APP.Point(2, 0)
                     );
-                    previousMove = CHESS_APP.createMove(
+                    previousMove = new CHESS_APP.Move(
                         "black",
-                        CHESS_APP.createPoint(1, 0),
-                        CHESS_APP.createPoint(3, 0)
+                        new CHESS_APP.Point(1, 0),
+                        new CHESS_APP.Point(3, 0)
                     );
 
                     var resultLeft = rules.inspectMove(board, move, previousMove);
@@ -989,20 +989,20 @@ describe("Rules", function () {
                         "        "
                     ]);
 
-                    var move = CHESS_APP.createMove(
+                    var move = new CHESS_APP.Move(
                         "white",
-                        CHESS_APP.createPoint(3, 1),
-                        CHESS_APP.createPoint(2, 2)
+                        new CHESS_APP.Point(3, 1),
+                        new CHESS_APP.Point(2, 2)
                     );
-                    previousMove = CHESS_APP.createMove(
+                    previousMove = new CHESS_APP.Move(
                         "black",
-                        CHESS_APP.createPoint(1, 2),
-                        CHESS_APP.createPoint(3, 2)
+                        new CHESS_APP.Point(1, 2),
+                        new CHESS_APP.Point(3, 2)
                     );
 
                     var resultLeft = rules.inspectMove(board, move, previousMove);
 
-                    expect(resultLeft.capturePosition).toEqual(CHESS_APP.createPoint(3, 2));
+                    expect(resultLeft.capturePosition).toEqual(new CHESS_APP.Point(3, 2));
                 });
             });
         });
@@ -1020,15 +1020,15 @@ describe("Rules", function () {
                     "        "
                 ]);
 
-                var p1 = CHESS_APP.createPoint(3, 3);
+                var p1 = new CHESS_APP.Point(3, 3);
                 var results = [
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 0))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 1))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 2))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 4))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 5))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 6))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 7)))
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(3, 0))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(3, 1))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(3, 2))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(3, 4))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(3, 5))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(3, 6))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(3, 7)))
                 ];
 
                 results.forEach(function (result) {
@@ -1048,15 +1048,15 @@ describe("Rules", function () {
                     "        "
                 ]);
 
-                var p1 = CHESS_APP.createPoint(3, 3);
+                var p1 = new CHESS_APP.Point(3, 3);
                 var results = [
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(0, 3))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(1, 3))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(2, 3))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(4, 3))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(5, 3))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(6, 3))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(7, 3)))
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(0, 3))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(1, 3))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(2, 3))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(4, 3))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(5, 3))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(6, 3))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(7, 3)))
                 ];
 
                 results.forEach(function (result) {
@@ -1076,7 +1076,7 @@ describe("Rules", function () {
                     "        "
                 ]);
 
-                var p1 = CHESS_APP.createPoint(3, 3);
+                var p1 = new CHESS_APP.Point(3, 3);
                 var results = [
                     rules.inspectMove(board, getMove(p1, p1.add(1, -1))),
                     rules.inspectMove(board, getMove(p1, p1.add(2, -2))),
@@ -1110,7 +1110,7 @@ describe("Rules", function () {
                     "        "
                 ]);
 
-                var p1 = CHESS_APP.createPoint(3, 3);
+                var p1 = new CHESS_APP.Point(3, 3);
                 var results = [
                     rules.inspectMove(board, getMove(p1, p1.add(1, -1))),
                     rules.inspectMove(board, getMove(p1, p1.add(2, -2))),
@@ -1142,15 +1142,15 @@ describe("Rules", function () {
                     "        "
                 ]);
 
-                var p1 = CHESS_APP.createPoint(3, 3);
+                var p1 = new CHESS_APP.Point(3, 3);
                 var results = [
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 0))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 1))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 2))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 4))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 5))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 6))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 7)))
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(3, 0))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(3, 1))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(3, 2))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(3, 4))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(3, 5))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(3, 6))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(3, 7)))
                 ];
 
                 results.forEach(function (result) {
@@ -1170,15 +1170,15 @@ describe("Rules", function () {
                     "        "
                 ]);
 
-                var p1 = CHESS_APP.createPoint(3, 3);
+                var p1 = new CHESS_APP.Point(3, 3);
                 var results = [
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(0, 3))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(1, 3))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(2, 3))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(4, 3))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(5, 3))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(6, 3))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(7, 3)))
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(0, 3))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(1, 3))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(2, 3))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(4, 3))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(5, 3))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(6, 3))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(7, 3)))
                 ];
 
                 results.forEach(function (result) {
@@ -1200,15 +1200,15 @@ describe("Rules", function () {
                     "        "
                 ]);
 
-                var p1 = CHESS_APP.createPoint(3, 3);
+                var p1 = new CHESS_APP.Point(3, 3);
                 var results = [
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 0))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 1))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 2))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 4))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 5))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 6))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 7)))
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(3, 0))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(3, 1))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(3, 2))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(3, 4))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(3, 5))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(3, 6))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(3, 7)))
                 ];
 
                 results.forEach(function (result) {
@@ -1228,15 +1228,15 @@ describe("Rules", function () {
                     "        "
                 ]);
 
-                var p1 = CHESS_APP.createPoint(3, 3);
+                var p1 = new CHESS_APP.Point(3, 3);
                 var results = [
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(0, 3))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(1, 3))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(2, 3))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(4, 3))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(5, 3))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(6, 3))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(7, 3)))
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(0, 3))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(1, 3))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(2, 3))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(4, 3))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(5, 3))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(6, 3))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(7, 3)))
                 ];
 
                 results.forEach(function (result) {
@@ -1256,7 +1256,7 @@ describe("Rules", function () {
                     "        "
                 ]);
 
-                var p1 = CHESS_APP.createPoint(3, 3);
+                var p1 = new CHESS_APP.Point(3, 3);
                 var results = [
                     rules.inspectMove(board, getMove(p1, p1.add(1, -1))),
                     rules.inspectMove(board, getMove(p1, p1.add(2, -2))),
@@ -1290,10 +1290,10 @@ describe("Rules", function () {
                     "        "
                 ]);
 
-                var p1 = CHESS_APP.createPoint(3, 3);
+                var p1 = new CHESS_APP.Point(3, 3);
                 var results = [
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 2))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 4)))
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(3, 2))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(3, 4)))
                 ];
 
                 results.forEach(function (result) {
@@ -1313,13 +1313,13 @@ describe("Rules", function () {
                     "        "
                 ]);
 
-                var p1 = CHESS_APP.createPoint(3, 3);
+                var p1 = new CHESS_APP.Point(3, 3);
                 var results = [
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 0))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 1))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 5))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 6))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 7)))
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(3, 0))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(3, 1))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(3, 5))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(3, 6))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(3, 7)))
                 ];
 
                 results.forEach(function (result) {
@@ -1339,10 +1339,10 @@ describe("Rules", function () {
                     "        "
                 ]);
 
-                var p1 = CHESS_APP.createPoint(3, 3);
+                var p1 = new CHESS_APP.Point(3, 3);
                 var results = [
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(2, 3))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(4, 3)))
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(2, 3))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(4, 3)))
                 ];
 
                 results.forEach(function (result) {
@@ -1362,13 +1362,13 @@ describe("Rules", function () {
                     "        "
                 ]);
 
-                var p1 = CHESS_APP.createPoint(3, 3);
+                var p1 = new CHESS_APP.Point(3, 3);
                 var results = [
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(0, 3))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(1, 3))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(5, 3))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(6, 3))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(7, 3)))
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(0, 3))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(1, 3))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(5, 3))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(6, 3))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(7, 3)))
                 ];
 
                 results.forEach(function (result) {
@@ -1388,7 +1388,7 @@ describe("Rules", function () {
                     "        "
                 ]);
 
-                var p1 = CHESS_APP.createPoint(3, 3);
+                var p1 = new CHESS_APP.Point(3, 3);
                 var results = [
                     rules.inspectMove(board, getMove(p1, p1.add(1, -1))),
                     rules.inspectMove(board, getMove(p1, p1.add(1, 1))),
@@ -1413,7 +1413,7 @@ describe("Rules", function () {
                     "        "
                 ]);
 
-                var p1 = CHESS_APP.createPoint(3, 3);
+                var p1 = new CHESS_APP.Point(3, 3);
                 var results = [
                     rules.inspectMove(board, getMove(p1, p1.add(2, -2))),
                     rules.inspectMove(board, getMove(p1, p1.add(2, 2))),
@@ -1440,7 +1440,7 @@ describe("Rules", function () {
                     "        "
                 ]);
 
-                var p1 = CHESS_APP.createPoint(3, 3);
+                var p1 = new CHESS_APP.Point(3, 3);
                 var results = [
                     rules.inspectMove(board, getMove(p1, p1.add(2, -1))),
                     rules.inspectMove(board, getMove(p1, p1.add(2, 1))),
@@ -1472,15 +1472,15 @@ describe("Rules", function () {
                     "        "
                 ]);
 
-                var p1 = CHESS_APP.createPoint(3, 3);
+                var p1 = new CHESS_APP.Point(3, 3);
                 var results = [
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 0))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 1))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 2))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 4))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 5))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 6))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(3, 7)))
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(3, 0))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(3, 1))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(3, 2))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(3, 4))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(3, 5))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(3, 6))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(3, 7)))
                 ];
 
                 results.forEach(function (result) {
@@ -1500,15 +1500,15 @@ describe("Rules", function () {
                     "        "
                 ]);
 
-                var p1 = CHESS_APP.createPoint(3, 3);
+                var p1 = new CHESS_APP.Point(3, 3);
                 var results = [
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(0, 3))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(1, 3))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(2, 3))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(4, 3))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(5, 3))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(6, 3))),
-                    rules.inspectMove(board, getMove(p1, CHESS_APP.createPoint(7, 3)))
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(0, 3))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(1, 3))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(2, 3))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(4, 3))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(5, 3))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(6, 3))),
+                    rules.inspectMove(board, getMove(p1, new CHESS_APP.Point(7, 3)))
                 ];
 
                 results.forEach(function (result) {
@@ -1528,7 +1528,7 @@ describe("Rules", function () {
                     "        "
                 ]);
 
-                var p1 = CHESS_APP.createPoint(3, 3);
+                var p1 = new CHESS_APP.Point(3, 3);
                 var results = [
                     rules.inspectMove(board, getMove(p1, p1.add(1, -1))),
                     rules.inspectMove(board, getMove(p1, p1.add(2, -2))),
@@ -1560,7 +1560,7 @@ describe("Rules", function () {
                     "        "
                 ]);
 
-                var p1 = CHESS_APP.createPoint(3, 3);
+                var p1 = new CHESS_APP.Point(3, 3);
                 var results = [
                     rules.inspectMove(board, getMove(p1, p1.add(2, -1))),
                     rules.inspectMove(board, getMove(p1, p1.add(2, 1))),

@@ -17,7 +17,7 @@ describe('InMemoryBoard', function () {
                 "        "
             ]);
 
-            board.removePiece(CHESS_APP.createPoint(0, 0));
+            board.removePiece(new CHESS_APP.Point(0, 0));
 
             expect(board.getPieces()).toEqual([]);
         });
@@ -34,7 +34,7 @@ describe('InMemoryBoard', function () {
                 "        "
             ]);
 
-            board.removePiece(CHESS_APP.createPoint(2, 1));
+            board.removePiece(new CHESS_APP.Point(2, 1));
 
             expect(board.getPieces().length).toEqual(3);
         });

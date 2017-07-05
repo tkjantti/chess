@@ -5,18 +5,18 @@ describe('Turn', function () {
     "use strict";
 
     var turn;
-    var rules = CHESS_APP.createRules();
+    var rules = new CHESS_APP.Rules();
     var board;
     var source;
     var destination;
     var previousMove = null;
 
     beforeEach(function () {
-        rules = CHESS_APP.createRules();
-        turn = CHESS_APP.createTurn(rules);
-        board = CHESS_APP.createInMemoryBoard(8, 8);
-        source = CHESS_APP.createPoint(4, 4);
-        destination = CHESS_APP.createPoint(5, 4);
+        rules = new CHESS_APP.Rules();
+        turn = new CHESS_APP.Turn(rules);
+        board = new CHESS_APP.InMemoryBoard(8, 8);
+        source = new CHESS_APP.Point(4, 4);
+        destination = new CHESS_APP.Point(5, 4);
         previousMove = null;
 
         spyOn(rules, "isDraw").and.returnValue(false);
@@ -24,7 +24,7 @@ describe('Turn', function () {
 
     describe('move', function () {
         it('returns good move if the move is legal', function () {
-            board.setPiece(source, CHESS_APP.createPiece("white", "pawn"));
+            board.setPiece(source, new CHESS_APP.Piece("white", "pawn"));
 
             spyOn(rules, "inspectMove").and.returnValue({
                 isLegal: true
@@ -43,7 +43,7 @@ describe('Turn', function () {
         });
 
         it('makes the move if it is legal', function () {
-            board.setPiece(source, CHESS_APP.createPiece("white", "pawn"));
+            board.setPiece(source, new CHESS_APP.Piece("white", "pawn"));
 
             spyOn(rules, "inspectMove").and.returnValue({
                 isLegal: true
@@ -58,7 +58,7 @@ describe('Turn', function () {
         });
 
         it('changes the current player if the move succeeds', function () {
-            board.setPiece(source, CHESS_APP.createPiece("white", "pawn"));
+            board.setPiece(source, new CHESS_APP.Piece("white", "pawn"));
 
             spyOn(rules, "inspectMove").and.returnValue({
                 isLegal: true
@@ -72,12 +72,12 @@ describe('Turn', function () {
         });
 
         it('removes a piece if one is captured', function () {
-            board.setPiece(source, CHESS_APP.createPiece("white", "rook"));
-            board.setPiece(destination, CHESS_APP.createPiece("black", "pawn"));
+            board.setPiece(source, new CHESS_APP.Piece("white", "rook"));
+            board.setPiece(destination, new CHESS_APP.Piece("black", "pawn"));
 
             spyOn(rules, "inspectMove").and.returnValue({
                 isLegal: true,
-                capturePosition: CHESS_APP.createPoint(3, 6)
+                capturePosition: new CHESS_APP.Point(3, 6)
             });
             spyOn(rules, "isInCheck").and.returnValue(null);
             spyOn(board, "removePiece");
@@ -91,7 +91,7 @@ describe('Turn', function () {
         });
 
         it('does not move if the move is not legal', function () {
-            board.setPiece(source, CHESS_APP.createPiece("white", "pawn"));
+            board.setPiece(source, new CHESS_APP.Piece("white", "pawn"));
 
             spyOn(rules, "inspectMove").and.returnValue({
                 isLegal: false
@@ -106,8 +106,8 @@ describe('Turn', function () {
         });
 
         it('does not move if the move would result in a check position', function () {
-            var positionInCheck = CHESS_APP.createPoint(4, 3);
-            board.setPiece(source, CHESS_APP.createPiece("white", "pawn"));
+            var positionInCheck = new CHESS_APP.Point(4, 3);
+            board.setPiece(source, new CHESS_APP.Piece("white", "pawn"));
 
             spyOn(rules, "inspectMove").and.returnValue({
                 isLegal: true
@@ -123,7 +123,7 @@ describe('Turn', function () {
         });
 
         it('returns checkmate if the move results in a checkmate', function () {
-            board.setPiece(source, CHESS_APP.createPiece("white", "pawn"));
+            board.setPiece(source, new CHESS_APP.Piece("white", "pawn"));
 
             spyOn(rules, "inspectMove").and.returnValue({
                 isLegal: true
@@ -143,7 +143,7 @@ describe('Turn', function () {
         });
 
         it('changes the type of piece if a piece gets promoted', function () {
-            board.setPiece(source, CHESS_APP.createPiece("white", "pawn"));
+            board.setPiece(source, new CHESS_APP.Piece("white", "pawn"));
 
             spyOn(rules, "inspectMove").and.returnValue({
                 isLegal: true,
@@ -160,14 +160,14 @@ describe('Turn', function () {
         });
 
         it('passes previous move to inspectMove', function () {
-            var white_source = CHESS_APP.createPoint(6, 0);
-            var white_destination = CHESS_APP.createPoint(5, 0);
+            var white_source = new CHESS_APP.Point(6, 0);
+            var white_destination = new CHESS_APP.Point(5, 0);
 
-            var black_source = CHESS_APP.createPoint(1, 1);
-            var black_destination = CHESS_APP.createPoint(2, 1);
+            var black_source = new CHESS_APP.Point(1, 1);
+            var black_destination = new CHESS_APP.Point(2, 1);
 
-            board.setPiece(white_source, CHESS_APP.createPiece("white", "pawn"));
-            board.setPiece(black_source, CHESS_APP.createPiece("black", "pawn"));
+            board.setPiece(white_source, new CHESS_APP.Piece("white", "pawn"));
+            board.setPiece(black_source, new CHESS_APP.Piece("black", "pawn"));
 
             spyOn(rules, "inspectMove").and.returnValue({
                 isLegal: true
@@ -184,7 +184,7 @@ describe('Turn', function () {
         });
 
         it('returns draw if the move results in a draw', function () {
-            board.setPiece(source, CHESS_APP.createPiece("white", "pawn"));
+            board.setPiece(source, new CHESS_APP.Piece("white", "pawn"));
 
             spyOn(rules, "inspectMove").and.returnValue({
                 isLegal: true
@@ -205,7 +205,7 @@ describe('Turn', function () {
         });
 
         it('does not return draw if the move does not result in a draw', function () {
-            board.setPiece(source, CHESS_APP.createPiece("white", "pawn"));
+            board.setPiece(source, new CHESS_APP.Piece("white", "pawn"));
 
             spyOn(rules, "inspectMove").and.returnValue({
                 isLegal: true

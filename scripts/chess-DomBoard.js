@@ -1,11 +1,8 @@
 /* jshint browser:true, jquery:true */
 /* global CHESS_APP */
 
-CHESS_APP.createDomBoard = function () {
+(function () {
     "use strict";
-    var initialized = false;
-    var selectedPosition = null;
-    var onSquareClicked = null;
 
     var getSquare = function (position) {
         return $("#square_" + position.row + "_" + position.column);
@@ -13,7 +10,7 @@ CHESS_APP.createDomBoard = function () {
 
     var getSquarePosition = function (square) {
         var stringCoordinates = square.attr("id").split("_");
-        return CHESS_APP.createPoint(parseInt(stringCoordinates[1], 10), parseInt(stringCoordinates[2], 10));
+        return new CHESS_APP.Point(parseInt(stringCoordinates[1], 10), parseInt(stringCoordinates[2], 10));
     };
 
     var getPieceImage = function (square) {
@@ -41,16 +38,6 @@ CHESS_APP.createDomBoard = function () {
 
     var getSideSquares = function (player) {
         return $("#" + player + "CapturedPieces td");
-    };
-
-    var addBoardClickHandlers = function () {
-        $("#board td").click(function () {
-            var square = $(this);
-            var position = getSquarePosition(square);
-            if (onSquareClicked) {
-                onSquareClicked(position, selectedPosition);
-            }
-        });
     };
 
     var setStartingPositions = function () {
@@ -91,9 +78,17 @@ CHESS_APP.createDomBoard = function () {
         $("#square_7_7").append($("#white_rook_2"));
     };
 
-    var that = CHESS_APP.createBoard();
+    CHESS_APP.DomBoard = function () {
+        this.rowCount = CHESS_APP.defaultRowCount;
+        this.columnCount = CHESS_APP.defaultColumnCount;
+        this.initialized = false;
+        this.selectedPosition = null;
+        this.onSquareClicked = null;
+    };
 
-    that.highlightPieceUnderThreat = function (position) {
+    CHESS_APP.DomBoard.prototype = new CHESS_APP.Board();
+
+    CHESS_APP.DomBoard.prototype.highlightPieceUnderThreat = function (position) {
         var square = getSquare(position);
         square.addClass("threat");
         window.setTimeout(function () {
@@ -101,7 +96,7 @@ CHESS_APP.createDomBoard = function () {
         }, 1000);
     };
 
-    that.getPiece = function (position) {
+    CHESS_APP.DomBoard.prototype.getPiece = function (position) {
         var square, pieceImage;
 
         if (!this.isInside(position)) {
@@ -115,10 +110,10 @@ CHESS_APP.createDomBoard = function () {
             return null;
         }
 
-        return CHESS_APP.createPiece(getPlayerOf(pieceImage), getTypeOf(pieceImage));
+        return new CHESS_APP.Piece(getPlayerOf(pieceImage), getTypeOf(pieceImage));
     };
 
-    that.changeTypeOfPiece = function (position, type) {
+    CHESS_APP.DomBoard.prototype.changeTypeOfPiece = function (position, type) {
         var square = getSquare(position);
         var pieceImage = getPieceImage(square);
         var player = getPlayerOf(pieceImage);
@@ -127,19 +122,19 @@ CHESS_APP.createDomBoard = function () {
         elt.attr('id', player + '_' + type);
     };
 
-    that.getPositionOf = function (piece) {
+    CHESS_APP.DomBoard.prototype.getPositionOf = function (piece) {
         var found = this.findPiece(function (currentPiece) {
             return currentPiece.equals(piece);
         });
         return found ? found.position : null;
     };
 
-    that.findPiece = function (predicate) {
+    CHESS_APP.DomBoard.prototype.findPiece = function (predicate) {
         var row, column, position, piece;
 
         for (row = 0; row < this.getRowCount(); row += 1) {
             for (column = 0; column < this.getColumnCount(); column += 1) {
-                position = CHESS_APP.createPoint(row, column);
+                position = new CHESS_APP.Point(row, column);
                 piece = this.getPiece(position);
                 if (piece && predicate(piece, position)) {
                     return {
@@ -152,12 +147,12 @@ CHESS_APP.createDomBoard = function () {
         return null;
     };
 
-    that.findPieces = function (predicate) {
+    CHESS_APP.DomBoard.prototype.findPieces = function (predicate) {
         var row, column, position, piece, pieces = [];
 
         for (row = 0; row < this.getRowCount(); row += 1) {
             for (column = 0; column < this.getColumnCount(); column += 1) {
-                position = CHESS_APP.createPoint(row, column);
+                position = new CHESS_APP.Point(row, column);
                 piece = this.getPiece(position);
                 if (piece && predicate(piece, position)) {
                     pieces.push({
@@ -170,22 +165,22 @@ CHESS_APP.createDomBoard = function () {
         return pieces;
     };
 
-    that.getPieces = function () {
+    CHESS_APP.DomBoard.prototype.getPieces = function () {
         return this.findPieces(function () {
             return true;
         });
     };
 
-    that.selectSquare = function (position) {
+    CHESS_APP.DomBoard.prototype.selectSquare = function (position) {
         this.removeSelection();
 
-        selectedPosition = position;
+        this.selectedPosition = position;
         var square = getSquare(position);
         square.addClass("selected");
     };
 
-    that.removeSelection = function () {
-        if (!selectedPosition) {
+    CHESS_APP.DomBoard.prototype.removeSelection = function () {
+        if (!this.selectedPosition) {
             return;
         }
 
@@ -193,10 +188,10 @@ CHESS_APP.createDomBoard = function () {
             var square = getSquare(p);
             square.removeClass("selected");
         });
-        selectedPosition = null;
+        this.selectedPosition = null;
     };
 
-    that.removePiece = function (position) {
+    CHESS_APP.DomBoard.prototype.removePiece = function (position) {
         var square = getSquare(position);
         var piece = this.getPiece(position);
         var pieceImage = getPieceImage(square);
@@ -208,25 +203,35 @@ CHESS_APP.createDomBoard = function () {
         freeSquare.append(pieceImage);
     };
 
-    that.move = function (source, destination) {
+    CHESS_APP.DomBoard.prototype.move = function (source, destination) {
         var square = getSquare(source);
         var piece = getPieceImage(square);
         var destinationSquare = getSquare(destination);
         destinationSquare.append(piece);
     };
 
-    that.initialize = function () {
-        if (initialized) {
+    CHESS_APP.DomBoard.prototype.initialize = function () {
+        var that = this;
+
+        var addBoardClickHandlers = function () {
+            $("#board td").click(function () {
+                var square = $(this);
+                var position = getSquarePosition(square);
+                if (that.onSquareClicked) {
+                    that.onSquareClicked(position, that.selectedPosition);
+                }
+            });
+        };
+
+        if (this.initialized) {
             return;
         }
         setStartingPositions();
         addBoardClickHandlers();
-        initialized = true;
+        this.initialized = true;
     };
 
-    that.listenSquareClick = function (handler) {
-        onSquareClicked = handler;
+    CHESS_APP.DomBoard.prototype.listenSquareClick = function (handler) {
+        this.onSquareClicked = handler;
     };
-
-    return that;
-};
+}());

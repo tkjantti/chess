@@ -1,6 +1,6 @@
 /* global CHESS_APP */
 
-CHESS_APP.createPiece = function (player, type) {
+(function () {
     "use strict";
 
     var symbolMap = {
@@ -21,32 +21,32 @@ CHESS_APP.createPiece = function (player, type) {
         "king": "K"
     };
 
-    if (!symbolMap[type]) {
-        throw "Unknown piece type " + type;
-    }
+    CHESS_APP.Piece = function (player, type) {
+        if (!symbolMap[type]) {
+            throw "Unknown piece type " + type;
+        }
 
-    return {
-        player: player,
-        type: type,
+        this.player = player;
+        this.type = type;
+    };
 
-        equals: function (another) {
-            return another.player === this.player && another.type === this.type;
-        },
+    CHESS_APP.Piece.prototype.equals = function (another) {
+        return another.player === this.player && another.type === this.type;
+    };
 
-        getMoveNotationSymbol: function () {
-            return moveNotationSymbolMap[this.type];
-        },
+    CHESS_APP.Piece.prototype.getMoveNotationSymbol = function () {
+        return moveNotationSymbolMap[this.type];
+    };
 
-        /*
-         * Prints the piece as a single character for testing and debugging.
-         */
-        toString: function () {
-            var symbol = symbolMap[this.type];
-            if (player === "white") {
-                return symbol.toUpperCase();
-            } else {
-                return symbol;
-            }
+    /*
+     * Prints the piece as a single character for testing and debugging.
+     */
+    CHESS_APP.Piece.prototype.toString = function () {
+        var symbol = symbolMap[this.type];
+        if (this.player === "white") {
+            return symbol.toUpperCase();
+        } else {
+            return symbol;
         }
     };
-};
+}());

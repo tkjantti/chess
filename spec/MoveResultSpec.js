@@ -6,12 +6,12 @@ describe('MoveResult', function () {
 
     describe('toString', function () {
         it('Prints move result in a simple notation', function () {
-            var move = CHESS_APP.createMove(
+            var move = new CHESS_APP.Move(
                 "white",
-                CHESS_APP.createPoint(6, 1),
-                CHESS_APP.createPoint(5, 1));
-            var piece = CHESS_APP.createPiece("white", "pawn");
-            var moveResult = CHESS_APP.createMoveResult(move, "good_move", piece);
+                new CHESS_APP.Point(6, 1),
+                new CHESS_APP.Point(5, 1));
+            var piece = new CHESS_APP.Piece("white", "pawn");
+            var moveResult = new CHESS_APP.MoveResult(move, "good_move", piece);
 
             var result = moveResult.toString();
 

@@ -18,21 +18,21 @@ CHESS_TEST.boardState = function (rows) {
     var row, column, rowString, position, letter, piece;
 
     var pieceMap = {
-        P: CHESS_APP.createPiece("white", "pawn"),
-        R: CHESS_APP.createPiece("white", "rook"),
-        N: CHESS_APP.createPiece("white", "knight"),
-        B: CHESS_APP.createPiece("white", "bishop"),
-        Q: CHESS_APP.createPiece("white", "queen"),
-        K: CHESS_APP.createPiece("white", "king"),
-        p: CHESS_APP.createPiece("black", "pawn"),
-        r: CHESS_APP.createPiece("black", "rook"),
-        n: CHESS_APP.createPiece("black", "knight"),
-        b: CHESS_APP.createPiece("black", "bishop"),
-        q: CHESS_APP.createPiece("black", "queen"),
-        k: CHESS_APP.createPiece("black", "king")
+        P: new CHESS_APP.Piece("white", "pawn"),
+        R: new CHESS_APP.Piece("white", "rook"),
+        N: new CHESS_APP.Piece("white", "knight"),
+        B: new CHESS_APP.Piece("white", "bishop"),
+        Q: new CHESS_APP.Piece("white", "queen"),
+        K: new CHESS_APP.Piece("white", "king"),
+        p: new CHESS_APP.Piece("black", "pawn"),
+        r: new CHESS_APP.Piece("black", "rook"),
+        n: new CHESS_APP.Piece("black", "knight"),
+        b: new CHESS_APP.Piece("black", "bishop"),
+        q: new CHESS_APP.Piece("black", "queen"),
+        k: new CHESS_APP.Piece("black", "king")
     };
 
-    var board = CHESS_APP.createInMemoryBoard(rowCount, columnCount);
+    var board = new CHESS_APP.InMemoryBoard(rowCount, columnCount);
 
     for (row = 0; row < rows.length; row += 1) {
         rowString = rows[row];
@@ -40,7 +40,7 @@ CHESS_TEST.boardState = function (rows) {
             throw "All rows are expected to be equal";
         }
         for (column = 0; column < columnCount; column += 1) {
-            position = CHESS_APP.createPoint(row, column);
+            position = new CHESS_APP.Point(row, column);
             letter = rowString[column];
             if (letter !== ' ') {
                 piece = pieceMap[letter];

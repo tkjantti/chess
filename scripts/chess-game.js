@@ -5,8 +5,8 @@ CHESS_APP.game = (function () {
     "use strict";
     var initialized = false;
     var state = "match";
-    var board = CHESS_APP.createDomBoard();
-    var turn = CHESS_APP.createTurn(CHESS_APP.createRules());
+    var board = new CHESS_APP.DomBoard();
+    var turn = new CHESS_APP.Turn(new CHESS_APP.Rules());
 
     function showVictory() {
         $('#gameState').text('Checkmate! Winner: ' + turn.getCurrentPlayer());

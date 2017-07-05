@@ -1,44 +1,45 @@
 /* global CHESS_APP */
 
-CHESS_APP.createMove = function (player, source, destination) {
+CHESS_APP.Move = function (player, source, destination) {
     "use strict";
+    this.player = player;
+    this.source = source;
+    this.destination = destination;
+};
 
-    var that = {
-        player: player,
-        source: source,
-        destination: destination
-    };
+CHESS_APP.Move.prototype.toString = function () {
+    "use strict";
+    return '{ ' + this.player + ' ' + this.source + ' -> ' + this.destination + ' }';
+};
 
-    that.toString = function () {
-        return '{ ' + this.player + ' ' + this.source + ' -> ' + this.destination + ' }';
-    };
+CHESS_APP.Move.prototype.getRelativeVerticalMovement = function () {
+    "use strict";
+    if (this.player === "white") {
+        return this.source.row - this.destination.row;
+    } else {
+        return this.destination.row - this.source.row;
+    }
+};
 
-    that.getRelativeVerticalMovement = function () {
-        if (player === "white") {
-            return this.source.row - this.destination.row;
-        } else {
-            return this.destination.row - this.source.row;
-        }
-    };
+CHESS_APP.Move.prototype.getHorizontalMovement = function () {
+    "use strict";
+    return this.destination.column - this.source.column;
+};
 
-    that.getHorizontalMovement = function () {
-        return this.destination.column - this.source.column;
-    };
+CHESS_APP.Move.prototype.isHorizontal = function () {
+    "use strict";
+    return this.source.row === this.destination.row &&
+            this.source.column !== this.destination.column;
+};
 
-    that.isHorizontal = function () {
-        return this.source.row === this.destination.row &&
-                this.source.column !== this.destination.column;
-    };
+CHESS_APP.Move.prototype.isVertical = function () {
+    "use strict";
+    return this.source.column === this.destination.column &&
+            this.source.row !== this.destination.row;
+};
 
-    that.isVertical = function () {
-        return this.source.column === this.destination.column &&
-                this.source.row !== this.destination.row;
-    };
-
-    that.isDiagonal = function () {
-        return (this.source.row !== this.destination.row) &&
-                Math.abs(this.destination.column - this.source.column) === Math.abs(this.destination.row - this.source.row);
-    };
-
-    return that;
+CHESS_APP.Move.prototype.isDiagonal = function () {
+    "use strict";
+    return (this.source.row !== this.destination.row) &&
+            Math.abs(this.destination.column - this.source.column) === Math.abs(this.destination.row - this.source.row);
 };
