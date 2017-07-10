@@ -79,14 +79,17 @@
     };
 
     CHESS_APP.DomBoard = function () {
-        this.rowCount = CHESS_APP.defaultRowCount;
-        this.columnCount = CHESS_APP.defaultColumnCount;
+        CHESS_APP.Board.call(
+            this,
+            CHESS_APP.defaultRowCount,
+            CHESS_APP.defaultColumnCount);
         this.initialized = false;
         this.selectedPosition = null;
         this.onSquareClicked = null;
     };
 
-    CHESS_APP.DomBoard.prototype = new CHESS_APP.Board();
+    CHESS_APP.DomBoard.prototype = Object.create(CHESS_APP.Board.prototype);
+    CHESS_APP.DomBoard.prototype.constructor = CHESS_APP.Board;
 
     CHESS_APP.DomBoard.prototype.highlightPieceUnderThreat = function (position) {
         var square = getSquare(position);

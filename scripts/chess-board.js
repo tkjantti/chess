@@ -3,7 +3,11 @@
 CHESS_APP.defaultRowCount = 8;
 CHESS_APP.defaultColumnCount = 8;
 
-CHESS_APP.Board = function () {};
+CHESS_APP.Board = function (rowCount, columnCount) {
+    "use strict";
+    this.rowCount = (rowCount !== undefined) ? rowCount : CHESS_APP.defaultRowCount;
+    this.columnCount = (columnCount !== undefined) ? columnCount : CHESS_APP.defaultColumnCount;
+};
 
 CHESS_APP.Board.prototype.getRowCount = function () {
     "use strict";

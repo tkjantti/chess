@@ -1,13 +1,13 @@
 /* global CHESS_APP */
 
-CHESS_APP.InMemoryBoard = function (rows, columns) {
+CHESS_APP.InMemoryBoard = function (rowCount, columnCount) {
     "use strict";
-    this.rowCount = (rows !== undefined) ? rows : CHESS_APP.defaultRowCount;
-    this.columnCount = (columns !== undefined) ? columns : CHESS_APP.defaultColumnCount;
+    CHESS_APP.Board.call(this, rowCount, columnCount);
     this.pieces = []; // A list of piece, position pairs.
 };
 
-CHESS_APP.InMemoryBoard.prototype = new CHESS_APP.Board();
+CHESS_APP.InMemoryBoard.prototype = Object.create(CHESS_APP.Board.prototype);
+CHESS_APP.InMemoryBoard.prototype.constructor = CHESS_APP.Board;
 
 CHESS_APP.InMemoryBoard.prototype.getPiece = function (position) {
     "use strict";
