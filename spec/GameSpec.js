@@ -1,10 +1,10 @@
 /* jshint jasmine:true */
 /* global CHESS_APP */
 
-describe('Turn', function () {
+describe('Game', function () {
     "use strict";
 
-    var turn;
+    var game;
     var rules = new CHESS_APP.Rules();
     var board;
     var source;
@@ -13,7 +13,7 @@ describe('Turn', function () {
 
     beforeEach(function () {
         rules = new CHESS_APP.Rules();
-        turn = new CHESS_APP.Turn(rules);
+        game = new CHESS_APP.Game(rules);
         board = new CHESS_APP.InMemoryBoard(8, 8);
         source = new CHESS_APP.Point(4, 4);
         destination = new CHESS_APP.Point(5, 4);
@@ -31,7 +31,7 @@ describe('Turn', function () {
             });
             spyOn(rules, "isInCheck").and.returnValue(null);
 
-            var result = turn.move(board, source, destination);
+            var result = game.move(board, source, destination);
 
             expect(result.result).toBe("good_move");
             expect(rules.inspectMove).toHaveBeenCalledWith(board, jasmine.objectContaining({
@@ -51,7 +51,7 @@ describe('Turn', function () {
             spyOn(rules, "isInCheck").and.returnValue(null);
             spyOn(board, "move");
 
-            var result = turn.move(board, source, destination);
+            var result = game.move(board, source, destination);
 
             expect(result.result).toBe("good_move");
             expect(board.move).toHaveBeenCalledWith(source, destination);
@@ -65,10 +65,10 @@ describe('Turn', function () {
             });
             spyOn(rules, "isInCheck").and.returnValue(null);
 
-            var result = turn.move(board, source, destination);
+            var result = game.move(board, source, destination);
 
             expect(result.result).toBe("good_move");
-            expect(turn.getCurrentPlayer()).toBe("black");
+            expect(game.getCurrentPlayer()).toBe("black");
         });
 
         it('removes a piece if one is captured', function () {
@@ -82,7 +82,7 @@ describe('Turn', function () {
             spyOn(rules, "isInCheck").and.returnValue(null);
             spyOn(board, "removePiece");
 
-            turn.move(board, source, destination);
+            game.move(board, source, destination);
 
             expect(board.removePiece).toHaveBeenCalledWith(jasmine.objectContaining({
                 row: 3,
@@ -99,7 +99,7 @@ describe('Turn', function () {
             spyOn(rules, "isInCheck").and.returnValue(null);
             spyOn(board, "move");
 
-            var result = turn.move(board, source, destination);
+            var result = game.move(board, source, destination);
 
             expect(result.result).toBe("bad_move");
             expect(board.move).not.toHaveBeenCalled();
@@ -115,7 +115,7 @@ describe('Turn', function () {
             spyOn(rules, "isInCheck").and.returnValue(positionInCheck);
             spyOn(board, "move");
 
-            var result = turn.move(board, source, destination);
+            var result = game.move(board, source, destination);
 
             expect(result.result).toBe("bad_move");
             expect(result.positionInCheck).toEqual(positionInCheck);
@@ -133,7 +133,7 @@ describe('Turn', function () {
                 return player === "black";
             });
 
-            var result = turn.move(board, source, destination);
+            var result = game.move(board, source, destination);
 
             expect(result.result).toBe("checkmate");
             expect(rules.isInCheckMate).toHaveBeenCalledWith(
@@ -153,7 +153,7 @@ describe('Turn', function () {
             spyOn(board, "move");
             spyOn(board, "changeTypeOfPiece");
 
-            turn.move(board, source, destination);
+            game.move(board, source, destination);
 
             expect(board.move).toHaveBeenCalledWith(source, destination);
             expect(board.changeTypeOfPiece).toHaveBeenCalledWith(destination, "queen");
@@ -174,8 +174,8 @@ describe('Turn', function () {
             });
             spyOn(rules, "isInCheck").and.returnValue(null);
 
-            turn.move(board, white_source, white_destination);
-            turn.move(board, black_source, black_destination);
+            game.move(board, white_source, white_destination);
+            game.move(board, black_source, black_destination);
 
             var actualPreviousMove = rules.inspectMove.calls.mostRecent().args[2];
             expect(actualPreviousMove.player).toBe("white");
@@ -199,7 +199,7 @@ describe('Turn', function () {
                 }
             });
 
-            var result = turn.move(board, source, destination);
+            var result = game.move(board, source, destination);
 
             expect(result.result).toBe("draw");
         });
@@ -214,7 +214,7 @@ describe('Turn', function () {
 
             rules.isDraw.and.returnValue(false);
 
-            var result = turn.move(board, source, destination);
+            var result = game.move(board, source, destination);
 
             expect(result.result).not.toBe("draw");
         });

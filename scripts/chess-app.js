@@ -7,10 +7,10 @@ CHESS_APP.app = (function () {
     var initialized = false;
     var state = "match";
     var board = new CHESS_APP.DomBoard();
-    var turn = new CHESS_APP.Turn(new CHESS_APP.Rules());
+    var game = new CHESS_APP.Game(new CHESS_APP.Rules());
 
     function showVictory() {
-        $('#gameState').text('Checkmate! Winner: ' + turn.getCurrentPlayer());
+        $('#gameState').text('Checkmate! Winner: ' + game.getCurrentPlayer());
         $('#gameState').addClass("victory");
     }
 
@@ -46,7 +46,7 @@ CHESS_APP.app = (function () {
 
         var piece = board.getPiece(position);
 
-        if (piece && (piece.player === turn.getCurrentPlayer())) {
+        if (piece && (piece.player === game.getCurrentPlayer())) {
             board.selectSquare(position);
             return;
         }
@@ -55,7 +55,7 @@ CHESS_APP.app = (function () {
             return;
         }
 
-        var result = turn.move(board, previousPosition, position);
+        var result = game.move(board, previousPosition, position);
 
         if (!result.isGood()) {
             if (result.positionInCheck) {
@@ -87,7 +87,7 @@ CHESS_APP.app = (function () {
             board.initialize();
             board.listenSquareClick(onSquareClicked);
 
-            turn.listenCurrentPlayer(function (player) {
+            game.listenCurrentPlayer(function (player) {
                 $("#player_in_turn").text(player);
             });
 

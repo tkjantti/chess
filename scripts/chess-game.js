@@ -16,30 +16,30 @@ var CHESS_APP = CHESS_APP || {};
         }
     };
 
-    CHESS_APP.Turn = function (rules) {
+    CHESS_APP.Game = function (rules) {
         this.rules = rules;
         this.currentPlayer = "white";
         this.previousMove = null;
         this.onPlayerChangedHandler = null;
     };
 
-    CHESS_APP.Turn.prototype.changePlayer = function () {
+    CHESS_APP.Game.prototype.changePlayer = function () {
         this.currentPlayer = this.rules.opponentPlayer(this.currentPlayer);
         if (this.onPlayerChangedHandler) {
             this.onPlayerChangedHandler(this.currentPlayer);
         }
     };
 
-    CHESS_APP.Turn.prototype.getCurrentPlayer = function () {
+    CHESS_APP.Game.prototype.getCurrentPlayer = function () {
         return this.currentPlayer;
     };
 
-    CHESS_APP.Turn.prototype.listenCurrentPlayer = function (onPlayerChanged) {
+    CHESS_APP.Game.prototype.listenCurrentPlayer = function (onPlayerChanged) {
         this.onPlayerChangedHandler = onPlayerChanged;
         this.onPlayerChangedHandler(this.currentPlayer);
     };
 
-    CHESS_APP.Turn.prototype.move = function (board, source, destination) {
+    CHESS_APP.Game.prototype.move = function (board, source, destination) {
         var move = new CHESS_APP.Move(this.currentPlayer, source, destination);
 
         var inspectionResult = this.rules.inspectMove(board, move, this.previousMove);
