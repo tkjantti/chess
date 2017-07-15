@@ -2,7 +2,7 @@
 
 var CHESS_APP = CHESS_APP || {};
 
-CHESS_APP.game = (function () {
+CHESS_APP.app = (function () {
     "use strict";
     var initialized = false;
     var state = "match";
