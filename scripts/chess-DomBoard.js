@@ -1,5 +1,6 @@
 /* jshint browser:true, jquery:true */
-/* global CHESS_APP */
+
+var CHESS_APP = CHESS_APP || {};
 
 (function () {
     "use strict";

@@ -1,5 +1,6 @@
 /* jshint jquery:true */
-/* global CHESS_APP */
+
+var CHESS_APP = CHESS_APP || {};
 
 CHESS_APP.game = (function () {
     "use strict";

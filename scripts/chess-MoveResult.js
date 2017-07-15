@@ -1,4 +1,5 @@
-/* global CHESS_APP */
+
+var CHESS_APP = CHESS_APP || {};
 
 CHESS_APP.MoveResult = function (move, result, piece, positionInCheck) {
     "use strict";

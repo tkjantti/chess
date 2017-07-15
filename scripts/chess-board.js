@@ -1,4 +1,5 @@
-/* global CHESS_APP */
+
+var CHESS_APP = CHESS_APP || {};
 
 CHESS_APP.defaultRowCount = 8;
 CHESS_APP.defaultColumnCount = 8;

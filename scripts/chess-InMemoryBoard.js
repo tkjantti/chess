@@ -1,4 +1,5 @@
-/* global CHESS_APP */
+
+var CHESS_APP = CHESS_APP || {};
 
 CHESS_APP.InMemoryBoard = function (rowCount, columnCount) {
     "use strict";
