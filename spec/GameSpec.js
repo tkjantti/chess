@@ -23,7 +23,7 @@ describe('Game', function () {
     });
 
     describe('move', function () {
-        it('returns good move if the move is legal', function () {
+        it('returns legal result if the move is legal', function () {
             board.setPiece(source, new CHESS_APP.Piece("white", "pawn"));
 
             spyOn(rules, "inspectMove").and.returnValue({
@@ -33,7 +33,7 @@ describe('Game', function () {
 
             var result = game.move(board, source, destination);
 
-            expect(result.result).toBe("good_move");
+            expect(result.isLegal).toBe(true);
             expect(rules.inspectMove).toHaveBeenCalledWith(board, jasmine.objectContaining({
                 player: "white",
                 source: source,
@@ -53,7 +53,7 @@ describe('Game', function () {
 
             var result = game.move(board, source, destination);
 
-            expect(result.result).toBe("good_move");
+            expect(result.isLegal).toBe(true);
             expect(board.move).toHaveBeenCalledWith(source, destination);
         });
 
@@ -67,7 +67,7 @@ describe('Game', function () {
 
             var result = game.move(board, source, destination);
 
-            expect(result.result).toBe("good_move");
+            expect(result.isLegal).toBe(true);
             expect(game.getCurrentPlayer()).toBe("black");
         });
 
@@ -101,7 +101,7 @@ describe('Game', function () {
 
             var result = game.move(board, source, destination);
 
-            expect(result.result).toBe("bad_move");
+            expect(result.isLegal).toBe(false);
             expect(board.move).not.toHaveBeenCalled();
         });
 
@@ -117,12 +117,12 @@ describe('Game', function () {
 
             var result = game.move(board, source, destination);
 
-            expect(result.result).toBe("bad_move");
+            expect(result.isLegal).toBe(false);
             expect(result.positionInCheck).toEqual(positionInCheck);
             expect(board.move).not.toHaveBeenCalled();
         });
 
-        it('returns checkmate if the move results in a checkmate', function () {
+        it('changes state to checkmate if the move results in a checkmate', function () {
             board.setPiece(source, new CHESS_APP.Piece("white", "pawn"));
 
             spyOn(rules, "inspectMove").and.returnValue({
@@ -133,9 +133,10 @@ describe('Game', function () {
                 return player === "black";
             });
 
-            var result = game.move(board, source, destination);
+            game.move(board, source, destination);
 
-            expect(result.result).toBe("checkmate");
+            expect(game.isInCheckmate()).toBe(true);
+            expect(game.isFinished()).toBe(true);
             expect(rules.isInCheckMate).toHaveBeenCalledWith(
                 jasmine.anything(),
                 "black",
@@ -183,7 +184,7 @@ describe('Game', function () {
             expect(actualPreviousMove.destination).toEqual(white_destination);
         });
 
-        it('returns draw if the move results in a draw', function () {
+        it('changes state to draw if the move results in a draw', function () {
             board.setPiece(source, new CHESS_APP.Piece("white", "pawn"));
 
             spyOn(rules, "inspectMove").and.returnValue({
@@ -199,24 +200,27 @@ describe('Game', function () {
                 }
             });
 
-            var result = game.move(board, source, destination);
+            game.move(board, source, destination);
 
-            expect(result.result).toBe("draw");
+            expect(game.isInDraw()).toBe(true);
+            expect(game.isFinished()).toBe(true);
         });
 
-        it('does not return draw if the move does not result in a draw', function () {
+        it('does not change the state if there is no checkmate or draw', function () {
             board.setPiece(source, new CHESS_APP.Piece("white", "pawn"));
 
             spyOn(rules, "inspectMove").and.returnValue({
                 isLegal: true
             });
             spyOn(rules, "isInCheck").and.returnValue(null);
-
             rules.isDraw.and.returnValue(false);
+            spyOn(board, "move");
 
-            var result = game.move(board, source, destination);
+            game.move(board, source, destination);
 
-            expect(result.result).not.toBe("draw");
+            expect(game.isFinished()).toBe(false);
+            expect(game.isInDraw()).toBe(false);
+            expect(game.isInCheckmate()).toBe(false);
         });
     });
 });

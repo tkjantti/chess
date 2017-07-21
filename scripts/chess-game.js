@@ -4,6 +4,10 @@ var CHESS_APP = CHESS_APP || {};
 (function () {
     "use strict";
 
+    var STATE_GAME_ON = 0;
+    var STATE_DRAW = 1;
+    var STATE_CHECKMATE = 2;
+
     var updateBoard = function (board, move, inspectionResult) {
         if (inspectionResult.capturePosition) {
             board.removePiece(inspectionResult.capturePosition);
@@ -21,6 +25,20 @@ var CHESS_APP = CHESS_APP || {};
         this.currentPlayer = "white";
         this.previousMove = null;
         this.onPlayerChangedHandler = null;
+        this.state = STATE_GAME_ON;
+    };
+
+    CHESS_APP.Game.prototype.isFinished = function () {
+        return this.state === STATE_DRAW ||
+                this.state === STATE_CHECKMATE;
+    };
+
+    CHESS_APP.Game.prototype.isInDraw = function () {
+        return this.state === STATE_DRAW;
+    };
+
+    CHESS_APP.Game.prototype.isInCheckmate = function () {
+        return this.state === STATE_CHECKMATE;
     };
 
     CHESS_APP.Game.prototype.changePlayer = function () {
@@ -45,7 +63,7 @@ var CHESS_APP = CHESS_APP || {};
         var inspectionResult = this.rules.inspectMove(board, move, this.previousMove);
 
         if (!inspectionResult.isLegal) {
-            return new CHESS_APP.MoveResult(move, "bad_move");
+            return new CHESS_APP.MoveResult(move, false);
         }
 
         var tempBoard = CHESS_APP.cloneInMemoryBoard(board);
@@ -54,22 +72,21 @@ var CHESS_APP = CHESS_APP || {};
         var positionInCheck = this.rules.isInCheck(tempBoard, this.currentPlayer, this.previousMove);
 
         if (positionInCheck) {
-            return new CHESS_APP.MoveResult(move, "bad_move", null, positionInCheck);
+            return new CHESS_APP.MoveResult(move, false, null, positionInCheck);
         }
 
         updateBoard(board, move, inspectionResult);
 
         this.previousMove = move;
 
-        var result;
+        var result = new CHESS_APP.MoveResult(move, true, inspectionResult.piece);
         var opponent = this.rules.opponentPlayer(this.currentPlayer);
 
         if (this.rules.isInCheckMate(board, opponent, this.previousMove)) {
-            result = new CHESS_APP.MoveResult(move, "checkmate", inspectionResult.piece);
+            this.state = STATE_CHECKMATE;
         } else if (this.rules.isDraw(board, opponent, this.previousMove)) {
-            result = new CHESS_APP.MoveResult(move, "draw", inspectionResult.piece);
+            this.state = STATE_DRAW;
         } else {
-            result = new CHESS_APP.MoveResult(move, "good_move", inspectionResult.piece);
             this.changePlayer();
         }
 

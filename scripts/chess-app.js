@@ -5,7 +5,6 @@ var CHESS_APP = CHESS_APP || {};
 CHESS_APP.app = (function () {
     "use strict";
     var initialized = false;
-    var state = "match";
     var board = new CHESS_APP.DomBoard();
     var game = new CHESS_APP.Game(new CHESS_APP.Rules());
 
@@ -35,7 +34,7 @@ CHESS_APP.app = (function () {
     }
 
     function onSquareClicked(position, previousPosition) {
-        if (state === "finished") {
+        if (game.isFinished()) {
             return;
         }
 
@@ -57,7 +56,7 @@ CHESS_APP.app = (function () {
 
         var result = game.move(board, previousPosition, position);
 
-        if (!result.isGood()) {
+        if (!result.isLegal) {
             if (result.positionInCheck) {
                 board.highlightPieceUnderThreat(result.positionInCheck);
             }
@@ -67,12 +66,10 @@ CHESS_APP.app = (function () {
 
         addMoveResultToList(result);
 
-        if (result.isCheckMate()) {
+        if (game.isInCheckmate()) {
             showVictory();
-            state = "finished";
-        } else if (result.isDraw()) {
+        } else if (game.isInDraw()) {
             showDraw();
-            state = "finished";
         }
 
         board.removeSelection();
