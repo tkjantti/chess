@@ -16,6 +16,15 @@ CHESS_APP.MoveResult.prototype.getPlayer = function () {
 
 CHESS_APP.MoveResult.prototype.toString = function () {
     "use strict";
+    return '{ ' + this.piece.toString() +
+            ' ' + this.move.toString() +
+            ' ' + this.isLegal +
+            ' ' + this.positionInCheck +
+            ' }';
+};
+
+CHESS_APP.MoveResult.prototype.toMoveNotationString = function () {
+    "use strict";
     return this.piece.getMoveNotationSymbol() +
             ' ' + this.move.source.toString() +
             ' -> ' + this.move.destination.toString();

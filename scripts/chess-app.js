@@ -19,16 +19,18 @@ CHESS_APP.app = (function () {
     }
 
     function addMoveResultToList(moveResult) {
+        var textNotation = moveResult.toMoveNotationString();
+
         if (moveResult.getPlayer() === "white") {
             $('#moves').find('tbody')
                 .append($('<tr>')
                     .append($('<td>')
-                        .text(moveResult.toString())
+                        .text(textNotation)
                     )
                 );
         } else {
             $('#moves tr:last').append($('<td>')
-                .text(moveResult.toString())
+                .text(textNotation)
             );
         }
     }

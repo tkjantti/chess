@@ -97,18 +97,22 @@ var CHESS_APP = CHESS_APP || {};
                 canCapture(move.player, capturedPiece, okToCaptureKing);
     };
 
-    var canBeCapturedEnPassant = function (board, move, previousMove, position, okToCaptureKing) {
+    var canBeCapturedEnPassant = function (board, move, moveLog, position, okToCaptureKing) {
         var capturedPiece = board.getPiece(position);
+
+        if (moveLog.isEmpty()) {
+            return false;
+        }
+        var previousMove = moveLog.getLast().move;
 
         return capturedPiece &&
                 capturedPiece.type === "pawn" &&
                 canCapture(move.player, capturedPiece, okToCaptureKing) &&
-                previousMove &&
                 previousMove.getRelativeVerticalMovement() === 2 &&
                 previousMove.destination.equals(position);
     };
 
-    var inspectEnPassant = function (board, move, previousMove) {
+    var inspectEnPassant = function (board, move, moveLog) {
         var result = {
             isLegal: false
         };
@@ -123,12 +127,12 @@ var CHESS_APP = CHESS_APP || {};
         var opponentPositionLeft = move.source.add(0, -1);
         var opponentPositionRight = move.source.add(0, 1);
 
-        if (horizontal === -1 && canBeCapturedEnPassant(board, move, previousMove, opponentPositionLeft)) {
+        if (horizontal === -1 && canBeCapturedEnPassant(board, move, moveLog, opponentPositionLeft)) {
             result.capturePosition = opponentPositionLeft;
             result.isLegal = true;
         }
 
-        if (horizontal === 1 && canBeCapturedEnPassant(board, move, previousMove, opponentPositionRight)) {
+        if (horizontal === 1 && canBeCapturedEnPassant(board, move, moveLog, opponentPositionRight)) {
             result.capturePosition = opponentPositionRight;
             result.isLegal = true;
         }
@@ -141,20 +145,20 @@ var CHESS_APP = CHESS_APP || {};
         return (relativePosition.row === board.getRowCount() - 1) ? "queen" : undefined;
     };
 
-    var getLegalMovesForPiece = function (rules, player, board, position, previousMove) {
+    var getLegalMovesForPiece = function (rules, player, board, position, moveLog) {
         return board.getPositions(function (destination) {
             var move = new CHESS_APP.Move(player, position, destination);
-            return rules.inspectMove(board, move, previousMove).isLegal;
+            return rules.inspectMove(board, move, moveLog).isLegal;
         });
     };
 
-    var isInStalemate = function (rules, board, player, previousMove) {
+    var isInStalemate = function (rules, board, player, moveLog) {
         var ownPieces = board.findPieces(function (piece) {
             return piece.player === player;
         });
 
         var canMove = function (piece) {
-            var legalMoves = getLegalMovesForPiece(rules, player, board, piece.position, previousMove);
+            var legalMoves = getLegalMovesForPiece(rules, player, board, piece.position, moveLog);
             return legalMoves.some(function (destination) {
                 var b2 = CHESS_APP.cloneInMemoryBoard(board);
                 var move = new CHESS_APP.Move(player, piece.position, destination);
@@ -163,7 +167,7 @@ var CHESS_APP = CHESS_APP || {};
             });
         };
 
-        return !rules.isInCheck(board, player, previousMove) && !ownPieces.some(canMove);
+        return !rules.isInCheck(board, player, moveLog) && !ownPieces.some(canMove);
     };
 
     var isNoPossibilityOfCheckMate = function (board) {
@@ -239,7 +243,7 @@ var CHESS_APP = CHESS_APP || {};
      * If the given player is in check, returns the position of
      * the piece under threat. Otherwise returns null.
      */
-    CHESS_APP.Rules.prototype.isInCheck = function (board, player, previousMove) {
+    CHESS_APP.Rules.prototype.isInCheck = function (board, player, moveLog) {
         var positionOfKing = board.getPositionOf(new CHESS_APP.Piece(player, "king"));
         if (!positionOfKing) {
             throw "No king found from the board!";
@@ -249,15 +253,15 @@ var CHESS_APP = CHESS_APP || {};
         var attackingPiece = board.findPiece(function (piece, position) {
             var move = new CHESS_APP.Move(opponent, position, positionOfKing);
             return (piece.player === opponent) &&
-                    that.inspectMove(board, move, previousMove, true).isLegal;
+                    that.inspectMove(board, move, moveLog, true).isLegal;
         });
         return attackingPiece ? positionOfKing : null;
     };
 
-    CHESS_APP.Rules.prototype.isInCheckMate = function (board, player, previousMove) {
+    CHESS_APP.Rules.prototype.isInCheckMate = function (board, player, moveLog) {
         var that = this;
 
-        if (!this.isInCheck(board, player, previousMove)) {
+        if (!this.isInCheck(board, player, moveLog)) {
             return false;
         }
 
@@ -266,20 +270,20 @@ var CHESS_APP = CHESS_APP || {};
         });
 
         var canPreventChess = function (piece) {
-            var legalMoves = getLegalMovesForPiece(that, player, board, piece.position, previousMove);
+            var legalMoves = getLegalMovesForPiece(that, player, board, piece.position, moveLog);
 
             return legalMoves.some(function (destination) {
                 var b2 = CHESS_APP.cloneInMemoryBoard(board);
                 b2.move(piece.position, destination);
-                return !that.isInCheck(b2, player, previousMove);
+                return !that.isInCheck(b2, player, moveLog);
             });
         };
 
         return !ownPieces.some(canPreventChess);
     };
 
-    CHESS_APP.Rules.prototype.isDraw = function (board, player, previousMove) {
-        return isInStalemate(this, board, player, previousMove) ||
+    CHESS_APP.Rules.prototype.isDraw = function (board, player, moveLog) {
+        return isInStalemate(this, board, player, moveLog) ||
                 isNoPossibilityOfCheckMate(board);
     };
 
@@ -291,7 +295,7 @@ var CHESS_APP = CHESS_APP || {};
      * a promotion of a piece, the return value contains a field
      * "promotion" with the type that the piece is promoted to.
      */
-    CHESS_APP.Rules.prototype.inspectMove = function (board, move, previousMove, okToCaptureKing) {
+    CHESS_APP.Rules.prototype.inspectMove = function (board, move, moveLog, okToCaptureKing) {
         var piece, pieceAtDestination;
         var horizontal, vertical;
         var enPassantResult;
@@ -330,7 +334,7 @@ var CHESS_APP = CHESS_APP || {};
 
         switch (piece.type) {
         case "pawn":
-            enPassantResult = inspectEnPassant(board, move, previousMove, okToCaptureKing);
+            enPassantResult = inspectEnPassant(board, move, moveLog, okToCaptureKing);
 
             result.isLegal = enPassantResult.isLegal ||
                     isCorrectForwardMoveForPawn(board, move) ||

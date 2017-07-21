@@ -23,7 +23,7 @@ var CHESS_APP = CHESS_APP || {};
     CHESS_APP.Game = function (rules) {
         this.rules = rules;
         this.currentPlayer = "white";
-        this.previousMove = null;
+        this.moveLog = new CHESS_APP.MoveLog();
         this.onPlayerChangedHandler = null;
         this.state = STATE_GAME_ON;
     };
@@ -60,7 +60,7 @@ var CHESS_APP = CHESS_APP || {};
     CHESS_APP.Game.prototype.move = function (board, source, destination) {
         var move = new CHESS_APP.Move(this.currentPlayer, source, destination);
 
-        var inspectionResult = this.rules.inspectMove(board, move, this.previousMove);
+        var inspectionResult = this.rules.inspectMove(board, move, this.moveLog);
 
         if (!inspectionResult.isLegal) {
             return new CHESS_APP.MoveResult(move, false);
@@ -69,7 +69,7 @@ var CHESS_APP = CHESS_APP || {};
         var tempBoard = CHESS_APP.cloneInMemoryBoard(board);
         updateBoard(tempBoard, move, inspectionResult);
 
-        var positionInCheck = this.rules.isInCheck(tempBoard, this.currentPlayer, this.previousMove);
+        var positionInCheck = this.rules.isInCheck(tempBoard, this.currentPlayer, this.moveLog);
 
         if (positionInCheck) {
             return new CHESS_APP.MoveResult(move, false, null, positionInCheck);
@@ -77,14 +77,14 @@ var CHESS_APP = CHESS_APP || {};
 
         updateBoard(board, move, inspectionResult);
 
-        this.previousMove = move;
-
         var result = new CHESS_APP.MoveResult(move, true, inspectionResult.piece);
+        this.moveLog.add(result);
+
         var opponent = this.rules.opponentPlayer(this.currentPlayer);
 
-        if (this.rules.isInCheckMate(board, opponent, this.previousMove)) {
+        if (this.rules.isInCheckMate(board, opponent, this.moveLog)) {
             this.state = STATE_CHECKMATE;
-        } else if (this.rules.isDraw(board, opponent, this.previousMove)) {
+        } else if (this.rules.isDraw(board, opponent, this.moveLog)) {
             this.state = STATE_DRAW;
         } else {
             this.changePlayer();

@@ -4,7 +4,7 @@
 describe('MoveResult', function () {
     "use strict";
 
-    describe('toString', function () {
+    describe('toMoveNotationString', function () {
         it('Prints move result in a simple notation', function () {
             var move = new CHESS_APP.Move(
                 "white",
@@ -13,7 +13,7 @@ describe('MoveResult', function () {
             var piece = new CHESS_APP.Piece("white", "pawn");
             var moveResult = new CHESS_APP.MoveResult(move, "good_move", piece);
 
-            var result = moveResult.toString();
+            var result = moveResult.toMoveNotationString();
 
             expect(result).toBe('P b2 -> b3');
         });

@@ -9,7 +9,6 @@ describe('Game', function () {
     var board;
     var source;
     var destination;
-    var previousMove = null;
 
     beforeEach(function () {
         rules = new CHESS_APP.Rules();
@@ -17,7 +16,6 @@ describe('Game', function () {
         board = new CHESS_APP.InMemoryBoard(8, 8);
         source = new CHESS_APP.Point(4, 4);
         destination = new CHESS_APP.Point(5, 4);
-        previousMove = null;
 
         spyOn(rules, "isDraw").and.returnValue(false);
     });
@@ -34,12 +32,28 @@ describe('Game', function () {
             var result = game.move(board, source, destination);
 
             expect(result.isLegal).toBe(true);
+        });
+
+        it('calls methods from rules to determine that a move is good', function () {
+            board.setPiece(source, new CHESS_APP.Piece("white", "pawn"));
+
+            spyOn(rules, "inspectMove").and.returnValue({
+                isLegal: true,
+                piece: new CHESS_APP.Piece("white", "pawn")
+            });
+            spyOn(rules, "isInCheck").and.returnValue(null);
+
+            game.move(board, source, destination);
+
             expect(rules.inspectMove).toHaveBeenCalledWith(board, jasmine.objectContaining({
                 player: "white",
                 source: source,
                 destination: destination
-            }), previousMove);
-            expect(rules.isInCheck).toHaveBeenCalledWith(jasmine.anything(), "white", previousMove);
+            }), jasmine.any(CHESS_APP.MoveLog));
+            expect(rules.isInCheck).toHaveBeenCalledWith(
+                jasmine.any(CHESS_APP.Board),
+                "white",
+                jasmine.any(CHESS_APP.MoveLog));
         });
 
         it('makes the move if it is legal', function () {
@@ -138,9 +152,9 @@ describe('Game', function () {
             expect(game.isInCheckmate()).toBe(true);
             expect(game.isFinished()).toBe(true);
             expect(rules.isInCheckMate).toHaveBeenCalledWith(
-                jasmine.anything(),
+                jasmine.any(CHESS_APP.Board),
                 "black",
-                jasmine.anything());
+                jasmine.any(CHESS_APP.MoveLog));
         });
 
         it('changes the type of piece if a piece gets promoted', function () {
@@ -160,7 +174,7 @@ describe('Game', function () {
             expect(board.changeTypeOfPiece).toHaveBeenCalledWith(destination, "queen");
         });
 
-        it('passes previous move to inspectMove', function () {
+        it('adds performed moves to log', function () {
             var white_source = new CHESS_APP.Point(6, 0);
             var white_destination = new CHESS_APP.Point(5, 0);
 
@@ -170,18 +184,61 @@ describe('Game', function () {
             board.setPiece(white_source, new CHESS_APP.Piece("white", "pawn"));
             board.setPiece(black_source, new CHESS_APP.Piece("black", "pawn"));
 
-            spyOn(rules, "inspectMove").and.returnValue({
-                isLegal: true
+            spyOn(rules, "inspectMove").and.returnValues({
+                isLegal: true,
+                piece: new CHESS_APP.Piece("white", "pawn")
+            }, {
+                isLegal: true,
+                piece: new CHESS_APP.Piece("black", "pawn")
             });
-            spyOn(rules, "isInCheck").and.returnValue(null);
+            spyOn(rules, "isInCheck").and.returnValues(null, null);
+            spyOn(rules, "isInCheckMate").and.returnValues(false, true);
 
             game.move(board, white_source, white_destination);
             game.move(board, black_source, black_destination);
 
-            var actualPreviousMove = rules.inspectMove.calls.mostRecent().args[2];
-            expect(actualPreviousMove.player).toBe("white");
-            expect(actualPreviousMove.source).toEqual(white_source);
-            expect(actualPreviousMove.destination).toEqual(white_destination);
+            expect(game.moveLog.moves).toEqual([
+                new CHESS_APP.MoveResult(
+                    new CHESS_APP.Move("white", white_source, white_destination),
+                    true,
+                    new CHESS_APP.Piece("white", "pawn")
+                ),
+                new CHESS_APP.MoveResult(
+                    new CHESS_APP.Move("black", black_source, black_destination),
+                    true,
+                    new CHESS_APP.Piece("black", "pawn")
+                )
+            ]);
+        });
+
+        it('does not add bad moves to log', function () {
+            var white_source = new CHESS_APP.Point(6, 0);
+            var white_destination = new CHESS_APP.Point(5, 0);
+
+            var black_source = new CHESS_APP.Point(1, 1);
+            var black_destination = new CHESS_APP.Point(2, 1);
+
+            board.setPiece(white_source, new CHESS_APP.Piece("white", "pawn"));
+            board.setPiece(black_source, new CHESS_APP.Piece("black", "pawn"));
+
+            spyOn(rules, "inspectMove").and.returnValues({
+                isLegal: true,
+                piece: new CHESS_APP.Piece("white", "pawn")
+            }, {
+                isLegal: false
+            });
+            spyOn(rules, "isInCheck").and.returnValues(null, null);
+
+            game.move(board, white_source, white_destination);
+            game.move(board, black_source, black_destination);
+
+            expect(game.moveLog.moves).toEqual([
+                new CHESS_APP.MoveResult(
+                    new CHESS_APP.Move("white", white_source, white_destination),
+                    true,
+                    new CHESS_APP.Piece("white", "pawn")
+                )
+            ]);
         });
 
         it('changes state to draw if the move results in a draw', function () {

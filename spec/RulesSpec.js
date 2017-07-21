@@ -4,10 +4,12 @@
 describe("Rules", function () {
     "use strict";
     var rules;
+    var moveLog;
 
     beforeEach(function () {
         jasmine.addCustomEqualityTester(CHESS_TEST.pointEquality);
         rules = new CHESS_APP.Rules();
+        moveLog = new CHESS_APP.MoveLog();
     });
 
     describe("opponentPlayer", function () {
@@ -35,7 +37,7 @@ describe("Rules", function () {
                 "        "
             ]);
 
-            var result = rules.isInCheck(board, "white");
+            var result = rules.isInCheck(board, "white", moveLog);
 
             expect(result).toBeTruthy();
         });
@@ -52,7 +54,7 @@ describe("Rules", function () {
                 "        "
             ]);
 
-            var result = rules.isInCheck(board, "white");
+            var result = rules.isInCheck(board, "white", moveLog);
 
             expect(result).toBeTruthy();
         });
@@ -69,7 +71,7 @@ describe("Rules", function () {
                 "        "
             ]);
 
-            var result = rules.isInCheck(board, "white");
+            var result = rules.isInCheck(board, "white", moveLog);
 
             expect(result).toBeFalsy();
         });
@@ -88,7 +90,7 @@ describe("Rules", function () {
                 "K       "
             ]);
 
-            var result = rules.isInCheckMate(board, "white");
+            var result = rules.isInCheckMate(board, "white", moveLog);
 
             expect(result).toBe(false);
         });
@@ -105,7 +107,7 @@ describe("Rules", function () {
                 "K       "
             ]);
 
-            var result = rules.isInCheckMate(board, "white");
+            var result = rules.isInCheckMate(board, "white", moveLog);
 
             expect(result).toBe(true);
         });
@@ -122,7 +124,7 @@ describe("Rules", function () {
                 "K       "
             ]);
 
-            var result = rules.isInCheckMate(board, "white");
+            var result = rules.isInCheckMate(board, "white", moveLog);
 
             expect(result).toBe(false);
         });
@@ -139,7 +141,7 @@ describe("Rules", function () {
                 "K       "
             ]);
 
-            var result = rules.isInCheckMate(board, "white");
+            var result = rules.isInCheckMate(board, "white", moveLog);
 
             expect(result).toBe(false);
         });
@@ -156,7 +158,7 @@ describe("Rules", function () {
                 "K       "
             ]);
 
-            var result = rules.isInCheckMate(board, "white");
+            var result = rules.isInCheckMate(board, "white", moveLog);
 
             expect(result).toBe(false);
         });
@@ -173,18 +175,13 @@ describe("Rules", function () {
                 "K       "
             ]);
 
-            var result = rules.isInCheckMate(board, "white");
+            var result = rules.isInCheckMate(board, "white", moveLog);
 
             expect(result).toBe(false);
         });
     });
 
     describe('Draw', function () {
-        var previousMove;
-
-        beforeEach(function () {
-            previousMove = null;
-        });
 
         describe('Stalemate', function () {
             it('is not when the player can make a legal move', function () {
@@ -199,7 +196,7 @@ describe("Rules", function () {
                     "K       "
                 ]);
 
-                var result = rules.isDraw(board, "white", previousMove);
+                var result = rules.isDraw(board, "white", moveLog);
 
                 expect(result).toBe(false);
             });
@@ -216,7 +213,7 @@ describe("Rules", function () {
                     "K       "
                 ]);
 
-                var result = rules.isDraw(board, "white", previousMove);
+                var result = rules.isDraw(board, "white", moveLog);
 
                 expect(result).toBe(false);
             });
@@ -233,7 +230,7 @@ describe("Rules", function () {
                     "K      P"
                 ]);
 
-                var result = rules.isDraw(board, "white", previousMove);
+                var result = rules.isDraw(board, "white", moveLog);
 
                 expect(result).toBe(true);
             });
@@ -250,7 +247,7 @@ describe("Rules", function () {
                     "K       "
                 ]);
 
-                var result = rules.isDraw(board, "white", previousMove);
+                var result = rules.isDraw(board, "white", moveLog);
 
                 expect(result).toBe(true);
             });
@@ -269,7 +266,7 @@ describe("Rules", function () {
                     "        "
                 ]);
 
-                var result = rules.isDraw(board, "white", previousMove);
+                var result = rules.isDraw(board, "white", moveLog);
 
                 expect(result).toBe(true);
             });
@@ -297,8 +294,8 @@ describe("Rules", function () {
                     "        "
                 ]);
 
-                var result1 = rules.isDraw(board1, "white", previousMove);
-                var result2 = rules.isDraw(board2, "white", previousMove);
+                var result1 = rules.isDraw(board1, "white", moveLog);
+                var result2 = rules.isDraw(board2, "white", moveLog);
 
                 expect(result1).toBe(true);
                 expect(result2).toBe(true);
@@ -327,8 +324,8 @@ describe("Rules", function () {
                     "        "
                 ]);
 
-                var result1 = rules.isDraw(board1, "white", previousMove);
-                var result2 = rules.isDraw(board2, "white", previousMove);
+                var result1 = rules.isDraw(board1, "white", moveLog);
+                var result2 = rules.isDraw(board2, "white", moveLog);
 
                 expect(result1).toBe(true);
                 expect(result2).toBe(true);
@@ -346,7 +343,7 @@ describe("Rules", function () {
                     "        "
                 ]);
 
-                var result = rules.isDraw(board, "white", previousMove);
+                var result = rules.isDraw(board, "white", moveLog);
 
                 expect(result).toBe(false);
             });
@@ -363,7 +360,7 @@ describe("Rules", function () {
                     "        "
                 ]);
 
-                var result = rules.isDraw(board, "white", previousMove);
+                var result = rules.isDraw(board, "white", moveLog);
 
                 expect(result).toBe(false);
             });
@@ -372,7 +369,6 @@ describe("Rules", function () {
 
     describe("inspectMove", function () {
         var board;
-        var previousMove;
 
         var abs = function (board, point) {
             return board.getAbsolutePosition("white", point);
@@ -380,10 +376,6 @@ describe("Rules", function () {
         var getMove = function (p1, p2) {
             return new CHESS_APP.Move("white", abs(board, p1), abs(board, p2));
         };
-
-        beforeEach(function () {
-            previousMove = null;
-        });
 
         it('is not legal if there is no piece in source', function () {
             board = CHESS_TEST.boardState([
@@ -399,7 +391,7 @@ describe("Rules", function () {
 
             var p1 = new CHESS_APP.Point(2, 1);
             var p2 = p1.add(1, 1);
-            var result = rules.inspectMove(board, getMove(p1, p2), previousMove);
+            var result = rules.inspectMove(board, getMove(p1, p2), moveLog);
 
             expect(result.isLegal).toBe(false);
         });
@@ -418,7 +410,7 @@ describe("Rules", function () {
 
             var p1 = new CHESS_APP.Point(2, 1);
             var p2 = p1.add(1, 1);
-            var result = rules.inspectMove(board, getMove(p1, p2), previousMove);
+            var result = rules.inspectMove(board, getMove(p1, p2), moveLog);
 
             expect(result.isLegal).toBe(false);
         });
@@ -437,7 +429,7 @@ describe("Rules", function () {
 
             var p1 = new CHESS_APP.Point(2, 1);
             var p2 = p1.add(1, 1);
-            var result = rules.inspectMove(board, getMove(p1, p2), previousMove);
+            var result = rules.inspectMove(board, getMove(p1, p2), moveLog);
 
             expect(result.isLegal).toBe(false);
         });
@@ -456,7 +448,7 @@ describe("Rules", function () {
 
             var p1 = new CHESS_APP.Point(2, 1);
             var p2 = p1.add(1, 1);
-            var result = rules.inspectMove(board, getMove(p1, p2), previousMove, true);
+            var result = rules.inspectMove(board, getMove(p1, p2), moveLog, true);
 
             expect(result.isLegal).toBe(true);
         });
@@ -475,7 +467,7 @@ describe("Rules", function () {
 
             var p1 = new CHESS_APP.Point(2, 1);
             var p2 = p1.add(1, 1);
-            var result = rules.inspectMove(board, getMove(p1, p2), previousMove);
+            var result = rules.inspectMove(board, getMove(p1, p2), moveLog);
 
             expect(result.capturePosition).toEqual(abs(board, p2));
         });
@@ -494,7 +486,7 @@ describe("Rules", function () {
 
             var p1 = new CHESS_APP.Point(2, 1);
             var p2 = p1.add(1, 1);
-            var result = rules.inspectMove(board, getMove(p1, p2), previousMove);
+            var result = rules.inspectMove(board, getMove(p1, p2), moveLog);
 
             expect(result.capturePosition).toBeFalsy();
         });
@@ -513,7 +505,7 @@ describe("Rules", function () {
 
             var p1 = new CHESS_APP.Point(2, 1);
             var p2 = p1.add(1, 0);
-            var result = rules.inspectMove(board, getMove(p1, p2), previousMove);
+            var result = rules.inspectMove(board, getMove(p1, p2), moveLog);
 
             expect(result.piece).toBeFalsy();
         });
@@ -532,7 +524,7 @@ describe("Rules", function () {
 
             var p1 = new CHESS_APP.Point(2, 1);
             var p2 = p1.add(1, 1);
-            var result = rules.inspectMove(board, getMove(p1, p2), previousMove);
+            var result = rules.inspectMove(board, getMove(p1, p2), moveLog);
 
             expect(result.piece).toEqual(jasmine.objectContaining({
                 player: "white",
@@ -555,7 +547,7 @@ describe("Rules", function () {
 
                 var p1 = new CHESS_APP.Point(2, 1);
                 var p2 = p1.add(1, 0);
-                var result = rules.inspectMove(board, getMove(p1, p2), previousMove);
+                var result = rules.inspectMove(board, getMove(p1, p2), moveLog);
 
                 expect(result.isLegal).toBe(true);
             });
@@ -573,9 +565,9 @@ describe("Rules", function () {
                 ]);
 
                 var p1 = new CHESS_APP.Point(2, 1);
-                var result2 = rules.inspectMove(board, getMove(p1, p1.add(2, 0)), previousMove);
-                var result3 = rules.inspectMove(board, getMove(p1, p1.add(3, 0)), previousMove);
-                var result4 = rules.inspectMove(board, getMove(p1, p1.add(4, 0)), previousMove);
+                var result2 = rules.inspectMove(board, getMove(p1, p1.add(2, 0)), moveLog);
+                var result3 = rules.inspectMove(board, getMove(p1, p1.add(3, 0)), moveLog);
+                var result4 = rules.inspectMove(board, getMove(p1, p1.add(4, 0)), moveLog);
 
                 expect(result2.isLegal).toBe(false);
                 expect(result3.isLegal).toBe(false);
@@ -596,7 +588,7 @@ describe("Rules", function () {
 
                 var p1 = new CHESS_APP.Point(1, 1);
                 var p2 = p1.add(2, 0);
-                var result = rules.inspectMove(board, getMove(p1, p2), previousMove);
+                var result = rules.inspectMove(board, getMove(p1, p2), moveLog);
 
                 expect(result.isLegal).toBe(true);
             });
@@ -615,9 +607,9 @@ describe("Rules", function () {
 
                 var p1 = new CHESS_APP.Point(1, 1);
 
-                var result3 = rules.inspectMove(board, getMove(p1, p1.add(3, 0)), previousMove);
-                var result4 = rules.inspectMove(board, getMove(p1, p1.add(4, 0)), previousMove);
-                var result5 = rules.inspectMove(board, getMove(p1, p1.add(5, 0)), previousMove);
+                var result3 = rules.inspectMove(board, getMove(p1, p1.add(3, 0)), moveLog);
+                var result4 = rules.inspectMove(board, getMove(p1, p1.add(4, 0)), moveLog);
+                var result5 = rules.inspectMove(board, getMove(p1, p1.add(5, 0)), moveLog);
 
                 expect(result3.isLegal).toBe(false);
                 expect(result4.isLegal).toBe(false);
@@ -637,13 +629,13 @@ describe("Rules", function () {
                 ]);
 
                 var p1 = new CHESS_APP.Point(2, 1);
-                var diagLeftResult = rules.inspectMove(board, getMove(p1, p1.add(1, -1)), previousMove);
-                var diagRightResult = rules.inspectMove(board, getMove(p1, p1.add(1, 1)), previousMove);
-                var leftResult = rules.inspectMove(board, getMove(p1, p1.add(0, -1)), previousMove);
-                var rightResult = rules.inspectMove(board, getMove(p1, p1.add(0, 1)), previousMove);
-                var diagBackLeftResult = rules.inspectMove(board, getMove(p1, p1.add(-1, -1)), previousMove);
-                var diagBackRightResult = rules.inspectMove(board, getMove(p1, p1.add(-1, 1)), previousMove);
-                var backResult = rules.inspectMove(board, getMove(p1, p1.add(-1, 0)), previousMove);
+                var diagLeftResult = rules.inspectMove(board, getMove(p1, p1.add(1, -1)), moveLog);
+                var diagRightResult = rules.inspectMove(board, getMove(p1, p1.add(1, 1)), moveLog);
+                var leftResult = rules.inspectMove(board, getMove(p1, p1.add(0, -1)), moveLog);
+                var rightResult = rules.inspectMove(board, getMove(p1, p1.add(0, 1)), moveLog);
+                var diagBackLeftResult = rules.inspectMove(board, getMove(p1, p1.add(-1, -1)), moveLog);
+                var diagBackRightResult = rules.inspectMove(board, getMove(p1, p1.add(-1, 1)), moveLog);
+                var backResult = rules.inspectMove(board, getMove(p1, p1.add(-1, 0)), moveLog);
 
                 expect(diagLeftResult.isLegal).toEqual(false);
                 expect(diagRightResult.isLegal).toEqual(false);
@@ -668,7 +660,7 @@ describe("Rules", function () {
 
                 var p1 = new CHESS_APP.Point(2, 1);
                 var p2 = p1.add(1, 0);
-                var result = rules.inspectMove(board, getMove(p1, p2), previousMove);
+                var result = rules.inspectMove(board, getMove(p1, p2), moveLog);
 
                 expect(result.isLegal).toBe(false);
             });
@@ -687,7 +679,7 @@ describe("Rules", function () {
 
                 var p1 = new CHESS_APP.Point(2, 1);
                 var p2 = p1.add(1, 0);
-                var result = rules.inspectMove(board, getMove(p1, p2), previousMove);
+                var result = rules.inspectMove(board, getMove(p1, p2), moveLog);
 
                 expect(result.isLegal).toBe(false);
             });
@@ -706,11 +698,11 @@ describe("Rules", function () {
 
                 var p1 = new CHESS_APP.Point(2, 1);
                 var p2 = p1.add(1, -1);
-                var resultLeft = rules.inspectMove(board, getMove(p1, p2), previousMove);
+                var resultLeft = rules.inspectMove(board, getMove(p1, p2), moveLog);
 
                 p1 = new CHESS_APP.Point(3, 5);
                 p2 = p1.add(1, 1);
-                var resultRight = rules.inspectMove(board, getMove(p1, p2), previousMove);
+                var resultRight = rules.inspectMove(board, getMove(p1, p2), moveLog);
 
                 expect(resultLeft.isLegal).toBe(true);
                 expect(resultRight.isLegal).toBe(true);
@@ -730,7 +722,7 @@ describe("Rules", function () {
 
                 var p1 = new CHESS_APP.Point(6, 1);
                 var p2 = p1.add(1, 0);
-                var result = rules.inspectMove(board, getMove(p1, p2), previousMove);
+                var result = rules.inspectMove(board, getMove(p1, p2), moveLog);
 
                 expect(result).toEqual(jasmine.objectContaining({
                     isLegal: true,
@@ -752,13 +744,13 @@ describe("Rules", function () {
 
                 var p1 = new CHESS_APP.Point(5, 1);
                 var p2 = p1.add(1, 0);
-                var result = rules.inspectMove(board, getMove(p1, p2), previousMove);
+                var result = rules.inspectMove(board, getMove(p1, p2), moveLog);
 
                 expect(result.promotion).toBeFalsy();
             });
 
             describe('En passant capture', function () {
-                it("is not if previous move is null", function () {
+                it("is not if there is no previous move", function () {
                     board = CHESS_TEST.boardState([
                         "        ",
                         "       r",
@@ -774,9 +766,9 @@ describe("Rules", function () {
                     var p2 = new CHESS_APP.Point(2, 2);
 
                     var move = new CHESS_APP.Move("white", p1, p2);
-                    previousMove = null;
+                    moveLog = new CHESS_APP.MoveLog();
 
-                    var resultLeft = rules.inspectMove(board, move, previousMove);
+                    var resultLeft = rules.inspectMove(board, move, moveLog);
 
                     expect(resultLeft.isLegal).toBe(false);
                 });
@@ -798,13 +790,13 @@ describe("Rules", function () {
                         new CHESS_APP.Point(3, 1),
                         new CHESS_APP.Point(2, 2)
                     );
-                    previousMove = new CHESS_APP.Move(
+                    moveLog = CHESS_TEST.LogMove(
                         "black",
                         new CHESS_APP.Point(0, 7),
                         new CHESS_APP.Point(1, 7)
                     );
 
-                    var resultLeft = rules.inspectMove(board, move, previousMove);
+                    var resultLeft = rules.inspectMove(board, move, moveLog);
 
                     expect(resultLeft.isLegal).toBe(false);
                 });
@@ -826,13 +818,13 @@ describe("Rules", function () {
                         new CHESS_APP.Point(3, 1),
                         new CHESS_APP.Point(2, 2)
                     );
-                    previousMove = new CHESS_APP.Move(
+                    moveLog = CHESS_TEST.LogMove(
                         "black",
                         new CHESS_APP.Point(1, 2),
                         new CHESS_APP.Point(3, 2)
                     );
 
-                    var resultLeft = rules.inspectMove(board, move, previousMove);
+                    var resultLeft = rules.inspectMove(board, move, moveLog);
 
                     expect(resultLeft.isLegal).toBe(false);
                 });
@@ -854,13 +846,13 @@ describe("Rules", function () {
                         new CHESS_APP.Point(3, 1),
                         new CHESS_APP.Point(2, 2)
                     );
-                    previousMove = new CHESS_APP.Move(
+                    moveLog = CHESS_TEST.LogMove(
                         "black",
                         new CHESS_APP.Point(2, 3),
                         new CHESS_APP.Point(3, 3)
                     );
 
-                    var resultLeft = rules.inspectMove(board, move, previousMove);
+                    var resultLeft = rules.inspectMove(board, move, moveLog);
 
                     expect(resultLeft.isLegal).toBe(false);
                 });
@@ -882,13 +874,13 @@ describe("Rules", function () {
                         new CHESS_APP.Point(3, 0),
                         new CHESS_APP.Point(2, 1)
                     );
-                    previousMove = new CHESS_APP.Move(
+                    moveLog = CHESS_TEST.LogMove(
                         "black",
                         new CHESS_APP.Point(1, 3),
                         new CHESS_APP.Point(3, 3)
                     );
 
-                    var resultLeft = rules.inspectMove(board, move, previousMove);
+                    var resultLeft = rules.inspectMove(board, move, moveLog);
 
                     expect(resultLeft.isLegal).toBe(false);
                 });
@@ -910,13 +902,13 @@ describe("Rules", function () {
                         new CHESS_APP.Point(3, 1),
                         new CHESS_APP.Point(2, 0)
                     );
-                    previousMove = new CHESS_APP.Move(
+                    moveLog = CHESS_TEST.LogMove(
                         "black",
                         new CHESS_APP.Point(1, 2),
                         new CHESS_APP.Point(3, 2)
                     );
 
-                    var resultLeft = rules.inspectMove(board, move, previousMove);
+                    var resultLeft = rules.inspectMove(board, move, moveLog);
 
                     expect(resultLeft.isLegal).toBe(false);
                 });
@@ -938,13 +930,13 @@ describe("Rules", function () {
                         new CHESS_APP.Point(3, 1),
                         new CHESS_APP.Point(2, 2)
                     );
-                    previousMove = new CHESS_APP.Move(
+                    moveLog = CHESS_TEST.LogMove(
                         "black",
                         new CHESS_APP.Point(1, 2),
                         new CHESS_APP.Point(3, 2)
                     );
 
-                    var resultLeft = rules.inspectMove(board, move, previousMove);
+                    var resultLeft = rules.inspectMove(board, move, moveLog);
 
                     expect(resultLeft.isLegal).toBe(true);
                 });
@@ -966,13 +958,13 @@ describe("Rules", function () {
                         new CHESS_APP.Point(3, 1),
                         new CHESS_APP.Point(2, 0)
                     );
-                    previousMove = new CHESS_APP.Move(
+                    moveLog = CHESS_TEST.LogMove(
                         "black",
                         new CHESS_APP.Point(1, 0),
                         new CHESS_APP.Point(3, 0)
                     );
 
-                    var resultLeft = rules.inspectMove(board, move, previousMove);
+                    var resultLeft = rules.inspectMove(board, move, moveLog);
 
                     expect(resultLeft.isLegal).toBe(true);
                 });
@@ -994,13 +986,13 @@ describe("Rules", function () {
                         new CHESS_APP.Point(3, 1),
                         new CHESS_APP.Point(2, 2)
                     );
-                    previousMove = new CHESS_APP.Move(
+                    moveLog = CHESS_TEST.LogMove(
                         "black",
                         new CHESS_APP.Point(1, 2),
                         new CHESS_APP.Point(3, 2)
                     );
 
-                    var resultLeft = rules.inspectMove(board, move, previousMove);
+                    var resultLeft = rules.inspectMove(board, move, moveLog);
 
                     expect(resultLeft.capturePosition).toEqual(new CHESS_APP.Point(3, 2));
                 });
