@@ -322,7 +322,8 @@ var CHESS_APP = CHESS_APP || {};
         }
 
         var result = {
-            isLegal: false
+            isLegal: false,
+            actualMoves: []
         };
 
         if (pieceAtDestination) {
@@ -379,7 +380,9 @@ var CHESS_APP = CHESS_APP || {};
         }
 
         if (result.isLegal) {
-            result.piece = piece;
+            result.actualMoves = [
+                new CHESS_APP.ActualMove(piece, move.source, move.destination)
+            ];
         }
 
         return result;

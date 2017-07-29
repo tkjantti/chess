@@ -491,7 +491,7 @@ describe("Rules", function () {
             expect(result.capturePosition).toBeFalsy();
         });
 
-        it('does not return piece if the move is not legal', function () {
+        it('does not return actual moves if the move is not legal', function () {
             board = CHESS_TEST.boardState([
                 "        ",
                 "        ",
@@ -507,10 +507,10 @@ describe("Rules", function () {
             var p2 = p1.add(1, 0);
             var result = rules.inspectMove(board, getMove(p1, p2), moveLog);
 
-            expect(result.piece).toBeFalsy();
+            expect(result.actualMoves.length).toBe(0);
         });
 
-        it('returns the piece that was moved when the move is legal', function () {
+        it('returns actual moves when the move is legal', function () {
             board = CHESS_TEST.boardState([
                 "        ",
                 "        ",
@@ -526,10 +526,13 @@ describe("Rules", function () {
             var p2 = p1.add(1, 1);
             var result = rules.inspectMove(board, getMove(p1, p2), moveLog);
 
-            expect(result.piece).toEqual(jasmine.objectContaining({
-                player: "white",
-                type: "bishop"
-            }));
+            expect(result.actualMoves).toEqual([
+                new CHESS_APP.ActualMove(
+                    new CHESS_APP.Piece("white", "bishop"),
+                    new CHESS_APP.Point(5, 1),
+                    new CHESS_APP.Point(4, 2)
+                )
+            ]);
         });
 
         describe("Pawn", function () {

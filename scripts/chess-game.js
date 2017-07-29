@@ -77,7 +77,7 @@ var CHESS_APP = CHESS_APP || {};
 
         updateBoard(board, move, inspectionResult);
 
-        var result = new CHESS_APP.MoveResult(move, true, inspectionResult.piece);
+        var result = new CHESS_APP.MoveResult(move, true, inspectionResult.actualMoves[0].piece);
         this.moveLog.add(result);
 
         var opponent = this.rules.opponentPlayer(this.currentPlayer);

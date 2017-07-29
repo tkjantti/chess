@@ -25,7 +25,11 @@ describe('Game', function () {
             board.setPiece(source, new CHESS_APP.Piece("white", "pawn"));
 
             spyOn(rules, "inspectMove").and.returnValue({
-                isLegal: true
+                isLegal: true,
+                actualMoves: [
+                    new CHESS_APP.ActualMove(
+                        new CHESS_APP.Piece("white", "pawn"), source, destination)
+                ]
             });
             spyOn(rules, "isInCheck").and.returnValue(null);
 
@@ -39,7 +43,10 @@ describe('Game', function () {
 
             spyOn(rules, "inspectMove").and.returnValue({
                 isLegal: true,
-                piece: new CHESS_APP.Piece("white", "pawn")
+                actualMoves: [
+                    new CHESS_APP.ActualMove(
+                        new CHESS_APP.Piece("white", "pawn"), source, destination)
+                ]
             });
             spyOn(rules, "isInCheck").and.returnValue(null);
 
@@ -60,7 +67,11 @@ describe('Game', function () {
             board.setPiece(source, new CHESS_APP.Piece("white", "pawn"));
 
             spyOn(rules, "inspectMove").and.returnValue({
-                isLegal: true
+                isLegal: true,
+                actualMoves: [
+                    new CHESS_APP.ActualMove(
+                        new CHESS_APP.Piece("white", "pawn"), source, destination)
+                ]
             });
             spyOn(rules, "isInCheck").and.returnValue(null);
             spyOn(board, "move");
@@ -75,7 +86,11 @@ describe('Game', function () {
             board.setPiece(source, new CHESS_APP.Piece("white", "pawn"));
 
             spyOn(rules, "inspectMove").and.returnValue({
-                isLegal: true
+                isLegal: true,
+                actualMoves: [
+                    new CHESS_APP.ActualMove(
+                        new CHESS_APP.Piece("white", "pawn"), source, destination)
+                ]
             });
             spyOn(rules, "isInCheck").and.returnValue(null);
 
@@ -91,7 +106,11 @@ describe('Game', function () {
 
             spyOn(rules, "inspectMove").and.returnValue({
                 isLegal: true,
-                capturePosition: new CHESS_APP.Point(3, 6)
+                capturePosition: new CHESS_APP.Point(3, 6),
+                actualMoves: [
+                    new CHESS_APP.ActualMove(
+                        new CHESS_APP.Piece("white", "rook"), source, destination)
+                ]
             });
             spyOn(rules, "isInCheck").and.returnValue(null);
             spyOn(board, "removePiece");
@@ -140,7 +159,11 @@ describe('Game', function () {
             board.setPiece(source, new CHESS_APP.Piece("white", "pawn"));
 
             spyOn(rules, "inspectMove").and.returnValue({
-                isLegal: true
+                isLegal: true,
+                actualMoves: [
+                    new CHESS_APP.ActualMove(
+                        new CHESS_APP.Piece("white", "pawn"), source, destination)
+                ]
             });
             spyOn(rules, "isInCheck").and.returnValue(null);
             spyOn(rules, "isInCheckMate").and.callFake(function (ignore, player) {
@@ -162,7 +185,11 @@ describe('Game', function () {
 
             spyOn(rules, "inspectMove").and.returnValue({
                 isLegal: true,
-                promotion: "queen"
+                promotion: "queen",
+                actualMoves: [
+                    new CHESS_APP.ActualMove(
+                        new CHESS_APP.Piece("white", "pawn"), source, destination)
+                ]
             });
             spyOn(rules, "isInCheck").and.returnValue(null);
             spyOn(board, "move");
@@ -186,10 +213,16 @@ describe('Game', function () {
 
             spyOn(rules, "inspectMove").and.returnValues({
                 isLegal: true,
-                piece: new CHESS_APP.Piece("white", "pawn")
+                actualMoves: [
+                    new CHESS_APP.ActualMove(
+                        new CHESS_APP.Piece("white", "pawn"), white_source, white_destination)
+                ]
             }, {
                 isLegal: true,
-                piece: new CHESS_APP.Piece("black", "pawn")
+                actualMoves: [
+                    new CHESS_APP.ActualMove(
+                        new CHESS_APP.Piece("black", "pawn"), black_source, black_destination)
+                ]
             });
             spyOn(rules, "isInCheck").and.returnValues(null, null);
             spyOn(rules, "isInCheckMate").and.returnValues(false, true);
@@ -223,9 +256,13 @@ describe('Game', function () {
 
             spyOn(rules, "inspectMove").and.returnValues({
                 isLegal: true,
-                piece: new CHESS_APP.Piece("white", "pawn")
+                actualMoves: [
+                    new CHESS_APP.ActualMove(
+                        new CHESS_APP.Piece("white", "pawn"), white_source, white_destination)
+                ]
             }, {
-                isLegal: false
+                isLegal: false,
+                actualMoves: []
             });
             spyOn(rules, "isInCheck").and.returnValues(null, null);
 
@@ -245,7 +282,11 @@ describe('Game', function () {
             board.setPiece(source, new CHESS_APP.Piece("white", "pawn"));
 
             spyOn(rules, "inspectMove").and.returnValue({
-                isLegal: true
+                isLegal: true,
+                actualMoves: [
+                    new CHESS_APP.ActualMove(
+                        new CHESS_APP.Piece("white", "pawn"), source, destination)
+                ]
             });
             spyOn(rules, "isInCheck").and.returnValue(null);
 
@@ -267,7 +308,11 @@ describe('Game', function () {
             board.setPiece(source, new CHESS_APP.Piece("white", "pawn"));
 
             spyOn(rules, "inspectMove").and.returnValue({
-                isLegal: true
+                isLegal: true,
+                actualMoves: [
+                    new CHESS_APP.ActualMove(
+                        new CHESS_APP.Piece("white", "pawn"), source, destination)
+                ]
             });
             spyOn(rules, "isInCheck").and.returnValue(null);
             rules.isDraw.and.returnValue(false);
