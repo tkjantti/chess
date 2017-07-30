@@ -301,30 +301,21 @@ var CHESS_APP = CHESS_APP || {};
         var enPassantResult;
 
         if (!board.isInside(move.destination)) {
-            return {
-                isLegal: false
-            };
+            return new CHESS_APP.InspectionResult(false);
         }
 
         piece = board.getPiece(move.source);
 
         if (!piece || piece.player !== move.player) {
-            return {
-                isLegal: false
-            };
+            return new CHESS_APP.InspectionResult(false);
         }
 
         pieceAtDestination = board.getPiece(move.destination);
         if (pieceAtDestination && !canCapture(move.player, pieceAtDestination, okToCaptureKing)) {
-            return {
-                isLegal: false
-            };
+            return new CHESS_APP.InspectionResult(false);
         }
 
-        var result = {
-            isLegal: false,
-            actualMoves: []
-        };
+        var result = new CHESS_APP.InspectionResult(false);
 
         if (pieceAtDestination) {
             result.capturePosition = move.destination;
