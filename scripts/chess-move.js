@@ -1,25 +1,20 @@
 
 var CHESS_APP = CHESS_APP || {};
 
-CHESS_APP.Move = function (player, source, destination) {
+CHESS_APP.Move = function (source, destination) {
     "use strict";
-    this.player = player;
     this.source = source;
     this.destination = destination;
 };
 
 CHESS_APP.Move.prototype.toString = function () {
     "use strict";
-    return '{ ' + this.player + ' ' + this.source + ' -> ' + this.destination + ' }';
+    return '{ ' + this.source + ' -> ' + this.destination + ' }';
 };
 
-CHESS_APP.Move.prototype.getRelativeVerticalMovement = function () {
+CHESS_APP.Move.prototype.getVerticalMovement = function () {
     "use strict";
-    if (this.player === "white") {
-        return this.source.row - this.destination.row;
-    } else {
-        return this.destination.row - this.source.row;
-    }
+    return this.destination.row - this.source.row;
 };
 
 CHESS_APP.Move.prototype.getHorizontalMovement = function () {

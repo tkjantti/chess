@@ -76,9 +76,9 @@ var CHESS_APP = CHESS_APP || {};
                 (piece.type !== "king" || okToCaptureKing);
     };
 
-    var isCorrectForwardMoveForPawn = function (board, move) {
-        var vertical = move.getRelativeVerticalMovement();
-        var relativePosition = board.getRelativePosition(move.player, move.source);
+    var isCorrectForwardMoveForPawn = function (board, player, move) {
+        var vertical = board.getRelativeVerticalMovement(player, move.getVerticalMovement());
+        var relativePosition = board.getRelativePosition(player, move.source);
         var isAtStartingPosition = relativePosition.row === 1;
 
         return isNonBlockedVerticalMove(board, move) &&
@@ -86,39 +86,39 @@ var CHESS_APP = CHESS_APP || {};
                 !board.getPiece(move.destination);
     };
 
-    var isPawnCapturingDiagonally = function (board, move, okToCaptureKing) {
+    var isPawnCapturingDiagonally = function (board, player, move, okToCaptureKing) {
         var horizontal = move.getHorizontalMovement();
-        var vertical = move.getRelativeVerticalMovement();
+        var vertical = board.getRelativeVerticalMovement(player, move.getVerticalMovement());
         var capturedPiece = board.getPiece(move.destination);
 
         return (horizontal === -1 || horizontal === 1) &&
                 vertical === 1 &&
                 capturedPiece &&
-                canCapture(move.player, capturedPiece, okToCaptureKing);
+                canCapture(player, capturedPiece, okToCaptureKing);
     };
 
-    var canBeCapturedEnPassant = function (board, move, moveLog, position, okToCaptureKing) {
+    var canBeCapturedEnPassant = function (board, player, move, moveLog, position, okToCaptureKing) {
         var capturedPiece = board.getPiece(position);
 
         if (moveLog.isEmpty()) {
             return false;
         }
-        var previousMove = moveLog.getLast().move;
+        var previousMoveResult = moveLog.getLast();
 
         return capturedPiece &&
                 capturedPiece.type === "pawn" &&
-                canCapture(move.player, capturedPiece, okToCaptureKing) &&
-                previousMove.getRelativeVerticalMovement() === 2 &&
-                previousMove.destination.equals(position);
+                canCapture(player, capturedPiece, okToCaptureKing) &&
+                board.getRelativeVerticalMovement(previousMoveResult.piece.player, previousMoveResult.move.getVerticalMovement()) === 2 &&
+                previousMoveResult.move.destination.equals(position);
     };
 
-    var inspectEnPassant = function (board, move, moveLog) {
+    var inspectEnPassant = function (board, player, move, moveLog) {
         var result = {
             isLegal: false
         };
 
         var horizontal = move.getHorizontalMovement();
-        var vertical = move.getRelativeVerticalMovement();
+        var vertical = board.getRelativeVerticalMovement(player, move.getVerticalMovement());
 
         if (vertical !== 1) {
             return result;
@@ -127,12 +127,12 @@ var CHESS_APP = CHESS_APP || {};
         var opponentPositionLeft = move.source.add(0, -1);
         var opponentPositionRight = move.source.add(0, 1);
 
-        if (horizontal === -1 && canBeCapturedEnPassant(board, move, moveLog, opponentPositionLeft)) {
+        if (horizontal === -1 && canBeCapturedEnPassant(board, player, move, moveLog, opponentPositionLeft)) {
             result.capturePosition = opponentPositionLeft;
             result.isLegal = true;
         }
 
-        if (horizontal === 1 && canBeCapturedEnPassant(board, move, moveLog, opponentPositionRight)) {
+        if (horizontal === 1 && canBeCapturedEnPassant(board, player, move, moveLog, opponentPositionRight)) {
             result.capturePosition = opponentPositionRight;
             result.isLegal = true;
         }
@@ -140,15 +140,15 @@ var CHESS_APP = CHESS_APP || {};
         return result;
     };
 
-    var getPawnPromotion = function (board, move) {
-        var relativePosition = board.getRelativePosition(move.player, move.destination);
+    var getPawnPromotion = function (board, player, move) {
+        var relativePosition = board.getRelativePosition(player, move.destination);
         return (relativePosition.row === board.getRowCount() - 1) ? "queen" : undefined;
     };
 
     var getLegalMovesForPiece = function (rules, player, board, position, moveLog) {
         return board.getPositions(function (destination) {
-            var move = new CHESS_APP.Move(player, position, destination);
-            return rules.inspectMove(board, move, moveLog).isLegal;
+            var move = new CHESS_APP.Move(position, destination);
+            return rules.inspectMove(board, player, move, moveLog).isLegal;
         });
     };
 
@@ -161,7 +161,7 @@ var CHESS_APP = CHESS_APP || {};
             var legalMoves = getLegalMovesForPiece(rules, player, board, piece.position, moveLog);
             return legalMoves.some(function (destination) {
                 var b2 = CHESS_APP.cloneInMemoryBoard(board);
-                var move = new CHESS_APP.Move(player, piece.position, destination);
+                var move = new CHESS_APP.Move(piece.position, destination);
                 b2.move(piece.position, destination);
                 return !rules.isInCheck(b2, player, move);
             });
@@ -251,9 +251,9 @@ var CHESS_APP = CHESS_APP || {};
         var opponent = this.opponentPlayer(player);
         var that = this;
         var attackingPiece = board.findPiece(function (piece, position) {
-            var move = new CHESS_APP.Move(opponent, position, positionOfKing);
+            var move = new CHESS_APP.Move(position, positionOfKing);
             return (piece.player === opponent) &&
-                    that.inspectMove(board, move, moveLog, true).isLegal;
+                    that.inspectMove(board, opponent, move, moveLog, true).isLegal;
         });
         return attackingPiece ? positionOfKing : null;
     };
@@ -295,7 +295,7 @@ var CHESS_APP = CHESS_APP || {};
      * a promotion of a piece, the return value contains a field
      * "promotion" with the type that the piece is promoted to.
      */
-    CHESS_APP.Rules.prototype.inspectMove = function (board, move, moveLog, okToCaptureKing) {
+    CHESS_APP.Rules.prototype.inspectMove = function (board, player, move, moveLog, okToCaptureKing) {
         var piece, pieceAtDestination;
         var horizontal, vertical;
         var enPassantResult;
@@ -306,12 +306,12 @@ var CHESS_APP = CHESS_APP || {};
 
         piece = board.getPiece(move.source);
 
-        if (!piece || piece.player !== move.player) {
+        if (!piece || piece.player !== player) {
             return new CHESS_APP.InspectionResult(false);
         }
 
         pieceAtDestination = board.getPiece(move.destination);
-        if (pieceAtDestination && !canCapture(move.player, pieceAtDestination, okToCaptureKing)) {
+        if (pieceAtDestination && !canCapture(player, pieceAtDestination, okToCaptureKing)) {
             return new CHESS_APP.InspectionResult(false);
         }
 
@@ -322,19 +322,19 @@ var CHESS_APP = CHESS_APP || {};
         }
 
         horizontal = move.getHorizontalMovement();
-        vertical = move.getRelativeVerticalMovement();
+        vertical = board.getRelativeVerticalMovement(player, move.getVerticalMovement());
 
         switch (piece.type) {
         case "pawn":
-            enPassantResult = inspectEnPassant(board, move, moveLog, okToCaptureKing);
+            enPassantResult = inspectEnPassant(board, player, move, moveLog, okToCaptureKing);
 
             result.isLegal = enPassantResult.isLegal ||
-                    isCorrectForwardMoveForPawn(board, move) ||
-                    isPawnCapturingDiagonally(board, move, okToCaptureKing) ||
+                    isCorrectForwardMoveForPawn(board, player, move) ||
+                    isPawnCapturingDiagonally(board, player, move, okToCaptureKing) ||
                     false;
 
             if (result.isLegal) {
-                result.promotion = getPawnPromotion(board, move);
+                result.promotion = getPawnPromotion(board, player, move);
 
                 if (enPassantResult.isLegal) {
                     result.capturePosition = enPassantResult.capturePosition;

@@ -52,11 +52,14 @@ describe('Game', function () {
 
             game.move(board, source, destination);
 
-            expect(rules.inspectMove).toHaveBeenCalledWith(board, jasmine.objectContaining({
-                player: "white",
-                source: source,
-                destination: destination
-            }), jasmine.any(CHESS_APP.MoveLog));
+            expect(rules.inspectMove).toHaveBeenCalledWith(
+                board,
+                "white",
+                jasmine.objectContaining({
+                    source: source,
+                    destination: destination
+                }),
+                jasmine.any(CHESS_APP.MoveLog));
             expect(rules.isInCheck).toHaveBeenCalledWith(
                 jasmine.any(CHESS_APP.Board),
                 "white",
@@ -232,12 +235,12 @@ describe('Game', function () {
 
             expect(game.moveLog.moves).toEqual([
                 new CHESS_APP.MoveResult(
-                    new CHESS_APP.Move("white", white_source, white_destination),
+                    new CHESS_APP.Move(white_source, white_destination),
                     true,
                     new CHESS_APP.Piece("white", "pawn")
                 ),
                 new CHESS_APP.MoveResult(
-                    new CHESS_APP.Move("black", black_source, black_destination),
+                    new CHESS_APP.Move(black_source, black_destination),
                     true,
                     new CHESS_APP.Piece("black", "pawn")
                 )
@@ -271,7 +274,7 @@ describe('Game', function () {
 
             expect(game.moveLog.moves).toEqual([
                 new CHESS_APP.MoveResult(
-                    new CHESS_APP.Move("white", white_source, white_destination),
+                    new CHESS_APP.Move(white_source, white_destination),
                     true,
                     new CHESS_APP.Piece("white", "pawn")
                 )

@@ -11,11 +11,10 @@ CHESS_TEST.pointEquality = function (p1, p2) {
     return undefined;
 };
 
-CHESS_TEST.LogMove = function (player, source, destination) {
+CHESS_TEST.LogMove = function (piece, source, destination) {
     "use strict";
-    var move = new CHESS_APP.Move(player, source, destination);
-    var piece = null;
-    var moveResult = new CHESS_APP.MoveResult(move, "good_move", piece);
+    var move = new CHESS_APP.Move(source, destination);
+    var moveResult = new CHESS_APP.MoveResult(move, true, piece);
 
     var moveLog = new CHESS_APP.MoveLog();
     moveLog.add(moveResult);

@@ -58,9 +58,9 @@ var CHESS_APP = CHESS_APP || {};
     };
 
     CHESS_APP.Game.prototype.move = function (board, source, destination) {
-        var move = new CHESS_APP.Move(this.currentPlayer, source, destination);
+        var move = new CHESS_APP.Move(source, destination);
 
-        var inspectionResult = this.rules.inspectMove(board, move, this.moveLog);
+        var inspectionResult = this.rules.inspectMove(board, this.currentPlayer, move, this.moveLog);
 
         if (!inspectionResult.isLegal) {
             return new CHESS_APP.MoveResult(move, false);

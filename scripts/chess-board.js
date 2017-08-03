@@ -28,6 +28,11 @@ CHESS_APP.Board.prototype.isInside = function (position) {
             (position.column < this.getColumnCount());
 };
 
+CHESS_APP.Board.prototype.getRelativeVerticalMovement = function (player, verticalMovement) {
+    "use strict";
+    return (player === "white") ? -verticalMovement : verticalMovement;
+};
+
 /*
  * Returns relative position based on the viewpoint of the
  * player.

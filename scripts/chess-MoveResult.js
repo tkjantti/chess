@@ -11,7 +11,7 @@ CHESS_APP.MoveResult = function (move, isLegal, piece, positionInCheck) {
 
 CHESS_APP.MoveResult.prototype.getPlayer = function () {
     "use strict";
-    return this.move.player;
+    return this.piece.player;
 };
 
 CHESS_APP.MoveResult.prototype.toString = function () {
