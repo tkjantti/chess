@@ -13,8 +13,8 @@ CHESS_TEST.pointEquality = function (p1, p2) {
 
 CHESS_TEST.LogMove = function (piece, source, destination) {
     "use strict";
-    var move = new CHESS_APP.Move(source, destination);
-    var moveResult = new CHESS_APP.MoveResult(move, true, piece);
+    var actualMove = new CHESS_APP.ActualMove(piece, source, destination);
+    var moveResult = new CHESS_APP.MoveResult(true, [actualMove]);
 
     var moveLog = new CHESS_APP.MoveLog();
     moveLog.add(moveResult);

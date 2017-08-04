@@ -8,14 +8,21 @@ var CHESS_APP = CHESS_APP || {};
     var STATE_DRAW = 1;
     var STATE_CHECKMATE = 2;
 
-    var updateBoard = function (board, move, inspectionResult) {
+    var updateBoard = function (board, inspectionResult) {
         if (inspectionResult.capturePosition) {
             board.removePiece(inspectionResult.capturePosition);
         }
 
-        board.move(move.source, move.destination);
+        inspectionResult.actualMoves.forEach(function (move) {
+            board.move(move.source, move.destination);            
+        });
 
         if (inspectionResult.promotion) {
+            if (inspectionResult.actualMoves.length !== 1) {
+                throw "Unexpected count of moves when promoting";
+            }
+            var move = inspectionResult.actualMoves[0];
+
             board.changeTypeOfPiece(move.destination, inspectionResult.promotion);
         }
     };
@@ -63,21 +70,21 @@ var CHESS_APP = CHESS_APP || {};
         var inspectionResult = this.rules.inspectMove(board, this.currentPlayer, move, this.moveLog);
 
         if (!inspectionResult.isLegal) {
-            return new CHESS_APP.MoveResult(move, false);
+            return new CHESS_APP.MoveResult(false, inspectionResult.actualMoves);
         }
 
         var tempBoard = CHESS_APP.cloneInMemoryBoard(board);
-        updateBoard(tempBoard, move, inspectionResult);
+        updateBoard(tempBoard, inspectionResult);
 
         var positionInCheck = this.rules.isInCheck(tempBoard, this.currentPlayer, this.moveLog);
 
         if (positionInCheck) {
-            return new CHESS_APP.MoveResult(move, false, null, positionInCheck);
+            return new CHESS_APP.MoveResult(false, inspectionResult.actualMoves, positionInCheck);
         }
 
-        updateBoard(board, move, inspectionResult);
+        updateBoard(board, inspectionResult);
 
-        var result = new CHESS_APP.MoveResult(move, true, inspectionResult.actualMoves[0].piece);
+        var result = new CHESS_APP.MoveResult(true, inspectionResult.actualMoves);
         this.moveLog.add(result);
 
         var opponent = this.rules.opponentPlayer(this.currentPlayer);

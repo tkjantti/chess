@@ -6,11 +6,13 @@ describe('MoveResult', function () {
 
     describe('toMoveNotationString', function () {
         it('Prints move result in a simple notation', function () {
-            var move = new CHESS_APP.Move(
-                new CHESS_APP.Point(6, 1),
-                new CHESS_APP.Point(5, 1));
-            var piece = new CHESS_APP.Piece("white", "pawn");
-            var moveResult = new CHESS_APP.MoveResult(move, true, piece);
+            var actualMoves = [
+                new CHESS_APP.ActualMove(
+                    new CHESS_APP.Piece("white", "pawn"),
+                    new CHESS_APP.Point(6, 1),
+                    new CHESS_APP.Point(5, 1))
+            ];
+            var moveResult = new CHESS_APP.MoveResult(true, actualMoves);
 
             var result = moveResult.toMoveNotationString();
 

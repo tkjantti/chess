@@ -146,7 +146,11 @@ describe('Game', function () {
             board.setPiece(source, new CHESS_APP.Piece("white", "pawn"));
 
             spyOn(rules, "inspectMove").and.returnValue({
-                isLegal: true
+                isLegal: true,
+                actualMoves: [
+                    new CHESS_APP.ActualMove(
+                        new CHESS_APP.Piece("white", "pawn"), source, destination)
+                ]
             });
             spyOn(rules, "isInCheck").and.returnValue(positionInCheck);
             spyOn(board, "move");
@@ -235,14 +239,21 @@ describe('Game', function () {
 
             expect(game.moveLog.moves).toEqual([
                 new CHESS_APP.MoveResult(
-                    new CHESS_APP.Move(white_source, white_destination),
                     true,
-                    new CHESS_APP.Piece("white", "pawn")
+                    [
+                        new CHESS_APP.ActualMove(
+                            new CHESS_APP.Piece("white", "pawn"),
+                            white_source,
+                            white_destination)
+                    ]
                 ),
                 new CHESS_APP.MoveResult(
-                    new CHESS_APP.Move(black_source, black_destination),
                     true,
-                    new CHESS_APP.Piece("black", "pawn")
+                    [
+                        new CHESS_APP.ActualMove(
+                            new CHESS_APP.Piece("black", "pawn"),
+                            black_source, black_destination)
+                    ]
                 )
             ]);
         });
@@ -264,8 +275,7 @@ describe('Game', function () {
                         new CHESS_APP.Piece("white", "pawn"), white_source, white_destination)
                 ]
             }, {
-                isLegal: false,
-                actualMoves: []
+                isLegal: false
             });
             spyOn(rules, "isInCheck").and.returnValues(null, null);
 
@@ -274,9 +284,14 @@ describe('Game', function () {
 
             expect(game.moveLog.moves).toEqual([
                 new CHESS_APP.MoveResult(
-                    new CHESS_APP.Move(white_source, white_destination),
                     true,
-                    new CHESS_APP.Piece("white", "pawn")
+                    [
+                        new CHESS_APP.ActualMove(
+                            new CHESS_APP.Piece("white", "pawn"),
+                            white_source,
+                            white_destination
+                        )
+                    ]
                 )
             ]);
         });

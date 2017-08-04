@@ -103,13 +103,13 @@ var CHESS_APP = CHESS_APP || {};
         if (moveLog.isEmpty()) {
             return false;
         }
-        var previousMoveResult = moveLog.getLast();
+        var previousMove = moveLog.getLast().actualMove;
 
         return capturedPiece &&
                 capturedPiece.type === "pawn" &&
                 canCapture(player, capturedPiece, okToCaptureKing) &&
-                board.getRelativeVerticalMovement(previousMoveResult.piece.player, previousMoveResult.move.getVerticalMovement()) === 2 &&
-                previousMoveResult.move.destination.equals(position);
+                board.getRelativeVerticalMovement(previousMove.piece.player, previousMove.getVerticalMovement()) === 2 &&
+                previousMove.destination.equals(position);
     };
 
     var inspectEnPassant = function (board, player, move, moveLog) {
@@ -288,12 +288,14 @@ var CHESS_APP = CHESS_APP || {};
     };
 
     /*
-     * Inspects if the move is legal. If the move results in a
-     * capture, the return value contains field "capturePosition"
-     * with the position from which a piece is captured _after_
-     * the move is performed. In addition, if the move results in
-     * a promotion of a piece, the return value contains a field
-     * "promotion" with the type that the piece is promoted to.
+     * Inspects if the move for the piece in question is legal,
+     * without considering if it results in a check position. If the
+     * move results in a capture, the return value contains field
+     * "capturePosition" with the position from which a piece is
+     * captured _after_ the move is performed. In addition, if the
+     * move results in a promotion of a piece, the return value
+     * contains a field "promotion" with the type that the piece is
+     * promoted to.
      */
     CHESS_APP.Rules.prototype.inspectMove = function (board, player, move, moveLog, okToCaptureKing) {
         var piece, pieceAtDestination;

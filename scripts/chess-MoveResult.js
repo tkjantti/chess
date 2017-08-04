@@ -1,23 +1,30 @@
 
 var CHESS_APP = CHESS_APP || {};
 
-CHESS_APP.MoveResult = function (move, isLegal, piece, positionInCheck) {
+CHESS_APP.MoveResult = function (isLegal, actualMoves, positionInCheck) {
     "use strict";
-    this.move = move;
-    this.piece = piece;
+
     this.isLegal = isLegal;
     this.positionInCheck = positionInCheck;
+
+    if (actualMoves) {
+        if (actualMoves.length !== 1) {
+            throw "Unknown kind of move";
+        }
+        this.actualMove = actualMoves[0];
+    } else {
+        this.actualMove = null;
+    }
 };
 
 CHESS_APP.MoveResult.prototype.getPlayer = function () {
     "use strict";
-    return this.piece.player;
+    return this.actualMove.piece.player;
 };
 
 CHESS_APP.MoveResult.prototype.toString = function () {
     "use strict";
-    return '{ ' + this.piece.toString() +
-            ' ' + this.move.toString() +
+    return '{ ' + this.actualMove.toString() +
             ' ' + this.isLegal +
             ' ' + this.positionInCheck +
             ' }';
@@ -25,7 +32,7 @@ CHESS_APP.MoveResult.prototype.toString = function () {
 
 CHESS_APP.MoveResult.prototype.toMoveNotationString = function () {
     "use strict";
-    return this.piece.getMoveNotationSymbol() +
-            ' ' + this.move.source.toString() +
-            ' -> ' + this.move.destination.toString();
+    return this.actualMove.piece.getMoveNotationSymbol() +
+            ' ' + this.actualMove.source.toString() +
+            ' -> ' + this.actualMove.destination.toString();
 };
