@@ -18,5 +18,29 @@ describe('MoveResult', function () {
 
             expect(result).toBe('P b2 -> b3');
         });
+
+        it('prints kingside castling in correct notation', function () {
+            var moveResult = new CHESS_APP.MoveResult(
+                true,
+                null,
+                null,
+                CHESS_APP.CASTLING_KING_SIDE);
+
+            var actual = moveResult.toMoveNotationString();
+
+            expect(actual).toBe("0-0");
+        });
+
+        it('prints queenside castling in correct notation', function () {
+            var moveResult = new CHESS_APP.MoveResult(
+                true,
+                null,
+                null,
+                CHESS_APP.CASTLING_QUEEN_SIDE);
+
+            var actual = moveResult.toMoveNotationString();
+
+            expect(actual).toBe("0-0-0");
+        });
     });
 });
