@@ -103,13 +103,13 @@ var CHESS_APP = CHESS_APP || {};
         if (moveLog.isEmpty()) {
             return false;
         }
-        var previousMove = moveLog.getLast().actualMove;
+        var previousMove = moveLog.getLast();
 
         return capturedPiece &&
                 capturedPiece.type === "pawn" &&
                 canCapture(player, capturedPiece, okToCaptureKing) &&
-                board.getRelativeVerticalMovement(previousMove.piece.player, previousMove.getVerticalMovement()) === 2 &&
-                previousMove.destination.equals(position);
+                previousMove.hasDestination(position) &&
+                previousMove.isVerticalWithLengthOfTwo();
     };
 
     var inspectEnPassant = function (board, player, move, moveLog) {
