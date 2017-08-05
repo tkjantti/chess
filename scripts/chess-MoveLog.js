@@ -20,3 +20,10 @@ CHESS_APP.MoveLog.prototype.getLast = function () {
     "use strict";
     return this.moves[this.moves.length - 1];
 };
+
+CHESS_APP.MoveLog.prototype.hasAnyPieceMovedFrom = function (position) {
+    "use strict";
+    return this.moves.some(function (moveResult) {
+        return moveResult.hasSource(position);
+    });
+};
