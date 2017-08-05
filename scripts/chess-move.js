@@ -48,3 +48,8 @@ CHESS_APP.ActualMove = function (piece, source, destination) {
 
 CHESS_APP.ActualMove.prototype = Object.create(CHESS_APP.Move.prototype);
 CHESS_APP.ActualMove.prototype.constructor = CHESS_APP.Move;
+
+CHESS_APP.ActualMove.prototype.toString = function () {
+    "use strict";
+    return '{ ' + this.piece + ' ' + this.source + ' -> ' + this.destination + ' }';
+};
