@@ -24,6 +24,133 @@ describe("Rules", function () {
         });
     });
 
+    describe('updateBoard', function () {
+        it('moves a piece based on the inspection result', function () {
+            var board = CHESS_TEST.boardState([
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                " P      ",
+                "        "
+            ]);
+
+            var inspectionResult = new CHESS_APP.InspectionResult(true);
+            inspectionResult.actualMoves = [
+                new CHESS_APP.ActualMove(
+                    new CHESS_APP.Piece("white", "pawn"),
+                    new CHESS_APP.Point(6, 1),
+                    new CHESS_APP.Point(5, 1)
+                )
+            ];
+
+            rules.updateBoard(board, inspectionResult);
+
+            expect(board.getPiece(new CHESS_APP.Point(6, 1))).toBeNull();
+            expect(board.getPiece(new CHESS_APP.Point(5, 1))).toEqual(
+                new CHESS_APP.Piece("white", "pawn")
+            );
+        });
+
+        it('moves all the pieces based on the inspection result', function () {
+            var board = CHESS_TEST.boardState([
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "    K  R"
+                ]);
+
+            var inspectionResult = new CHESS_APP.InspectionResult(true);
+            inspectionResult.castling = CHESS_APP.CASTLING_KING_SIDE;
+            inspectionResult.actualMoves = [
+                new CHESS_APP.ActualMove(
+                    new CHESS_APP.Piece("white", "king"),
+                    new CHESS_APP.Point(7, 4),
+                    new CHESS_APP.Point(7, 6)
+                ),
+                new CHESS_APP.ActualMove(
+                    new CHESS_APP.Piece("white", "rook"),
+                    new CHESS_APP.Point(7, 7),
+                    new CHESS_APP.Point(7, 5)
+                )
+            ];
+
+            rules.updateBoard(board, inspectionResult);
+
+            expect(board.getPiece(new CHESS_APP.Point(7, 4))).toBeNull();
+            expect(board.getPiece(new CHESS_APP.Point(7, 5))).toEqual(
+                new CHESS_APP.Piece("white", "rook")
+            );
+            expect(board.getPiece(new CHESS_APP.Point(7, 6))).toEqual(
+                new CHESS_APP.Piece("white", "king")
+            );
+            expect(board.getPiece(new CHESS_APP.Point(7, 7))).toBeNull();
+        });
+
+        it('removes a piece that is captured', function () {
+            var board = CHESS_TEST.boardState([
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "  r     ",
+                " P      ",
+                "        "
+            ]);
+
+            var inspectionResult = new CHESS_APP.InspectionResult(true);
+            inspectionResult.actualMoves = [
+                new CHESS_APP.ActualMove(
+                    new CHESS_APP.Piece("white", "pawn"),
+                    new CHESS_APP.Point(6, 1),
+                    new CHESS_APP.Point(5, 2)
+                )
+            ];
+
+            rules.updateBoard(board, inspectionResult);
+
+            expect(board.getPiece(new CHESS_APP.Point(5, 2))).toEqual(
+                new CHESS_APP.Piece("white", "pawn")
+            );
+        });
+
+        it('changes a piece that is promoted', function () {
+            var board = CHESS_TEST.boardState([
+                "        ",
+                " P      ",
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "        ",
+                "        "
+            ]);
+
+            var inspectionResult = new CHESS_APP.InspectionResult(true);
+            inspectionResult.promotion = "queen";
+            inspectionResult.actualMoves = [
+                new CHESS_APP.ActualMove(
+                    new CHESS_APP.Piece("white", "pawn"),
+                    new CHESS_APP.Point(1, 1),
+                    new CHESS_APP.Point(0, 1)
+                )
+            ];
+
+            rules.updateBoard(board, inspectionResult);
+
+            expect(board.getPiece(new CHESS_APP.Point(0, 1))).toEqual(
+                new CHESS_APP.Piece("white", "queen")
+            );
+        });
+    });
+
     describe('isInCheck', function () {
         it('is when the king is under threat', function () {
             var board = CHESS_TEST.boardState([

@@ -8,25 +8,6 @@ var CHESS_APP = CHESS_APP || {};
     var STATE_DRAW = 1;
     var STATE_CHECKMATE = 2;
 
-    var updateBoard = function (board, inspectionResult) {
-        if (inspectionResult.capturePosition) {
-            board.removePiece(inspectionResult.capturePosition);
-        }
-
-        inspectionResult.actualMoves.forEach(function (move) {
-            board.move(move.source, move.destination);            
-        });
-
-        if (inspectionResult.promotion) {
-            if (inspectionResult.actualMoves.length !== 1) {
-                throw "Unexpected count of moves when promoting";
-            }
-            var move = inspectionResult.actualMoves[0];
-
-            board.changeTypeOfPiece(move.destination, inspectionResult.promotion);
-        }
-    };
-
     CHESS_APP.Game = function (rules) {
         this.rules = rules;
         this.currentPlayer = "white";
@@ -73,16 +54,13 @@ var CHESS_APP = CHESS_APP || {};
             return new CHESS_APP.MoveResult(false, inspectionResult.actualMoves);
         }
 
-        var tempBoard = CHESS_APP.cloneInMemoryBoard(board);
-        updateBoard(tempBoard, inspectionResult);
-
-        var positionInCheck = this.rules.isInCheck(tempBoard, this.currentPlayer, this.moveLog);
+        var positionInCheck = this.rules.wouldResultInCheck(board, this.currentPlayer, inspectionResult, this.moveLog);
 
         if (positionInCheck) {
             return new CHESS_APP.MoveResult(false, inspectionResult.actualMoves, positionInCheck);
         }
 
-        updateBoard(board, inspectionResult);
+        this.rules.updateBoard(board, inspectionResult);
 
         var result = new CHESS_APP.MoveResult(true, inspectionResult.actualMoves);
         this.moveLog.add(result);

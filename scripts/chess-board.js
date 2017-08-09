@@ -58,32 +58,18 @@ CHESS_APP.Board.prototype.getAbsolutePosition = function (player, relativePositi
 };
 
 /*
- * Returns positions that match the given predicate.
- */
-CHESS_APP.Board.prototype.getPositions = function (predicate) {
-    "use strict";
-    var positions = [];
-
-    this.forEachPosition(function (p) {
-        if (predicate(p)) {
-            positions.push(p);
-        }
-    });
-
-    return positions;
-};
-
-/*
  * Applies function f for each position.
  */
 CHESS_APP.Board.prototype.forEachPosition = function (f) {
     "use strict";
-    var row, column, p;
+    var row, column, point;
+    var rowCount = this.getRowCount(),
+        columnCount = this.getColumnCount();
 
-    for (row = 0; row < this.getRowCount(); row += 1) {
-        for (column = 0; column < this.getColumnCount(); column += 1) {
-            p = new CHESS_APP.Point(row, column);
-            f(p);
+    for (row = 0; row < rowCount; row += 1) {
+        for (column = 0; column < columnCount; column += 1) {
+            point = new CHESS_APP.Point(row, column);
+            f(point);
         }
     }
 };
@@ -93,9 +79,11 @@ CHESS_APP.Board.prototype.toString = function () {
     var result = "board\n";
     var that = this;
     var row, column, p, piece, square;
+    var rowCount = this.getRowCount(),
+        columnCount = this.getColumnCount();
 
-    for (row = 0; row < this.getRowCount(); row += 1) {
-        for (column = 0; column < this.getColumnCount(); column += 1) {
+    for (row = 0; row < rowCount; row += 1) {
+        for (column = 0; column < columnCount; column += 1) {
             p = new CHESS_APP.Point(row, column);
             piece = that.getPiece(p);
             if (piece) {

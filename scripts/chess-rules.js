@@ -145,11 +145,18 @@ var CHESS_APP = CHESS_APP || {};
         return (relativePosition.row === board.getRowCount() - 1) ? "queen" : undefined;
     };
 
-    var getLegalMovesForPiece = function (rules, player, board, position, moveLog) {
-        return board.getPositions(function (destination) {
+    var getLegalInspectionResultsForPiece = function (rules, player, board, position, moveLog) {
+        var results = [];
+
+        board.forEachPosition(function (destination) {
             var move = new CHESS_APP.Move(position, destination);
-            return rules.inspectMove(board, player, move, moveLog).isLegal;
+            var inspectionResult = rules.inspectMove(board, player, move, moveLog);
+            if (inspectionResult.isLegal) {
+                results.push(inspectionResult);
+            }
         });
+
+        return results;
     };
 
     var isInStalemate = function (rules, board, player, moveLog) {
@@ -158,12 +165,9 @@ var CHESS_APP = CHESS_APP || {};
         });
 
         var canMove = function (piece) {
-            var legalMoves = getLegalMovesForPiece(rules, player, board, piece.position, moveLog);
-            return legalMoves.some(function (destination) {
-                var b2 = CHESS_APP.cloneInMemoryBoard(board);
-                var move = new CHESS_APP.Move(piece.position, destination);
-                b2.move(piece.position, destination);
-                return !rules.isInCheck(b2, player, move);
+            var legalMoves = getLegalInspectionResultsForPiece(rules, player, board, piece.position, moveLog);
+            return legalMoves.some(function (inspectionResult) {
+                return !rules.wouldResultInCheck(board, player, inspectionResult, moveLog);
             });
         };
 
@@ -239,6 +243,36 @@ var CHESS_APP = CHESS_APP || {};
         return (player === "white") ? "black" : "white";
     };
 
+    CHESS_APP.Rules.prototype.updateBoard = function (board, inspectionResult) {
+        if (inspectionResult.capturePosition) {
+            board.removePiece(inspectionResult.capturePosition);
+        }
+
+        inspectionResult.actualMoves.forEach(function (move) {
+            board.move(move.source, move.destination);
+        });
+
+        if (inspectionResult.promotion) {
+            if (inspectionResult.actualMoves.length !== 1) {
+                throw "Unexpected count of moves when promoting";
+            }
+            var move = inspectionResult.actualMoves[0];
+
+            board.changeTypeOfPiece(move.destination, inspectionResult.promotion);
+        }
+    };
+
+    /*
+     * If the move according to inspection result would result in
+     * check, returns the position of the piece under
+     * threat. Otherwise returns null.
+     */
+    CHESS_APP.Rules.prototype.wouldResultInCheck = function (board, player, inspectionResult, moveLog) {
+        var tempBoard = CHESS_APP.cloneInMemoryBoard(board);
+        this.updateBoard(tempBoard, inspectionResult);
+        return this.isInCheck(tempBoard, player, moveLog);
+    };
+
     /*
      * If the given player is in check, returns the position of
      * the piece under threat. Otherwise returns null.
@@ -270,12 +304,10 @@ var CHESS_APP = CHESS_APP || {};
         });
 
         var canPreventChess = function (piece) {
-            var legalMoves = getLegalMovesForPiece(that, player, board, piece.position, moveLog);
+            var legalMoves = getLegalInspectionResultsForPiece(that, player, board, piece.position, moveLog);
 
-            return legalMoves.some(function (destination) {
-                var b2 = CHESS_APP.cloneInMemoryBoard(board);
-                b2.move(piece.position, destination);
-                return !that.isInCheck(b2, player, moveLog);
+            return legalMoves.some(function (inspectionResult) {
+                return !that.wouldResultInCheck(board, player, inspectionResult, moveLog);
             });
         };
 
