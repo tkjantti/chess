@@ -237,6 +237,99 @@ var CHESS_APP = CHESS_APP || {};
         return false;
     };
 
+    var getCastlingResult = function (rules, board, player, move, moveLog, piece) {
+        var horizontal = move.getHorizontalMovement();
+
+        if (piece.type !== "king" && Math.abs(horizontal) !== 2) {
+            return new CHESS_APP.InspectionResult(false);
+        }
+
+        var startPositionOfKing = board.getAbsolutePosition(player, new CHESS_APP.Point(0, 4));
+        if (!move.source.equals(startPositionOfKing)) {
+            return new CHESS_APP.InspectionResult(false);
+        }
+
+        if (board.getRelativePosition(player, move.source).row !== 0) {
+            return new CHESS_APP.InspectionResult(false);
+        }
+
+        var side = CHESS_APP.CASTLING_KING_SIDE;
+        var direction = 1;
+        var rookSourceColumn = 7;
+        var rookDestinationColumn = 5;
+        var squaresBetweenKingAndRook = [
+            board.getAbsolutePosition(player, new CHESS_APP.Point(0, 5)),
+            board.getAbsolutePosition(player, new CHESS_APP.Point(0, 6))
+        ];
+
+        if (horizontal === -2) {
+            side = CHESS_APP.CASTLING_QUEEN_SIDE;
+            direction = -1;
+            rookSourceColumn = 0;
+            rookDestinationColumn = 3;
+            squaresBetweenKingAndRook = [
+                board.getAbsolutePosition(player, new CHESS_APP.Point(0, 3)),
+                board.getAbsolutePosition(player, new CHESS_APP.Point(0, 2)),
+                board.getAbsolutePosition(player, new CHESS_APP.Point(0, 1))
+            ];
+        }
+
+        var rookSource = new CHESS_APP.Point(move.source.row, rookSourceColumn),
+        rookDestination = new CHESS_APP.Point(move.source.row, rookDestinationColumn);
+        var rook = board.getPiece(rookSource);
+
+        if (!rook) {
+            return new CHESS_APP.InspectionResult(false);
+        }
+
+        var kingHasMoved = moveLog.hasAnyPieceMovedFrom(startPositionOfKing);
+
+        if (kingHasMoved) {
+            return new CHESS_APP.InspectionResult(false);
+        }
+
+        var startPositionOfRook = board.getAbsolutePosition(player, new CHESS_APP.Point(0, rookSourceColumn));
+        var rookHasMoved = moveLog.hasAnyPieceMovedFrom(startPositionOfRook);
+
+        if (rookHasMoved) {
+            return new CHESS_APP.InspectionResult(false);
+        }
+
+        var anyPiecesBetweenKingAndRook = squaresBetweenKingAndRook.some(function (position) {
+            return board.getPiece(position);
+        });
+
+        if (anyPiecesBetweenKingAndRook) {
+            return new CHESS_APP.InspectionResult(false);
+        }
+
+        if (rules.isInCheck(board, player, moveLog)) {
+            return new CHESS_APP.InspectionResult(false);
+        }
+
+        var halfwayMove = new CHESS_APP.InspectionResult(
+            true,
+            [
+                new CHESS_APP.Move(move.source, move.source.add(0, direction))
+            ]);
+        if (rules.wouldResultInCheck(board, player, halfwayMove, moveLog)) {
+            return new CHESS_APP.InspectionResult(false);
+        }
+
+        var result = new CHESS_APP.InspectionResult(true);
+        result.castling = side;
+        result.actualMoves = [
+            new CHESS_APP.ActualMove(piece, move.source, move.destination),
+            new CHESS_APP.ActualMove(rook, rookSource, rookDestination)
+        ];
+
+        if (rules.wouldResultInCheck(board, player, result, moveLog)) {
+            return new CHESS_APP.InspectionResult(false);
+        }
+
+        return result;
+    };
+
     CHESS_APP.Rules = function () {};
 
     CHESS_APP.Rules.prototype.opponentPlayer = function (player) {
@@ -344,6 +437,11 @@ var CHESS_APP = CHESS_APP || {};
             return new CHESS_APP.InspectionResult(false);
         }
 
+        var castlingResult = getCastlingResult(this, board, player, move, moveLog, piece);
+        if (castlingResult.isLegal) {
+            return castlingResult;
+        }
+
         pieceAtDestination = board.getPiece(move.destination);
         if (pieceAtDestination && !canCapture(player, pieceAtDestination, okToCaptureKing)) {
             return new CHESS_APP.InspectionResult(false);
@@ -357,91 +455,6 @@ var CHESS_APP = CHESS_APP || {};
 
         horizontal = move.getHorizontalMovement();
         vertical = board.getRelativeVerticalMovement(player, move.getVerticalMovement());
-
-        if (piece.type === "king" && Math.abs(horizontal) === 2) {
-            var relativePosition = board.getRelativePosition(player, move.source);
-
-            if (relativePosition.row !== 0) {
-                return new CHESS_APP.InspectionResult(false);
-            }
-
-            var side = CHESS_APP.CASTLING_KING_SIDE;
-            var direction = 1;
-            var rookSourceColumn = 7;
-            var rookDestinationColumn = 5;
-            var squaresBetweenKingAndRook = [
-                board.getAbsolutePosition(player, new CHESS_APP.Point(0, 5)),
-                board.getAbsolutePosition(player, new CHESS_APP.Point(0, 6))
-            ];
-
-            if (horizontal === -2) {
-                side = CHESS_APP.CASTLING_QUEEN_SIDE;
-                direction = -1;
-                rookSourceColumn = 0;
-                rookDestinationColumn = 3;
-                squaresBetweenKingAndRook = [
-                    board.getAbsolutePosition(player, new CHESS_APP.Point(0, 3)),
-                    board.getAbsolutePosition(player, new CHESS_APP.Point(0, 2)),
-                    board.getAbsolutePosition(player, new CHESS_APP.Point(0, 1))
-                ];
-            }
-
-            var rookSource = new CHESS_APP.Point(move.source.row, rookSourceColumn),
-                rookDestination = new CHESS_APP.Point(move.source.row, rookDestinationColumn);
-            var rook = board.getPiece(rookSource);
-
-            if (!rook) {
-                return new CHESS_APP.InspectionResult(false);
-            }
-
-            var startPositionOfKing = board.getAbsolutePosition(player, new CHESS_APP.Point(0, 4));
-            var kingHasMoved = moveLog.hasAnyPieceMovedFrom(startPositionOfKing);
-
-            if (kingHasMoved) {
-                return new CHESS_APP.InspectionResult(false);
-            }
-
-            var startPositionOfRook = board.getAbsolutePosition(player, new CHESS_APP.Point(0, rookSourceColumn));
-            var rookHasMoved = moveLog.hasAnyPieceMovedFrom(startPositionOfRook);
-
-            if (rookHasMoved) {
-                return new CHESS_APP.InspectionResult(false);
-            }
-
-            var anyPiecesBetweenKingAndRook = squaresBetweenKingAndRook.some(function (position) {
-                return board.getPiece(position);
-            });
-
-            if (anyPiecesBetweenKingAndRook) {
-                return new CHESS_APP.InspectionResult(false);
-            }
-
-            if (this.isInCheck(board, player, moveLog)) {
-                return new CHESS_APP.InspectionResult(false);
-            }
-
-            var halfwayMove = new CHESS_APP.InspectionResult(
-                true,
-                [
-                    new CHESS_APP.Move(move.source, move.source.add(0, direction))
-                ]);
-            if (this.wouldResultInCheck(board, player, halfwayMove, moveLog)) {
-                return new CHESS_APP.InspectionResult(false);
-            }
-
-            result.isLegal = true;
-            result.castling = side;
-            result.actualMoves = [
-                new CHESS_APP.ActualMove(piece, move.source, move.destination),
-                new CHESS_APP.ActualMove(rook, rookSource, rookDestination)
-            ];
-
-            if (this.wouldResultInCheck(board, player, result, moveLog)) {
-                return new CHESS_APP.InspectionResult(false);
-            }
-
-            return result;
-        }
 
         switch (piece.type) {
         case "pawn":
