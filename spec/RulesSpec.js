@@ -1025,6 +1025,409 @@ describe("Rules", function () {
             });
         });
 
+        describe('Queenside castling', function () {
+            it('succeeds when the king moves two steps to the left', function () {
+                board = CHESS_TEST.boardState([
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "R   K   "
+                ]);
+
+                var p1 = new CHESS_APP.Point(0, 4);
+                var p2 = p1.add(0, -2);
+
+                var result = rules.inspectMove(board, "white", getMove(p1, p2), moveLog);
+
+                expect(result).toEqual(jasmine.objectContaining({
+                    isLegal: true,
+                    castling: CHESS_APP.CASTLING_QUEEN_SIDE,
+                    actualMoves: [
+                        new CHESS_APP.ActualMove(
+                            new CHESS_APP.Piece("white", "king"),
+                            new CHESS_APP.Point(7, 4),
+                            new CHESS_APP.Point(7, 2)
+                        ),
+                        new CHESS_APP.ActualMove(
+                            new CHESS_APP.Piece("white", "rook"),
+                            new CHESS_APP.Point(7, 0),
+                            new CHESS_APP.Point(7, 3)
+                        )
+                    ]
+                }));
+            });
+
+            it('fails when the king moves three steps to the left', function () {
+                board = CHESS_TEST.boardState([
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "R   K   "
+                ]);
+
+                var p1 = new CHESS_APP.Point(0, 4);
+                var p2 = p1.add(0, -3);
+
+                var result = rules.inspectMove(board, "white", getMove(p1, p2), moveLog);
+
+                expect(result.isLegal).toBe(false);
+            });
+
+            it('fails when the king is on the wrong rank', function () {
+                board = CHESS_TEST.boardState([
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "    K   ",
+                    "R       "
+                ]);
+
+                var p1 = new CHESS_APP.Point(1, 4);
+                var p2 = p1.add(0, -2);
+
+                var result = rules.inspectMove(board, "white", getMove(p1, p2), moveLog);
+
+                expect(result.isLegal).toBe(false);
+            });
+
+            it('fails when the rook is on the wrong rank', function () {
+                board = CHESS_TEST.boardState([
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "R       ",
+                    "    K   "
+                ]);
+
+                var p1 = new CHESS_APP.Point(0, 4);
+                var p2 = p1.add(0, -2);
+
+                var result = rules.inspectMove(board, "white", getMove(p1, p2), moveLog);
+
+                expect(result.isLegal).toBe(false);
+            });
+
+            it('fails when both the king and the rook are on the second rank', function () {
+                board = CHESS_TEST.boardState([
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "R   K   ",
+                    "        "
+                ]);
+
+                var p1 = new CHESS_APP.Point(1, 4);
+                var p2 = p1.add(0, -2);
+
+                var result = rules.inspectMove(board, "white", getMove(p1, p2), moveLog);
+
+                expect(result.isLegal).toBe(false);
+            });
+
+            it('fails when both the king and the rook are on the last rank', function () {
+                board = CHESS_TEST.boardState([
+                    "R   K   ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        "
+                ]);
+
+                var p1 = new CHESS_APP.Point(7, 4);
+                var p2 = p1.add(0, -2);
+
+                var result = rules.inspectMove(
+                    board,
+                    "white",
+                    getMove(p1, p2),
+                    moveLog);
+
+                expect(result.isLegal).toBe(false);
+            });
+
+            it('fails when the king has previously moved', function () {
+                board = CHESS_TEST.boardState([
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "R  K    "
+                ]);
+
+                var p1 = new CHESS_APP.Point(7, 3);
+                var p2 = p1.add(0, -2);
+
+                moveLog.add(
+                    new CHESS_APP.MoveResult(
+                        true,
+                        [
+                            new CHESS_APP.ActualMove(
+                                new CHESS_APP.Piece("white", "king"),
+                                new CHESS_APP.Point(7, 4),
+                                new CHESS_APP.Point(7, 3)
+                            )
+                        ]
+                    )
+                );
+
+                var result = rules.inspectMove(board, "white", new CHESS_APP.Move(p1, p2), moveLog);
+
+                expect(result.isLegal).toBe(false);
+            });
+
+            it('fails when the king has previously moved and come back', function () {
+                board = CHESS_TEST.boardState([
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "R   K   "
+                ]);
+
+                var p1 = new CHESS_APP.Point(7, 4);
+                var p2 = p1.add(0, -2);
+
+                moveLog.add(
+                    new CHESS_APP.MoveResult(
+                        true,
+                        [
+                            new CHESS_APP.ActualMove(
+                                new CHESS_APP.Piece("white", "king"),
+                                new CHESS_APP.Point(7, 4),
+                                new CHESS_APP.Point(7, 3)
+                            ),
+                            new CHESS_APP.ActualMove(
+                                new CHESS_APP.Piece("white", "king"),
+                                new CHESS_APP.Point(7, 3),
+                                new CHESS_APP.Point(7, 4)
+                            )
+                        ]
+                    )
+                );
+
+                var result = rules.inspectMove(board, "white", new CHESS_APP.Move(p1, p2), moveLog);
+
+                expect(result.isLegal).toBe(false);
+            });
+
+            it('fails when the rook has previously moved', function () {
+                board = CHESS_TEST.boardState([
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "R       ",
+                    "    K   "
+                ]);
+
+                var p1 = new CHESS_APP.Point(7, 4);
+                var p2 = p1.add(0, -2);
+
+                moveLog.add(
+                    new CHESS_APP.MoveResult(
+                        true,
+                        [
+                            new CHESS_APP.ActualMove(
+                                new CHESS_APP.Piece("white", "rook"),
+                                new CHESS_APP.Point(7, 0),
+                                new CHESS_APP.Point(6, 0)
+                            )
+                        ]
+                    )
+                );
+
+                var result = rules.inspectMove(board, "white", new CHESS_APP.Move(p1, p2), moveLog);
+
+                expect(result.isLegal).toBe(false);
+            });
+
+            it('fails when the rook has previously moved and come back', function () {
+                board = CHESS_TEST.boardState([
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "R   K   "
+                ]);
+
+                var p1 = new CHESS_APP.Point(7, 4);
+                var p2 = p1.add(0, -2);
+
+                moveLog.add(
+                    new CHESS_APP.MoveResult(
+                        true,
+                        [
+                            new CHESS_APP.ActualMove(
+                                new CHESS_APP.Piece("white", "rook"),
+                                new CHESS_APP.Point(7, 0),
+                                new CHESS_APP.Point(6, 0)
+                            ),
+                            new CHESS_APP.ActualMove(
+                                new CHESS_APP.Piece("white", "rook"),
+                                new CHESS_APP.Point(6, 0),
+                                new CHESS_APP.Point(7, 0)
+                            )
+                        ]
+                    )
+                );
+
+                var result = rules.inspectMove(board, "white", new CHESS_APP.Move(p1, p2), moveLog);
+
+                expect(result.isLegal).toBe(false);
+            });
+
+            it('fails when there is a piece between the king and the rook in square d1', function () {
+                board = CHESS_TEST.boardState([
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "R  QK   "
+                ]);
+
+                var p1 = new CHESS_APP.Point(0, 4);
+                var p2 = p1.add(0, -2);
+
+                var result = rules.inspectMove(board, "white", getMove(p1, p2), moveLog);
+
+                expect(result.isLegal).toBe(false);
+            });
+
+            it('fails when there is a piece between the king and the rook in square c1', function () {
+                board = CHESS_TEST.boardState([
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "R p K   "
+                ]);
+
+                var p1 = new CHESS_APP.Point(0, 4);
+                var p2 = p1.add(0, -2);
+
+                var result = rules.inspectMove(board, "white", getMove(p1, p2), moveLog);
+
+                expect(result.isLegal).toBe(false);
+            });
+
+            it('fails when there is a piece between the king and the rook in square b1', function () {
+                board = CHESS_TEST.boardState([
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "RN  K   "
+                ]);
+
+                var p1 = new CHESS_APP.Point(0, 4);
+                var p2 = p1.add(0, -2);
+
+                var result = rules.inspectMove(board, "white", getMove(p1, p2), moveLog);
+
+                expect(result.isLegal).toBe(false);
+            });
+
+            it('fails when the king is in check', function () {
+                board = CHESS_TEST.boardState([
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "    r   ",
+                    "        ",
+                    "        ",
+                    "R   K   "
+                ]);
+
+                var p1 = new CHESS_APP.Point(0, 4);
+                var p2 = p1.add(0, -2);
+
+                var result = rules.inspectMove(board, "white", getMove(p1, p2), moveLog);
+
+                expect(result.isLegal).toBe(false);
+            });
+
+            it('fails when the king passes a square attacked by an enemy piece', function () {
+                board = CHESS_TEST.boardState([
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "   r    ",
+                    "        ",
+                    "        ",
+                    "R   K   "
+                ]);
+
+                var p1 = new CHESS_APP.Point(0, 4);
+                var p2 = p1.add(0, -2);
+
+                var result = rules.inspectMove(board, "white", getMove(p1, p2), moveLog);
+
+                expect(result.isLegal).toBe(false);
+            });
+
+            it('fails when the king ends up in check', function () {
+                board = CHESS_TEST.boardState([
+                    "        ",
+                    "        ",
+                    "        ",
+                    "        ",
+                    "  r     ",
+                    "        ",
+                    "        ",
+                    "R   K   "
+                ]);
+
+                var p1 = new CHESS_APP.Point(0, 4);
+                var p2 = p1.add(0, -2);
+
+                var result = rules.inspectMove(board, "white", getMove(p1, p2), moveLog);
+
+                expect(result.isLegal).toBe(false);
+            });
+        });
+
         describe("Pawn", function () {
             it("can move forward one step", function () {
                 board = CHESS_TEST.boardState([
