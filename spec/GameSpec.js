@@ -196,23 +196,23 @@ describe('Game', function () {
             game.move(board, black_source, black_destination);
 
             expect(game.moveLog.moves).toEqual([
-                new CHESS_APP.MoveResult(
-                    true,
-                    [
+                jasmine.objectContaining({
+                    isLegal: true,
+                    actualMoves: [
                         new CHESS_APP.ActualMove(
                             new CHESS_APP.Piece("white", "pawn"),
                             white_source,
                             white_destination)
                     ]
-                ),
-                new CHESS_APP.MoveResult(
-                    true,
-                    [
+                }),
+                jasmine.objectContaining({
+                    isLegal: true,
+                    actualMoves: [
                         new CHESS_APP.ActualMove(
                             new CHESS_APP.Piece("black", "pawn"),
                             black_source, black_destination)
                     ]
-                )
+                })
             ]);
         });
 
@@ -241,16 +241,16 @@ describe('Game', function () {
             game.move(board, black_source, black_destination);
 
             expect(game.moveLog.moves).toEqual([
-                new CHESS_APP.MoveResult(
-                    true,
-                    [
+                jasmine.objectContaining({
+                    isLegal: true,
+                    actualMoves: [
                         new CHESS_APP.ActualMove(
                             new CHESS_APP.Piece("white", "pawn"),
                             white_source,
                             white_destination
                         )
                     ]
-                )
+                })
             ]);
         });
 

@@ -62,7 +62,11 @@ var CHESS_APP = CHESS_APP || {};
 
         this.rules.updateBoard(board, inspectionResult);
 
-        var result = new CHESS_APP.MoveResult(true, inspectionResult.actualMoves);
+        var result = new CHESS_APP.MoveResult(
+            true,
+            inspectionResult.actualMoves,
+            null,
+            inspectionResult.castling);
         this.moveLog.add(result);
 
         var opponent = this.rules.opponentPlayer(this.currentPlayer);
