@@ -1,0 +1,25 @@
+{
+  "name": "chess",
+  "description": "A chess game.",
+  "main": "chess-app.js",
+  "authors": [
+    "Tero Jäntti"
+  ],
+  "license": "ISC",
+  "keywords": [
+    "chess",
+    "game"
+  ],
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^3.2.1"
+  }
+}
