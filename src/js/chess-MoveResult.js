@@ -63,6 +63,6 @@ CHESS_APP.MoveResult.prototype.toMoveNotationString = function () {
     var move = this.actualMoves[0];
 
     return move.piece.getMoveNotationSymbol() +
-            ' ' + move.source.toString() +
-            ' -> ' + move.destination.toString();
+            move.source.toString() +
+            '-' + move.destination.toString();
 };

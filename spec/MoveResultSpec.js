@@ -10,6 +10,21 @@ describe('MoveResult', function () {
                 true,
                 [
                     new CHESS_APP.ActualMove(
+                        new CHESS_APP.Piece("white", "queen"),
+                        new CHESS_APP.Point(6, 1),
+                        new CHESS_APP.Point(5, 1))
+                ]);
+
+            var result = moveResult.toMoveNotationString();
+
+            expect(result).toBe('Qb2-b3');
+        });
+
+        it('Omits symbol for pawn', function () {
+            var moveResult = new CHESS_APP.MoveResult(
+                true,
+                [
+                    new CHESS_APP.ActualMove(
                         new CHESS_APP.Piece("white", "pawn"),
                         new CHESS_APP.Point(6, 1),
                         new CHESS_APP.Point(5, 1))
@@ -17,7 +32,7 @@ describe('MoveResult', function () {
 
             var result = moveResult.toMoveNotationString();
 
-            expect(result).toBe('P b2 -> b3');
+            expect(result).toBe('b2-b3');
         });
 
         it('prints kingside castling in correct notation', function () {

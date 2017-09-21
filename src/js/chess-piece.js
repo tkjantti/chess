@@ -14,7 +14,7 @@ var CHESS_APP = CHESS_APP || {};
     };
 
     var moveNotationSymbolMap = {
-        "pawn": "P",
+        "pawn": "",
         "rook": "R",
         "knight": "N",
         "bishop": "B",
