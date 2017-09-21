@@ -1,13 +1,52 @@
 
+header {
+    padding-top: 1em;
+    padding-bottom: 1em;
+    background: darkgreen;
+    text-align: center;
+    font-size: x-large;
+    font-family: sans-serif;
+    font-weight: bold;
+}
+
+#gameStatus {
+    margin-bottom: 50px;
+    padding-top: 0.8em;
+    padding-bottom: 0.8em;
+    padding-left: 2em;
+    background: #DDDDFF;
+    text-align: left;
+    font-family: sans-serif;
+}
+
+#gameStatus.victory {
+    background-color: #22BB22;
+    color: white;
+    text-transform: uppercase;
+}
+
+#gameStatus.draw {
+    background-color: #2222BB;
+    color: white;
+    text-transform: uppercase;
+}
+
 #board {
     float: left;
-    margin: 1em 2em 1em 2em;
-    border: 2px solid black;
+    width: 59%;
+}
+
+#board table {
+    border: 1px solid black;
+    margin-left: auto;
+    margin-right: auto;
+    background: wheat;
 }
 
 #board td.coordNumber {
     padding-left: 0.5em;
     padding-right: 0.5em;
+    vertical-align: middle;
 }
 
 #board td.coordLetter {
@@ -40,39 +79,53 @@
     background-color: red;
 }
 
+#moves {
+    float: right;
+    width: 20%;
+}
+
 #moves table {
-    float: left;
-    border: 1px solid black;
-    padding: 0.8em 0.5em 0.8em 0.5em;
+    margin-top: 0.8em;
+    margin-left: 1em;
 }
 
 #moves td {
-    padding: 0em 0.5em 0em 0.5em;
+    padding-top: 0.2em;
+    padding-right: 1em;
+    font-size: small;
+    font-family: sans-serif;
+}
+
+#capturedPieces {
+    float: left;
+    width: 20%;
 }
 
 #capturedPieces table {
-    margin: 1em 0em 1em 2em;
+    float: right;
+    margin-top: 0.8em;
+    margin-right: 1em;
 }
 
 #capturedPieces td {
-    width: 50px;
-    height: 50px;
+    width: 25px;
+    height: 25px;
     text-align: center;
     vertical-align: middle;
-    background-color: #CCCCCC;
+}
+
+#capturedPieces img {
+    width: 25px;
+    height: 25px;
 }
 
 footer {
     clear: both;
+    width: 90%;
+    margin-top: 50px;
+    margin-left: auto;
+    margin-right: auto;
     border-top: 1px solid black;
-}
-
-p.victory {
-    background-color: #22BB22;
-    color: white;
-}
-
-p.draw {
-    background-color: #2222BB;
-    color: white;
+    padding-top: 1em;
+    padding-left: 1em;
 }

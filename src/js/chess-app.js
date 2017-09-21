@@ -9,13 +9,13 @@ CHESS_APP.app = (function () {
     var game = new CHESS_APP.Game(new CHESS_APP.Rules());
 
     function showVictory() {
-        $('#gameState').text('Checkmate! Winner: ' + game.getCurrentPlayer());
-        $('#gameState').addClass("victory");
+        $('#gameStatusText').text('Checkmate! Winner: ' + game.getCurrentPlayer());
+        $('#gameStatus').addClass("victory");
     }
 
     function showDraw() {
-        $('#gameState').text("Draw!");
-        $('#gameState').addClass("draw");
+        $('#gameStatusText').text("Draw!");
+        $('#gameStatus').addClass("draw");
     }
 
     function addMoveResultToList(moveResult) {
