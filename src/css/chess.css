@@ -1,22 +1,16 @@
 
-header {
-    padding-top: 1em;
-    padding-bottom: 1em;
-    background: darkgreen;
-    text-align: center;
-    font-size: x-large;
-    font-family: sans-serif;
-    font-weight: bold;
-}
-
 #gameStatus {
-    margin-bottom: 50px;
-    padding-top: 0.8em;
-    padding-bottom: 0.8em;
-    padding-left: 2em;
+    position: fixed;
+    height: 3em;
+    width: 100%;
     background: #DDDDFF;
     text-align: left;
     font-family: sans-serif;
+}
+
+#gameStatus p {
+    margin-left: 2em;
+    margin-top: 0.8em;
 }
 
 #gameStatus.victory {
@@ -34,10 +28,10 @@ header {
 #board {
     float: left;
     width: 59%;
+    margin-top: 3em;
 }
 
 #board table {
-    border: 1px solid black;
     margin-left: auto;
     margin-right: auto;
     background: wheat;
@@ -82,6 +76,7 @@ header {
 #moves {
     float: right;
     width: 20%;
+    margin-top: 3em;
 }
 
 #moves table {
@@ -99,6 +94,7 @@ header {
 #capturedPieces {
     float: left;
     width: 20%;
+    margin-top: 3em;
 }
 
 #capturedPieces table {
@@ -121,11 +117,6 @@ header {
 
 footer {
     clear: both;
-    width: 90%;
-    margin-top: 50px;
-    margin-left: auto;
-    margin-right: auto;
-    border-top: 1px solid black;
     padding-top: 1em;
     padding-left: 1em;
 }
