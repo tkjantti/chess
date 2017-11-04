@@ -77,7 +77,6 @@ CHESS_APP.Board.prototype.forEachPosition = function (f) {
 CHESS_APP.Board.prototype.toString = function () {
     "use strict";
     var result = "board\n";
-    var that = this;
     var row, column, p, piece, square;
     var rowCount = this.getRowCount(),
         columnCount = this.getColumnCount();
@@ -85,7 +84,7 @@ CHESS_APP.Board.prototype.toString = function () {
     for (row = 0; row < rowCount; row += 1) {
         for (column = 0; column < columnCount; column += 1) {
             p = new CHESS_APP.Point(row, column);
-            piece = that.getPiece(p);
+            piece = this.getPiece(p);
             if (piece) {
                 square = piece.toString();
             } else {

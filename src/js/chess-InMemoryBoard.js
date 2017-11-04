@@ -66,10 +66,10 @@ CHESS_APP.InMemoryBoard.prototype.getPositionOf = function (piece) {
     return found ? found.position : null;
 };
 
-CHESS_APP.InMemoryBoard.prototype.findPiece = function (predicate) {
+CHESS_APP.InMemoryBoard.prototype.findPiece = function (predicate, context) {
     "use strict";
     return this.pieces.find(function (p) {
-        return predicate(p.piece, p.position);
+        return predicate.call(context, p.piece, p.position);
     });
 };
 

@@ -133,14 +133,14 @@ var CHESS_APP = CHESS_APP || {};
         return found ? found.position : null;
     };
 
-    CHESS_APP.DomBoard.prototype.findPiece = function (predicate) {
+    CHESS_APP.DomBoard.prototype.findPiece = function (predicate, context) {
         var row, column, position, piece;
 
         for (row = 0; row < this.getRowCount(); row += 1) {
             for (column = 0; column < this.getColumnCount(); column += 1) {
                 position = new CHESS_APP.Point(row, column);
                 piece = this.getPiece(position);
-                if (piece && predicate(piece, position)) {
+                if (piece && predicate.call(context, piece, position)) {
                     return {
                         piece: piece,
                         position: position

@@ -376,12 +376,11 @@ var CHESS_APP = CHESS_APP || {};
             throw "No king found from the board!";
         }
         var opponent = this.opponentPlayer(player);
-        var that = this;
         var attackingPiece = board.findPiece(function (piece, position) {
             var move = new CHESS_APP.Move(position, positionOfKing);
             return (piece.player === opponent) &&
-                    that.inspectMove(board, opponent, move, moveLog, true).isLegal;
-        });
+                    this.inspectMove(board, opponent, move, moveLog, true).isLegal;
+        }, this);
         return attackingPiece ? positionOfKing : null;
     };
 
