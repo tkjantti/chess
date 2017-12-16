@@ -1,7 +1,6 @@
+/* global CHESS_APP */
 
-var CHESS_APP = CHESS_APP || {};
-
-(function () {
+(function (exports) {
     "use strict";
 
     var isNonBlockedHorizontalMove = function (board, move) {
@@ -330,13 +329,13 @@ var CHESS_APP = CHESS_APP || {};
         return result;
     };
 
-    CHESS_APP.Rules = function () {};
+    var Rules = function () {};
 
-    CHESS_APP.Rules.prototype.opponentPlayer = function (player) {
+    Rules.prototype.opponentPlayer = function (player) {
         return (player === "white") ? "black" : "white";
     };
 
-    CHESS_APP.Rules.prototype.updateBoard = function (board, inspectionResult) {
+    Rules.prototype.updateBoard = function (board, inspectionResult) {
         if (inspectionResult.capturePosition) {
             board.removePiece(inspectionResult.capturePosition);
         }
@@ -360,7 +359,7 @@ var CHESS_APP = CHESS_APP || {};
      * check, returns the position of the piece under
      * threat. Otherwise returns null.
      */
-    CHESS_APP.Rules.prototype.wouldResultInCheck = function (board, player, inspectionResult, moveLog) {
+    Rules.prototype.wouldResultInCheck = function (board, player, inspectionResult, moveLog) {
         var tempBoard = CHESS_APP.cloneInMemoryBoard(board);
         this.updateBoard(tempBoard, inspectionResult);
         return this.isInCheck(tempBoard, player, moveLog);
@@ -370,7 +369,7 @@ var CHESS_APP = CHESS_APP || {};
      * If the given player is in check, returns the position of
      * the piece under threat. Otherwise returns null.
      */
-    CHESS_APP.Rules.prototype.isInCheck = function (board, player, moveLog) {
+    Rules.prototype.isInCheck = function (board, player, moveLog) {
         var positionOfKing = board.getPositionOf(new CHESS_APP.Piece(player, "king"));
         if (!positionOfKing) {
             throw "No king found from the board!";
@@ -384,7 +383,7 @@ var CHESS_APP = CHESS_APP || {};
         return attackingPiece ? positionOfKing : null;
     };
 
-    CHESS_APP.Rules.prototype.isInCheckMate = function (board, player, moveLog) {
+    Rules.prototype.isInCheckMate = function (board, player, moveLog) {
         var that = this;
 
         if (!this.isInCheck(board, player, moveLog)) {
@@ -406,7 +405,7 @@ var CHESS_APP = CHESS_APP || {};
         return !ownPieces.some(canPreventChess);
     };
 
-    CHESS_APP.Rules.prototype.isDraw = function (board, player, moveLog) {
+    Rules.prototype.isDraw = function (board, player, moveLog) {
         return isInStalemate(this, board, player, moveLog) ||
                 isNoPossibilityOfCheckMate(board);
     };
@@ -421,7 +420,7 @@ var CHESS_APP = CHESS_APP || {};
      * contains a field "promotion" with the type that the piece is
      * promoted to.
      */
-    CHESS_APP.Rules.prototype.inspectMove = function (board, player, move, moveLog, okToCaptureKing) {
+    Rules.prototype.inspectMove = function (board, player, move, moveLog, okToCaptureKing) {
         var piece, pieceAtDestination;
         var horizontal, vertical;
         var enPassantResult;
@@ -509,4 +508,6 @@ var CHESS_APP = CHESS_APP || {};
 
         return result;
     };
-}());
+
+    exports.Rules = Rules;
+}(this.CHESS_APP = this.CHESS_APP || {}));

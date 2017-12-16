@@ -1,8 +1,7 @@
 /* jshint browser:true, jquery:true */
+/* global CHESS_APP */
 
-var CHESS_APP = CHESS_APP || {};
-
-(function () {
+(function (exports) {
     "use strict";
 
     var getSquare = function (position) {
@@ -79,7 +78,7 @@ var CHESS_APP = CHESS_APP || {};
         $("#square_7_7").append($("#white_rook_2"));
     };
 
-    CHESS_APP.DomBoard = function () {
+    var DomBoard = function () {
         CHESS_APP.Board.call(
             this,
             CHESS_APP.defaultRowCount,
@@ -89,10 +88,10 @@ var CHESS_APP = CHESS_APP || {};
         this.onSquareClicked = null;
     };
 
-    CHESS_APP.DomBoard.prototype = Object.create(CHESS_APP.Board.prototype);
-    CHESS_APP.DomBoard.prototype.constructor = CHESS_APP.Board;
+    DomBoard.prototype = Object.create(CHESS_APP.Board.prototype);
+    DomBoard.prototype.constructor = CHESS_APP.Board;
 
-    CHESS_APP.DomBoard.prototype.highlightPieceUnderThreat = function (position) {
+    DomBoard.prototype.highlightPieceUnderThreat = function (position) {
         var square = getSquare(position);
         square.addClass("threat");
         window.setTimeout(function () {
@@ -100,7 +99,7 @@ var CHESS_APP = CHESS_APP || {};
         }, 1000);
     };
 
-    CHESS_APP.DomBoard.prototype.getPiece = function (position) {
+    DomBoard.prototype.getPiece = function (position) {
         var square, pieceImage;
 
         if (!this.isInside(position)) {
@@ -117,7 +116,7 @@ var CHESS_APP = CHESS_APP || {};
         return new CHESS_APP.Piece(getPlayerOf(pieceImage), getTypeOf(pieceImage));
     };
 
-    CHESS_APP.DomBoard.prototype.changeTypeOfPiece = function (position, type) {
+    DomBoard.prototype.changeTypeOfPiece = function (position, type) {
         var square = getSquare(position);
         var pieceImage = getPieceImage(square);
         var player = getPlayerOf(pieceImage);
@@ -126,14 +125,14 @@ var CHESS_APP = CHESS_APP || {};
         elt.attr('id', player + '_' + type);
     };
 
-    CHESS_APP.DomBoard.prototype.getPositionOf = function (piece) {
+    DomBoard.prototype.getPositionOf = function (piece) {
         var found = this.findPiece(function (currentPiece) {
             return currentPiece.equals(piece);
         });
         return found ? found.position : null;
     };
 
-    CHESS_APP.DomBoard.prototype.findPiece = function (predicate, context) {
+    DomBoard.prototype.findPiece = function (predicate, context) {
         var row, column, position, piece;
 
         for (row = 0; row < this.getRowCount(); row += 1) {
@@ -151,7 +150,7 @@ var CHESS_APP = CHESS_APP || {};
         return null;
     };
 
-    CHESS_APP.DomBoard.prototype.findPieces = function (predicate) {
+    DomBoard.prototype.findPieces = function (predicate) {
         var row, column, position, piece, pieces = [];
 
         for (row = 0; row < this.getRowCount(); row += 1) {
@@ -169,13 +168,13 @@ var CHESS_APP = CHESS_APP || {};
         return pieces;
     };
 
-    CHESS_APP.DomBoard.prototype.getPieces = function () {
+    DomBoard.prototype.getPieces = function () {
         return this.findPieces(function () {
             return true;
         });
     };
 
-    CHESS_APP.DomBoard.prototype.selectSquare = function (position) {
+    DomBoard.prototype.selectSquare = function (position) {
         this.removeSelection();
 
         this.selectedPosition = position;
@@ -183,7 +182,7 @@ var CHESS_APP = CHESS_APP || {};
         square.addClass("selected");
     };
 
-    CHESS_APP.DomBoard.prototype.removeSelection = function () {
+    DomBoard.prototype.removeSelection = function () {
         if (!this.selectedPosition) {
             return;
         }
@@ -195,7 +194,7 @@ var CHESS_APP = CHESS_APP || {};
         this.selectedPosition = null;
     };
 
-    CHESS_APP.DomBoard.prototype.removePiece = function (position) {
+    DomBoard.prototype.removePiece = function (position) {
         var square = getSquare(position);
         var piece = this.getPiece(position);
         var pieceImage = getPieceImage(square);
@@ -207,14 +206,14 @@ var CHESS_APP = CHESS_APP || {};
         freeSquare.append(pieceImage);
     };
 
-    CHESS_APP.DomBoard.prototype.move = function (source, destination) {
+    DomBoard.prototype.move = function (source, destination) {
         var square = getSquare(source);
         var piece = getPieceImage(square);
         var destinationSquare = getSquare(destination);
         destinationSquare.append(piece);
     };
 
-    CHESS_APP.DomBoard.prototype.initialize = function () {
+    DomBoard.prototype.initialize = function () {
         var that = this;
 
         var addBoardClickHandlers = function () {
@@ -235,7 +234,9 @@ var CHESS_APP = CHESS_APP || {};
         this.initialized = true;
     };
 
-    CHESS_APP.DomBoard.prototype.listenSquareClick = function (handler) {
+    DomBoard.prototype.listenSquareClick = function (handler) {
         this.onSquareClicked = handler;
     };
-}());
+
+    exports.DomBoard = DomBoard;
+}(this.CHESS_APP = this.CHESS_APP || {}));

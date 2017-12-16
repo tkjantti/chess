@@ -1,14 +1,13 @@
+/* global CHESS_APP */
 
-var CHESS_APP = CHESS_APP || {};
-
-(function () {
+(function (exports) {
     "use strict";
 
     var STATE_GAME_ON = 0;
     var STATE_DRAW = 1;
     var STATE_CHECKMATE = 2;
 
-    CHESS_APP.Game = function (rules) {
+    var Game = function (rules) {
         this.rules = rules;
         this.currentPlayer = "white";
         this.moveLog = new CHESS_APP.MoveLog();
@@ -16,36 +15,36 @@ var CHESS_APP = CHESS_APP || {};
         this.state = STATE_GAME_ON;
     };
 
-    CHESS_APP.Game.prototype.isFinished = function () {
+    Game.prototype.isFinished = function () {
         return this.state === STATE_DRAW ||
                 this.state === STATE_CHECKMATE;
     };
 
-    CHESS_APP.Game.prototype.isInDraw = function () {
+    Game.prototype.isInDraw = function () {
         return this.state === STATE_DRAW;
     };
 
-    CHESS_APP.Game.prototype.isInCheckmate = function () {
+    Game.prototype.isInCheckmate = function () {
         return this.state === STATE_CHECKMATE;
     };
 
-    CHESS_APP.Game.prototype.changePlayer = function () {
+    Game.prototype.changePlayer = function () {
         this.currentPlayer = this.rules.opponentPlayer(this.currentPlayer);
         if (this.onPlayerChangedHandler) {
             this.onPlayerChangedHandler(this.currentPlayer);
         }
     };
 
-    CHESS_APP.Game.prototype.getCurrentPlayer = function () {
+    Game.prototype.getCurrentPlayer = function () {
         return this.currentPlayer;
     };
 
-    CHESS_APP.Game.prototype.listenCurrentPlayer = function (onPlayerChanged) {
+    Game.prototype.listenCurrentPlayer = function (onPlayerChanged) {
         this.onPlayerChangedHandler = onPlayerChanged;
         this.onPlayerChangedHandler(this.currentPlayer);
     };
 
-    CHESS_APP.Game.prototype.move = function (board, source, destination) {
+    Game.prototype.move = function (board, source, destination) {
         var move = new CHESS_APP.Move(source, destination);
 
         var inspectionResult = this.rules.inspectMove(board, this.currentPlayer, move, this.moveLog);
@@ -81,4 +80,6 @@ var CHESS_APP = CHESS_APP || {};
 
         return result;
     };
-}());
+
+    exports.Game = Game;
+}(this.CHESS_APP = this.CHESS_APP || {}));

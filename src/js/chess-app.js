@@ -1,9 +1,9 @@
 /* jshint jquery:true */
+/* global CHESS_APP */
 
-var CHESS_APP = CHESS_APP || {};
-
-CHESS_APP.app = (function () {
+(function (exports) {
     "use strict";
+
     var initialized = false;
     var board = new CHESS_APP.DomBoard();
     var game = new CHESS_APP.Game(new CHESS_APP.Rules());
@@ -77,7 +77,7 @@ CHESS_APP.app = (function () {
         board.removeSelection();
     }
 
-    return {
+    exports.app = {
         initialize: function initialize() {
             if (initialized) {
                 return;
@@ -93,4 +93,4 @@ CHESS_APP.app = (function () {
             initialized = true;
         }
     };
-}());
+}(this.CHESS_APP = this.CHESS_APP || {}));

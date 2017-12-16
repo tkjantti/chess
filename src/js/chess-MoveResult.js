@@ -1,68 +1,64 @@
+/* global CHESS_APP */
 
-var CHESS_APP = CHESS_APP || {};
-
-CHESS_APP.MoveResult = function (isLegal, actualMoves, positionInCheck, castling) {
+(function (exports) {
     "use strict";
+    
+    var MoveResult = function (isLegal, actualMoves, positionInCheck, castling) {
+        if (isLegal && (!actualMoves || actualMoves.length === 0)) {
+            throw "At least one actual move expected";
+        }
 
-    if (isLegal && (!actualMoves || actualMoves.length === 0)) {
-        throw "At least one actual move expected";
-    }
+        this.isLegal = isLegal;
+        this.actualMoves = (actualMoves ? actualMoves : []);
+        this.positionInCheck = positionInCheck;
+        this.castling = (castling ? castling : CHESS_APP.CASTLING_NONE);
+    };
 
-    this.isLegal = isLegal;
-    this.actualMoves = (actualMoves ? actualMoves : []);
-    this.positionInCheck = positionInCheck;
-    this.castling = (castling ? castling : CHESS_APP.CASTLING_NONE);
-};
+    MoveResult.prototype.getPlayer = function () {
+        var move = this.actualMoves[0];
+        return move.piece.player;
+    };
 
-CHESS_APP.MoveResult.prototype.getPlayer = function () {
-    "use strict";
-    var move = this.actualMoves[0];
-    return move.piece.player;
-};
+    MoveResult.prototype.hasSource = function (position) {
+        return this.actualMoves.some(function (move) {
+            return move.source.equals(position);
+        });
+    };
 
-CHESS_APP.MoveResult.prototype.hasSource = function (position) {
-    "use strict";
-    return this.actualMoves.some(function (move) {
-        return move.source.equals(position);
-    });
-};
+    MoveResult.prototype.hasDestination = function (position) {
+        return this.actualMoves.some(function (move) {
+            return move.destination.equals(position);
+        });
+    };
 
-CHESS_APP.MoveResult.prototype.hasDestination = function (position) {
-    "use strict";
-    return this.actualMoves.some(function (move) {
-        return move.destination.equals(position);
-    });
-};
+    MoveResult.prototype.isVerticalWithLengthOfTwo = function () {
+        return this.actualMoves.some(function (move) {
+            return move.isVertical() && Math.abs(move.getVerticalMovement()) === 2;
+        });
+    };
 
-CHESS_APP.MoveResult.prototype.isVerticalWithLengthOfTwo = function () {
-    "use strict";
-    return this.actualMoves.some(function (move) {
-        return move.isVertical() && Math.abs(move.getVerticalMovement()) === 2;
-    });
-};
-
-CHESS_APP.MoveResult.prototype.toString = function () {
-    "use strict";
-    return '{ ' + this.isLegal +
+    MoveResult.prototype.toString = function () {
+        return '{ ' + this.isLegal +
             ' ' + this.actualMoves +
             ' ' + this.positionInCheck +
             ' ' + this.castling +
             ' }';
-};
+    };
 
-CHESS_APP.MoveResult.prototype.toMoveNotationString = function () {
-    "use strict";
+    MoveResult.prototype.toMoveNotationString = function () {
+        if (this.castling === CHESS_APP.CASTLING_KING_SIDE) {
+            return "0-0";
+        }
+        if (this.castling === CHESS_APP.CASTLING_QUEEN_SIDE) {
+            return "0-0-0";
+        }
 
-    if (this.castling === CHESS_APP.CASTLING_KING_SIDE) {
-        return "0-0";
-    }
-    if (this.castling === CHESS_APP.CASTLING_QUEEN_SIDE) {
-        return "0-0-0";
-    }
+        var move = this.actualMoves[0];
 
-    var move = this.actualMoves[0];
-
-    return move.piece.getMoveNotationSymbol() +
+        return move.piece.getMoveNotationSymbol() +
             move.source.toString() +
             '-' + move.destination.toString();
-};
+    };
+
+    exports.MoveResult = MoveResult;
+})(this.CHESS_APP = this.CHESS_APP || {});

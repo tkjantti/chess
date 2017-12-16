@@ -1,55 +1,51 @@
 
-var CHESS_APP = CHESS_APP || {};
-
-CHESS_APP.Move = function (source, destination) {
+(function (exports) {
     "use strict";
-    this.source = source;
-    this.destination = destination;
-};
 
-CHESS_APP.Move.prototype.toString = function () {
-    "use strict";
-    return '{ ' + this.source + ' -> ' + this.destination + ' }';
-};
+    var Move = function (source, destination) {
+        this.source = source;
+        this.destination = destination;
+    };
 
-CHESS_APP.Move.prototype.getVerticalMovement = function () {
-    "use strict";
-    return this.destination.row - this.source.row;
-};
+    Move.prototype.toString = function () {
+        return '{ ' + this.source + ' -> ' + this.destination + ' }';
+    };
 
-CHESS_APP.Move.prototype.getHorizontalMovement = function () {
-    "use strict";
-    return this.destination.column - this.source.column;
-};
+    Move.prototype.getVerticalMovement = function () {
+        return this.destination.row - this.source.row;
+    };
 
-CHESS_APP.Move.prototype.isHorizontal = function () {
-    "use strict";
-    return this.source.row === this.destination.row &&
+    Move.prototype.getHorizontalMovement = function () {
+        return this.destination.column - this.source.column;
+    };
+
+    Move.prototype.isHorizontal = function () {
+        return this.source.row === this.destination.row &&
             this.source.column !== this.destination.column;
-};
+    };
 
-CHESS_APP.Move.prototype.isVertical = function () {
-    "use strict";
-    return this.source.column === this.destination.column &&
+    Move.prototype.isVertical = function () {
+        return this.source.column === this.destination.column &&
             this.source.row !== this.destination.row;
-};
+    };
 
-CHESS_APP.Move.prototype.isDiagonal = function () {
-    "use strict";
-    return (this.source.row !== this.destination.row) &&
+    Move.prototype.isDiagonal = function () {
+        return (this.source.row !== this.destination.row) &&
             Math.abs(this.destination.column - this.source.column) === Math.abs(this.destination.row - this.source.row);
-};
+    };
 
-CHESS_APP.ActualMove = function (piece, source, destination) {
-    "use strict";
-    CHESS_APP.Move.call(this, source, destination);
-    this.piece = piece;
-};
+    var ActualMove = function (piece, source, destination) {
+        Move.call(this, source, destination);
+        this.piece = piece;
+    };
 
-CHESS_APP.ActualMove.prototype = Object.create(CHESS_APP.Move.prototype);
-CHESS_APP.ActualMove.prototype.constructor = CHESS_APP.Move;
+    ActualMove.prototype = Object.create(Move.prototype);
+    ActualMove.prototype.constructor = Move;
 
-CHESS_APP.ActualMove.prototype.toString = function () {
-    "use strict";
-    return '{ ' + this.piece + ' ' + this.source + ' -> ' + this.destination + ' }';
-};
+    ActualMove.prototype.toString = function () {
+        return '{ ' + this.piece + ' ' + this.source + ' -> ' + this.destination + ' }';
+    };
+
+    exports.Move = Move;
+    exports.ActualMove = ActualMove;
+})(this.CHESS_APP = this.CHESS_APP || {});

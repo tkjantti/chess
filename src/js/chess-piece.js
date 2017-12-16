@@ -1,7 +1,5 @@
 
-var CHESS_APP = CHESS_APP || {};
-
-(function () {
+(function (exports) {
     "use strict";
 
     var symbolMap = {
@@ -22,7 +20,7 @@ var CHESS_APP = CHESS_APP || {};
         "king": "K"
     };
 
-    CHESS_APP.Piece = function (player, type) {
+    var Piece = function (player, type) {
         if (!symbolMap[type]) {
             throw "Unknown piece type " + type;
         }
@@ -31,18 +29,18 @@ var CHESS_APP = CHESS_APP || {};
         this.type = type;
     };
 
-    CHESS_APP.Piece.prototype.equals = function (another) {
+    Piece.prototype.equals = function (another) {
         return another.player === this.player && another.type === this.type;
     };
 
-    CHESS_APP.Piece.prototype.getMoveNotationSymbol = function () {
+    Piece.prototype.getMoveNotationSymbol = function () {
         return moveNotationSymbolMap[this.type];
     };
 
     /*
      * Prints the piece as a single character for testing and debugging.
      */
-    CHESS_APP.Piece.prototype.toString = function () {
+    Piece.prototype.toString = function () {
         var symbol = symbolMap[this.type];
         if (this.player === "white") {
             return symbol.toUpperCase();
@@ -50,4 +48,6 @@ var CHESS_APP = CHESS_APP || {};
             return symbol;
         }
     };
-}());
+
+    exports.Piece = Piece;
+}(this.CHESS_APP = this.CHESS_APP || {}));
