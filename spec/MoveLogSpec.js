@@ -1,5 +1,3 @@
-/* jshint jasmine:true */
-/* global CHESS_APP */
 
 describe("chess-MoveLog", function () {
     "use strict";

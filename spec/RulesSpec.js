@@ -1,5 +1,3 @@
-/* jshint jasmine:true */
-/* global CHESS_APP, CHESS_TEST */
 
 describe("Rules", function () {
     "use strict";

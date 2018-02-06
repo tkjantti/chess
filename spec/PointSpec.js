@@ -1,5 +1,3 @@
-/* jshint jasmine:true */
-/* global CHESS_APP */
 
 describe('Point', function () {
     "use strict";

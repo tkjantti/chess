@@ -1,5 +1,3 @@
-/* jshint jquery:true */
-/* global CHESS_APP */
 
 (function (exports) {
     "use strict";

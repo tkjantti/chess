@@ -1,4 +1,3 @@
-/* global CHESS_APP */
 
 var CHESS_TEST = {};
 
