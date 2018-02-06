@@ -6,6 +6,7 @@ var browserSync = require('browser-sync');
 var plumber = require('gulp-plumber');
 var notify = require('gulp-notify');
 var jshint = require('gulp-jshint');
+var runSequence = require('run-sequence');
 
 
 function customPlumber(errTitle) {
@@ -25,10 +26,12 @@ gulp.task('lint:js', function () {
         .pipe(jshint.reporter('fail'));
 });
 
-gulp.task('watch', ['browserSync'], function () {
+gulp.task('watch-js', ['lint:js'], browserSync.reload);
+
+gulp.task('watch', function () {
     gulp.watch('src/*.html', browserSync.reload);
     gulp.watch('src/css/*.css', browserSync.reload);
-    gulp.watch('src/js/**/*.js', browserSync.reload);
+    gulp.watch('src/js/**/*.js', ['watch-js']);
 });
 
 gulp.task('browserSync', function () {
@@ -37,4 +40,12 @@ gulp.task('browserSync', function () {
             baseDir: 'src'
         }
     });
+});
+
+gulp.task('default', function (callback) {
+    runSequence(
+        'lint:js',
+        ['browserSync', 'watch'],
+        callback
+    );
 });
