@@ -7,6 +7,7 @@ var plumber = require('gulp-plumber');
 var notify = require('gulp-notify');
 var jshint = require('gulp-jshint');
 var runSequence = require('run-sequence');
+var Server = require('karma').Server;
 
 
 function customPlumber(errTitle) {
@@ -40,6 +41,13 @@ gulp.task('browserSync', function () {
             baseDir: 'src'
         }
     });
+});
+
+gulp.task('test', function (done) {
+    new Server({
+        configFile: process.cwd() + '/karma.conf.js',
+        singleRun: true
+    }, done).start();
 });
 
 gulp.task('default', function (callback) {
