@@ -1,33 +1,33 @@
 {
-  "name": "chess",
-  "version": "1.0.0",
-  "description": "A chess game.",
-  "main": "chess-app.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "teroj@kapsi.fi:git/chess.git"
-  },
-  "keywords": [
-    "chess",
-    "game"
-  ],
-  "author": "Tero Jäntti",
-  "license": "ISC",
-  "devDependencies": {
-    "browser-sync": "^2.24.4",
-    "gulp": "^3.9.1",
-    "gulp-jshint": "^2.1.0",
-    "gulp-notify": "^3.2.0",
-    "gulp-plumber": "^1.2.0",
-    "jasmine-core": "^2.99.1",
-    "jshint": "^2.9.5",
-    "jshint-stylish": "^2.2.1",
-    "karma": "^2.0.2",
-    "karma-firefox-launcher": "^1.1.0",
-    "karma-jasmine": "^1.1.2",
-    "run-sequence": "^2.2.1"
-  }
+    "name": "chess",
+    "version": "0.1.0",
+    "description": "A chess game.",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/tkjantti/chess.git"
+    },
+    "keywords": [
+        "chess",
+        "game"
+    ],
+    "author": "Tero Jäntti",
+    "license": "MIT",
+    "private": true,
+    "devDependencies": {
+        "browser-sync": "^2.24.4",
+        "gulp": "^3.9.1",
+        "gulp-jshint": "^2.1.0",
+        "gulp-notify": "^3.2.0",
+        "gulp-plumber": "^1.2.0",
+        "jasmine-core": "^2.99.1",
+        "jshint": "^2.9.5",
+        "jshint-stylish": "^2.2.1",
+        "karma": "^2.0.2",
+        "karma-firefox-launcher": "^1.1.0",
+        "karma-jasmine": "^1.1.2",
+        "run-sequence": "^2.2.1"
+    }
 }
