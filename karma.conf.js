@@ -23,7 +23,7 @@ module.exports = function(config) {
             'src/js/chess-InMemoryBoard.js',
             'src/js/chess-move.js',
             'src/js/chess-InspectionResult.js',
-            'src/js/chess-moveResult.js',
+            'src/js/chess-MoveResult.js',
             'src/js/chess-MoveLog.js',
             'src/js/chess-rules.js',
             'src/js/chess-game.js',
