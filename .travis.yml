@@ -1,4 +1,4 @@
-
+env: CI=true
 language: node_js
 node_js:
   - "8.11.1"
@@ -9,3 +9,6 @@ install:
   - "npm install"
   - "npm install bower -g"
   - "bower install"
+script:
+  - "gulp dev-ci"
+  - "gulp test"

@@ -9,14 +9,21 @@ var jshint = require('gulp-jshint');
 var runSequence = require('run-sequence');
 var Server = require('karma').Server;
 
-
 function customPlumber(errTitle) {
-    return plumber({
-        errorHandler: notify.onError({
-            title: errTitle || "Error running Gulp",
-            message: "Error: <%= error.message %>"
-        })
-    });
+    if (process.env.CI) {
+        return plumber({
+            errorHandler: function(err) {
+                throw Error(err.message);
+            }
+        });
+    } else {
+        return plumber({
+            errorHandler: notify.onError({
+                title: errTitle || 'Error running Gulp',
+                message: 'Error: <%= error.message %>'
+            })
+        });
+    }
 }
 
 gulp.task('lint:js', function () {
@@ -48,6 +55,13 @@ gulp.task('test', function (done) {
         configFile: process.cwd() + '/karma.conf.js',
         singleRun: true
     }, done).start();
+});
+
+gulp.task('dev-ci', function (callback) {
+    runSequence(
+        'lint:js',
+        callback
+    );
 });
 
 gulp.task('default', function (callback) {
