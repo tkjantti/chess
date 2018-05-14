@@ -4,16 +4,22 @@ A simple HTML chess game, meant just for learning Javascript programming. Rules 
 
 ## Developing
 
-Install dependencies with
+Bower is needed for installing dependencies. If you don't have it, install it with
+
+    $ npm install -g bower
+
+Then
 
     $ npm install
     $ bower install
 
-For running unit tests, run
+Note: if you don't have gulp 3.X installed globally, you can run gulp in the project directory with `./node_modules/.bin/gulp` instead of `gulp` in the commands below.
+
+The Firefox browser is required for running unit tests. Run tests with
 
     $ gulp test
 
-Running in the browser with BrowserSync:
+Running the game in the browser with Browsersync:
 
     $ gulp
 
