@@ -8,6 +8,7 @@ var notify = require('gulp-notify');
 var jshint = require('gulp-jshint');
 var runSequence = require('run-sequence');
 var Server = require('karma').Server;
+var ghPages = require('gulp-gh-pages');
 
 function customPlumber(errTitle) {
     if (process.env.CI) {
@@ -62,6 +63,11 @@ gulp.task('dev-ci', function (callback) {
         'lint:js',
         callback
     );
+});
+
+gulp.task('deploy', function () {
+    return gulp.src('./src/**/*')
+        .pipe(ghPages());
 });
 
 gulp.task('default', function (callback) {

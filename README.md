@@ -17,6 +17,10 @@ Running in the browser with BrowserSync:
 
     $ gulp
 
+Deployment:
+
+    $ gulp deploy
+
 ## Copyright
 
 Copyright © [Tero Jäntti](https://github.com/tkjantti) under the MIT licence.
