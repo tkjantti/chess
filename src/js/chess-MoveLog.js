@@ -24,5 +24,11 @@
         });
     };
 
+    MoveLog.prototype.serialize = function () {
+        return this.moves.map(function (move) {
+            return move.serialize();
+        });
+    };
+
     exports.MoveLog = MoveLog;
 })(this.CHESS_APP = this.CHESS_APP || {});
