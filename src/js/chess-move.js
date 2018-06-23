@@ -11,6 +11,13 @@
         return '{ ' + this.source + ' -> ' + this.destination + ' }';
     };
 
+    Move.prototype.serialize = function () {
+        return {
+            from: this.source.toString(),
+            to: this.destination.toString()
+        };
+    };
+
     Move.prototype.getVerticalMovement = function () {
         return this.destination.row - this.source.row;
     };

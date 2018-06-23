@@ -260,4 +260,51 @@ describe('MoveResult', function () {
             expect(actual).toBe(true);
         });
     });
+
+    describe('serialize', function () {
+        it('returns a serialized form of the move', function () {
+            var moveResult = new CHESS_APP.MoveResult(
+                true,
+                [
+                    new CHESS_APP.ActualMove(
+                        new CHESS_APP.Piece("white", "pawn"),
+                        new CHESS_APP.Point(6, 2),
+                        new CHESS_APP.Point(5, 3))
+                ]);
+
+            var actual = moveResult.serialize();
+
+            expect(actual).toEqual({
+                from: "c2",
+                to: "d3"
+            });
+        });
+
+        it('returns the first actual move of a castling', function () {
+            var moveResult = new CHESS_APP.MoveResult(
+                true,
+                [
+                    new CHESS_APP.ActualMove(
+                        new CHESS_APP.Piece('white', 'king'),
+                        new CHESS_APP.Point(7, 4),
+                        new CHESS_APP.Point(7, 6)
+                    ),
+                    new CHESS_APP.ActualMove(
+                        new CHESS_APP.Piece('white', 'rook'),
+                        new CHESS_APP.Point(7, 7),
+                        new CHESS_APP.Point(7, 5)
+                    )
+                ],
+                null,
+                CHESS_APP.CASTLING_KING_SIDE
+            );
+
+            var actual = moveResult.serialize();
+
+            expect(actual).toEqual({
+                from: "e1",
+                to: "g1"
+            });
+        });
+    });
 });
