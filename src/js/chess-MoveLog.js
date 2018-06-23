@@ -24,10 +24,20 @@
         });
     };
 
-    MoveLog.prototype.serialize = function () {
+    MoveLog.prototype.serializeMoves = function () {
         return this.moves.map(function (move) {
             return move.serialize();
         });
+    };
+
+    MoveLog.deserializeMoves = function (json) {
+        var moveLog = new MoveLog();
+        json.map(function (move) {
+            return CHESS_APP.Move.deserialize(move);
+        }).forEach(function (move) {
+            moveLog.add(move);
+        });
+        return moveLog;
     };
 
     exports.MoveLog = MoveLog;

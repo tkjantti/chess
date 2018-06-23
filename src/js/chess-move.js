@@ -18,6 +18,12 @@
         };
     };
 
+    Move.deserialize = function (json) {
+        var source = CHESS_APP.Point.fromString(json.from);
+        var destination = CHESS_APP.Point.fromString(json.to);
+        return new Move(source, destination);
+    };
+
     Move.prototype.getVerticalMovement = function () {
         return this.destination.row - this.source.row;
     };

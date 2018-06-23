@@ -5,9 +5,9 @@ describe('Move', function () {
 
     describe('serialize', function () {
         it('creates a json representation of the move', function () {
-            var source = new CHESS_APP.Point(6, 2);
-            var destination = new CHESS_APP.Point(5, 3);
-            var move = new CHESS_APP.Move(source, destination);
+            var move = new CHESS_APP.Move(
+                new CHESS_APP.Point(6, 2),
+                new CHESS_APP.Point(5, 3));
 
             var result = move.serialize();
 
@@ -15,6 +15,22 @@ describe('Move', function () {
                 from: "c2",
                 to: "d3"
             });
+        });
+    });
+
+    describe('deserialize', function () {
+        it('creates an object from a json representation', function () {
+            var json = {
+                from: "c2",
+                to: "d3"
+            };
+
+            var actual = CHESS_APP.Move.deserialize(json);
+
+            expect(actual).toEqual(
+                new CHESS_APP.Move(
+                    new CHESS_APP.Point(6, 2),
+                    new CHESS_APP.Point(5, 3)));
         });
     });
 });
