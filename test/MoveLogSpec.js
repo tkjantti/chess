@@ -142,20 +142,20 @@ describe("MoveLog", function () {
 
             var actual = CHESS_APP.MoveLog.deserializeMoves(json);
 
-            var expectedLog = new CHESS_APP.MoveLog();
-            expectedLog.add(new CHESS_APP.Move(
-                new CHESS_APP.Point(6, 1),
-                new CHESS_APP.Point(5, 2)
-            ));
-            expectedLog.add(new CHESS_APP.Move(
-                new CHESS_APP.Point(1, 3),
-                new CHESS_APP.Point(2, 3)
-            ));
-            expectedLog.add(new CHESS_APP.Move(
-                new CHESS_APP.Point(7, 1),
-                new CHESS_APP.Point(5, 2)
-            ));
-            expect(actual).toEqual(expectedLog);
+            expect(actual).toEqual([
+                new CHESS_APP.Move(
+                    new CHESS_APP.Point(6, 1),
+                    new CHESS_APP.Point(5, 2)
+                ),
+                new CHESS_APP.Move(
+                    new CHESS_APP.Point(1, 3),
+                    new CHESS_APP.Point(2, 3)
+                ),
+                new CHESS_APP.Move(
+                    new CHESS_APP.Point(7, 1),
+                    new CHESS_APP.Point(5, 2)
+                )
+            ]);
         });
     });
 });

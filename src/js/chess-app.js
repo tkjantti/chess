@@ -6,14 +6,25 @@
     var board = new CHESS_APP.DomBoard();
     var game = new CHESS_APP.Game(new CHESS_APP.Rules());
 
-    function showVictory() {
-        $('#gameStatusText').text('Checkmate! Winner: ' + game.getCurrentPlayer());
-        $('#gameStatus').addClass("victory");
+    function displayCurrentPlayer(player) {
+        $('#gameStatusText').text("Player in turn: " + player);
     }
 
-    function showDraw() {
-        $('#gameStatusText').text("Draw!");
-        $('#gameStatus').addClass("draw");
+    function displayState(state) {
+        switch (state) {
+        case CHESS_APP.Game.STATE_CHECKMATE:
+            $('#gameStatusText').text('Checkmate! Winner: ' + game.getCurrentPlayer());
+            $('#gameStatus').addClass("victory");
+            break;
+        case CHESS_APP.Game.STATE_DRAW:
+            $('#gameStatusText').text("Draw!");
+            $('#gameStatus').addClass("draw");
+            break;
+        default:
+            $('#gameStatus').removeClass();
+            displayCurrentPlayer(game.getCurrentPlayer());
+            break;
+        }
     }
 
     function addMoveResultToList(moveResult) {
@@ -64,13 +75,7 @@
             return;
         }
 
-        addMoveResultToList(result);
-
-        if (game.isInCheckmate()) {
-            showVictory();
-        } else if (game.isInDraw()) {
-            showDraw();
-        }
+        game.save();
 
         board.removeSelection();
     }
@@ -84,9 +89,10 @@
             board.initialize();
             board.listenSquareClick(onSquareClicked);
 
-            game.listenCurrentPlayer(function (player) {
-                $("#player_in_turn").text(player);
-            });
+            game.listenCurrentPlayer(displayCurrentPlayer);
+            game.listenState(displayState);
+            game.moveLog.listenAdd(addMoveResultToList);
+            game.load(board);
 
             initialized = true;
         }

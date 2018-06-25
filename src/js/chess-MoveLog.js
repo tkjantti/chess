@@ -4,10 +4,18 @@
 
     var MoveLog = function () {
         this.moves = [];
+        this.onMoveAddedHandler = null;
     };
 
     MoveLog.prototype.add = function (moveResult) {
         this.moves.push(moveResult);
+        if (this.onMoveAddedHandler) {
+            this.onMoveAddedHandler(moveResult);
+        }
+    };
+
+    MoveLog.prototype.listenAdd = function (onMoveAdded) {
+        this.onMoveAddedHandler = onMoveAdded;
     };
 
     MoveLog.prototype.isEmpty = function () {
@@ -31,13 +39,9 @@
     };
 
     MoveLog.deserializeMoves = function (json) {
-        var moveLog = new MoveLog();
-        json.map(function (move) {
+        return json.map(function (move) {
             return CHESS_APP.Move.deserialize(move);
-        }).forEach(function (move) {
-            moveLog.add(move);
         });
-        return moveLog;
     };
 
     exports.MoveLog = MoveLog;

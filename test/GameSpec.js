@@ -156,7 +156,7 @@ describe('Game', function () {
 
             game.move(board, source, destination);
 
-            expect(game.isInCheckmate()).toBe(true);
+            expect(game.state).toBe(CHESS_APP.Game.STATE_CHECKMATE);
             expect(game.isFinished()).toBe(true);
             expect(rules.isInCheckMate).toHaveBeenCalledWith(
                 jasmine.any(CHESS_APP.Board),
@@ -274,7 +274,7 @@ describe('Game', function () {
 
             game.move(board, source, destination);
 
-            expect(game.isInDraw()).toBe(true);
+            expect(game.state).toBe(CHESS_APP.Game.STATE_DRAW);
             expect(game.isFinished()).toBe(true);
         });
 
@@ -294,9 +294,8 @@ describe('Game', function () {
 
             game.move(board, source, destination);
 
+            expect(game.state).toBe(CHESS_APP.Game.STATE_GAME_ON);
             expect(game.isFinished()).toBe(false);
-            expect(game.isInDraw()).toBe(false);
-            expect(game.isInCheckmate()).toBe(false);
         });
     });
 });
