@@ -1,8 +1,9 @@
 
 #gameStatus {
     position: fixed;
+    right: 0;
     height: 3em;
-    width: 100%;
+    width: 70%;
     background: #DDDDFF;
     text-align: left;
     font-family: sans-serif;
@@ -23,6 +24,21 @@
     background-color: #2222BB;
     color: white;
     text-transform: uppercase;
+}
+
+#menu {
+    position: fixed;
+    left: 0;
+    height: 3em;
+    width: 30%;
+    background: #DDDDFF;
+    text-align: left;
+    font-family: sans-serif;
+}
+
+#menu div {
+    margin-left: 2em;
+    margin-top: 0.8em;
 }
 
 #board {
