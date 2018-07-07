@@ -1,5 +1,13 @@
 {
+    "libs": [
+        "browser",
+        "jquery"
+    ],
     "loadEagerly": [
-        "src/js/*.js"
+        "./src/js/**/*.js"
+    ],
+    "dontLoad": [
+        "./src/bower_components/",
+        "node_modules/**"
     ]
 }
