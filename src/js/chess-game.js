@@ -9,8 +9,8 @@
         }
     }
 
-    function changePlayer(self) {
-        self.currentPlayer = self.rules.opponentPlayer(self.currentPlayer);
+    function setCurrentPlayer(self, player) {
+        self.currentPlayer = player;
         if (self.onPlayerChangedHandler) {
             self.onPlayerChangedHandler(self.currentPlayer);
         }
@@ -34,6 +34,8 @@
         var storedMoves = this.storage.loadMoves();
         var moves = CHESS_APP.MoveLog.deserializeMoves(storedMoves);
 
+        this.rules.setStartingPositions(board);
+
         for (var i = 0; i < moves.length; i++) {
             var move = moves[i];
             this.move(board, move.source, move.destination);
@@ -42,6 +44,14 @@
 
     Game.prototype.save = function () {
         this.storage.saveMoves(this.moveLog.serializeMoves());
+    };
+
+    Game.prototype.reset = function (board) {
+        this.moveLog.clear();
+        this.storage.saveMoves(this.moveLog.serializeMoves());
+        this.rules.setStartingPositions(board);
+        setCurrentPlayer(this, "white");
+        setState(this, Game.STATE_GAME_ON);
     };
 
     Game.prototype.isFinished = function () {
@@ -94,7 +104,7 @@
         } else if (this.rules.isDraw(board, opponent, this.moveLog)) {
             setState(this, Game.STATE_DRAW);
         } else {
-            changePlayer(this);
+            setCurrentPlayer(this, this.rules.opponentPlayer(this.currentPlayer));
         }
 
         return result;

@@ -20,60 +20,22 @@
     };
 
     var getPlayerOf = function (piece) {
-        if (piece.id.includes("black")) {
+        if (piece.src.includes("black")) {
             return "black";
         }
-        if (piece.id.includes("white")) {
+        if (piece.src.includes("white")) {
             return "white";
         }
         return null;
     };
 
     var getTypeOf = function (piece) {
-        var parts = piece.id.split("_");
-        return parts[1];
+        var match = /[a-z]+_([a-z]+)\.svg/.exec(piece.src);
+        return match[1];
     };
 
     var getSideSquares = function (player) {
         return $("#" + player + "CapturedPieces td");
-    };
-
-    var setStartingPositions = function () {
-        $("#square_0_0").append($("#black_rook_1"));
-        $("#square_0_1").append($("#black_knight_1"));
-        $("#square_0_2").append($("#black_bishop_1"));
-        $("#square_0_3").append($("#black_queen"));
-        $("#square_0_4").append($("#black_king"));
-        $("#square_0_5").append($("#black_bishop_2"));
-        $("#square_0_6").append($("#black_knight_2"));
-        $("#square_0_7").append($("#black_rook_2"));
-
-        $("#square_1_0").append($("#black_pawn_1"));
-        $("#square_1_1").append($("#black_pawn_2"));
-        $("#square_1_2").append($("#black_pawn_3"));
-        $("#square_1_3").append($("#black_pawn_4"));
-        $("#square_1_4").append($("#black_pawn_5"));
-        $("#square_1_5").append($("#black_pawn_6"));
-        $("#square_1_6").append($("#black_pawn_7"));
-        $("#square_1_7").append($("#black_pawn_8"));
-
-        $("#square_6_0").append($("#white_pawn_1"));
-        $("#square_6_1").append($("#white_pawn_2"));
-        $("#square_6_2").append($("#white_pawn_3"));
-        $("#square_6_3").append($("#white_pawn_4"));
-        $("#square_6_4").append($("#white_pawn_5"));
-        $("#square_6_5").append($("#white_pawn_6"));
-        $("#square_6_6").append($("#white_pawn_7"));
-        $("#square_6_7").append($("#white_pawn_8"));
-
-        $("#square_7_0").append($("#white_rook_1"));
-        $("#square_7_1").append($("#white_knight_1"));
-        $("#square_7_2").append($("#white_bishop_1"));
-        $("#square_7_3").append($("#white_queen"));
-        $("#square_7_4").append($("#white_king"));
-        $("#square_7_5").append($("#white_bishop_2"));
-        $("#square_7_6").append($("#white_knight_2"));
-        $("#square_7_7").append($("#white_rook_2"));
     };
 
     var DomBoard = function () {
@@ -120,7 +82,6 @@
         var player = getPlayerOf(pieceImage);
         var elt = $(pieceImage);
         elt.attr('src', 'images/' + player + '_' + type + '.svg');
-        elt.attr('id', player + '_' + type);
     };
 
     DomBoard.prototype.getPositionOf = function (piece) {
@@ -211,6 +172,26 @@
         destinationSquare.append(piece);
     };
 
+    DomBoard.prototype.clear = function () {
+        $('td img').remove();
+    };
+
+    DomBoard.prototype.setPiece = function (position, piece) {
+        if (position == null) {
+            throw "position is null";
+        }
+        if (piece == null) {
+            throw "piece is null";
+        }
+
+        var square = getSquare(position);
+        var existingPiece = getPieceImage(square);
+        var img = existingPiece ? $(existingPiece) : $('<img></img>');
+
+        square.append(
+            img.attr('src', 'images/' + piece.player + '_' + piece.type + '.svg'));
+    };
+
     DomBoard.prototype.initialize = function () {
         var that = this;
 
@@ -227,7 +208,7 @@
         if (this.initialized) {
             return;
         }
-        setStartingPositions();
+
         addBoardClickHandlers();
         this.initialized = true;
     };

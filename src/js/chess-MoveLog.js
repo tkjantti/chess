@@ -5,6 +5,7 @@
     var MoveLog = function () {
         this.moves = [];
         this.onMoveAddedHandler = null;
+        this.onClearedHandler = null;
     };
 
     MoveLog.prototype.add = function (moveResult) {
@@ -16,6 +17,10 @@
 
     MoveLog.prototype.listenAdd = function (onMoveAdded) {
         this.onMoveAddedHandler = onMoveAdded;
+    };
+
+    MoveLog.prototype.listenClear = function (onCleared) {
+        this.onClearedHandler = onCleared;
     };
 
     MoveLog.prototype.isEmpty = function () {
@@ -30,6 +35,13 @@
         return this.moves.some(function (moveResult) {
             return moveResult.hasSource(position);
         });
+    };
+
+    MoveLog.prototype.clear = function () {
+        this.moves = [];
+        if (this.onClearedHandler) {
+            this.onClearedHandler();
+        }
     };
 
     MoveLog.prototype.serializeMoves = function () {

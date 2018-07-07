@@ -19,10 +19,10 @@
     };
 
     InMemoryBoard.prototype.setPiece = function (position, piece) {
-        if (position === null) {
+        if (position == null) {
             throw "position is null";
         }
-        if (piece === null) {
+        if (piece == null) {
             throw "piece is null";
         }
 

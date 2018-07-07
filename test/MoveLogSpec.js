@@ -124,6 +124,14 @@ describe("MoveLog", function () {
     });
 
     describe('deserializeMoves', function () {
+        it('returns an empty array when given an empty array', function () {
+            var json = [];
+
+            var actual = CHESS_APP.MoveLog.deserializeMoves(json);
+
+            expect(actual).toEqual([]);
+        });
+
         it('creates an array of moves from a JSON representation', function () {
             var json = [
                 {

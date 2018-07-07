@@ -6,6 +6,13 @@
     var board = new CHESS_APP.DomBoard();
     var game = new CHESS_APP.Game(new CHESS_APP.Rules());
 
+    function initializeMenu() {
+        $("#newGame").click(function (event) {
+            event.preventDefault();
+            game.reset(board);
+        });
+    }
+
     function displayCurrentPlayer(player) {
         $('#gameStatusText').text("Player in turn: " + player);
     }
@@ -42,6 +49,10 @@
                 .text(textNotation)
             );
         }
+    }
+
+    function clearMoveList() {
+        $('#moves tr').remove();
     }
 
     function onSquareClicked(position, previousPosition) {
@@ -86,12 +97,16 @@
                 return;
             }
 
+            initializeMenu();
+
             board.initialize();
             board.listenSquareClick(onSquareClicked);
 
             game.listenCurrentPlayer(displayCurrentPlayer);
             game.listenState(displayState);
             game.moveLog.listenAdd(addMoveResultToList);
+            game.moveLog.listenClear(clearMoveList);
+
             game.load(board);
 
             initialized = true;
