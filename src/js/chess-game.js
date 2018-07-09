@@ -31,8 +31,7 @@
     Game.STATE_CHECKMATE = 2;
 
     Game.prototype.load = function (board) {
-        var storedMoves = this.storage.loadMoves();
-        var moves = CHESS_APP.MoveLog.deserializeMoves(storedMoves);
+        var moves = this.storage.loadMoves();
 
         this.rules.setStartingPositions(board);
 
@@ -43,12 +42,12 @@
     };
 
     Game.prototype.save = function () {
-        this.storage.saveMoves(this.moveLog.serializeMoves());
+        this.storage.saveMoves(this.moveLog);
     };
 
     Game.prototype.reset = function (board) {
         this.moveLog.clear();
-        this.storage.saveMoves(this.moveLog.serializeMoves());
+        this.storage.saveMoves(this.moveLog);
         this.rules.setStartingPositions(board);
         setCurrentPlayer(this, "white");
         setState(this, Game.STATE_GAME_ON);

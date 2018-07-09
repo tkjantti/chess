@@ -12,11 +12,12 @@
         if (!listAsString) {
             return [];
         }
-
-        return JSON.parse(listAsString);
+        var listAsJson = JSON.parse(listAsString);
+        return CHESS_APP.MoveLog.deserializeMoves(listAsJson);
     };
 
-    Storage.prototype.saveMoves = function (moves) {
+    Storage.prototype.saveMoves = function (moveLog) {
+        var moves = moveLog.serializeMoves();
         localStorage.setItem(MOVE_LIST_IDENTIFIER, JSON.stringify(moves));
     };
 
