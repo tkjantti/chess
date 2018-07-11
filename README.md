@@ -2,6 +2,9 @@
 
 A simple HTML chess game, meant just for learning Javascript programming. Rules are mostly covered, but for example draw rule is not complete. There is no AI at the moment.
 
+The game is playable at
+https://tkjantti.github.io/chess/
+
 ## Developing
 
 Bower is needed for installing dependencies. If you don't have it, install it with
