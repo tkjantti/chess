@@ -2,36 +2,68 @@
 (function (exports) {
     "use strict";
 
-    var STATE_GAME_ON = 0;
-    var STATE_DRAW = 1;
-    var STATE_CHECKMATE = 2;
+    function setState(self, state) {
+        self.state = state;
+        if (self.onStateChangedHandler) {
+            self.onStateChangedHandler(self.state);
+        }
+    }
 
-    var Game = function (rules) {
+    function setCurrentPlayer(self, player) {
+        self.currentPlayer = player;
+        if (self.onPlayerChangedHandler) {
+            self.onPlayerChangedHandler(self.currentPlayer);
+        }
+    }
+
+    var Game = function (rules, errorHandler) {
         this.rules = rules;
+        this.errorHandler = errorHandler;
         this.currentPlayer = "white";
         this.moveLog = new CHESS_APP.MoveLog();
+        this.storage = new CHESS_APP.Storage();
         this.onPlayerChangedHandler = null;
-        this.state = STATE_GAME_ON;
+        this.onStateChangedHandler = null;
+        this.state = Game.STATE_GAME_ON;
+    };
+
+    Game.STATE_GAME_ON = 0;
+    Game.STATE_DRAW = 1;
+    Game.STATE_CHECKMATE = 2;
+
+    Game.prototype.load = function (board) {
+        var moves;
+
+        try {
+            moves = this.storage.loadMoves();
+        } catch (e) {
+            moves = [];
+            this.errorHandler.showError("Error loading previous game.", e);
+        }
+
+        this.rules.setStartingPositions(board);
+
+        for (var i = 0; i < moves.length; i++) {
+            var move = moves[i];
+            this.move(board, move.source, move.destination);
+        }
+    };
+
+    Game.prototype.save = function () {
+        this.storage.saveMoves(this.moveLog);
+    };
+
+    Game.prototype.reset = function (board) {
+        this.moveLog.clear();
+        this.storage.saveMoves(this.moveLog);
+        this.rules.setStartingPositions(board);
+        setCurrentPlayer(this, "white");
+        setState(this, Game.STATE_GAME_ON);
     };
 
     Game.prototype.isFinished = function () {
-        return this.state === STATE_DRAW ||
-                this.state === STATE_CHECKMATE;
-    };
-
-    Game.prototype.isInDraw = function () {
-        return this.state === STATE_DRAW;
-    };
-
-    Game.prototype.isInCheckmate = function () {
-        return this.state === STATE_CHECKMATE;
-    };
-
-    Game.prototype.changePlayer = function () {
-        this.currentPlayer = this.rules.opponentPlayer(this.currentPlayer);
-        if (this.onPlayerChangedHandler) {
-            this.onPlayerChangedHandler(this.currentPlayer);
-        }
+        return this.state === Game.STATE_DRAW ||
+                this.state === Game.STATE_CHECKMATE;
     };
 
     Game.prototype.getCurrentPlayer = function () {
@@ -41,6 +73,11 @@
     Game.prototype.listenCurrentPlayer = function (onPlayerChanged) {
         this.onPlayerChangedHandler = onPlayerChanged;
         this.onPlayerChangedHandler(this.currentPlayer);
+    };
+
+    Game.prototype.listenState = function (onStateChanged) {
+        this.onStateChangedHandler = onStateChanged;
+        this.onStateChangedHandler(this.state);
     };
 
     Game.prototype.move = function (board, source, destination) {
@@ -70,11 +107,11 @@
         var opponent = this.rules.opponentPlayer(this.currentPlayer);
 
         if (this.rules.isInCheckMate(board, opponent, this.moveLog)) {
-            this.state = STATE_CHECKMATE;
+            setState(this, Game.STATE_CHECKMATE);
         } else if (this.rules.isDraw(board, opponent, this.moveLog)) {
-            this.state = STATE_DRAW;
+            setState(this, Game.STATE_DRAW);
         } else {
-            this.changePlayer();
+            setCurrentPlayer(this, this.rules.opponentPlayer(this.currentPlayer));
         }
 
         return result;

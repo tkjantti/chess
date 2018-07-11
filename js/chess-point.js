@@ -38,6 +38,40 @@
         return getColumnCoordinate(this.column) + getRowCoordinate(this.row);
     };
 
+    Point.fromString = function (str) {
+        var columnCoordinate = str[0];
+        var rowCoordinate = str[1];
+
+        var getColumn = function (c) {
+            switch (c) {
+            case 'a':
+                return 0;
+            case 'b':
+                return 1;
+            case 'c':
+                return 2;
+            case 'd':
+                return 3;
+            case 'e':
+                return 4;
+            case 'f':
+                return 5;
+            case 'g':
+                return 6;
+            case 'h':
+                return 7;
+            default:
+                return 0;
+            }
+        };
+
+        var getRow = function (c) {
+            return CHESS_APP.defaultRowCount - Number(c);
+        };
+
+        return new Point(getRow(rowCoordinate), getColumn(columnCoordinate));
+    };
+
     Point.prototype.equals = function (other) {
         if (!other) {
             return false;

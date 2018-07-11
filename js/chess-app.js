@@ -1,19 +1,51 @@
+/* jshint devel:true */
 
 (function (exports) {
     "use strict";
 
-    var initialized = false;
-    var board = new CHESS_APP.DomBoard();
-    var game = new CHESS_APP.Game(new CHESS_APP.Rules());
-
-    function showVictory() {
-        $('#gameStatusText').text('Checkmate! Winner: ' + game.getCurrentPlayer());
-        $('#gameStatus').addClass("victory");
+    function showMessage(message, style) {
+        $('#gameStatus').removeClass();
+        $('#gameStatusText').text(message);
+        if (style) {
+            $('#gameStatus').addClass(style);
+        }
     }
 
-    function showDraw() {
-        $('#gameStatusText').text("Draw!");
-        $('#gameStatus').addClass("draw");
+    var errorHandler = {
+        showError: function (message, exception) {
+            showMessage(message, "error");
+            console.log("Error: " + message);
+            console.log(exception);
+        }
+    };
+
+    var initialized = false;
+    var board = new CHESS_APP.DomBoard();
+    var game = new CHESS_APP.Game(new CHESS_APP.Rules(), errorHandler);
+
+    function initializeMenu() {
+        $("#newGame").click(function (event) {
+            event.preventDefault();
+            game.reset(board);
+        });
+    }
+
+    function displayCurrentPlayer(player) {
+        showMessage("Player in turn: " + player);
+    }
+
+    function displayState(state) {
+        switch (state) {
+        case CHESS_APP.Game.STATE_CHECKMATE:
+            showMessage('Checkmate! Winner: ' + game.getCurrentPlayer(), "victory");
+            break;
+        case CHESS_APP.Game.STATE_DRAW:
+            showMessage("Draw!", "draw");
+            break;
+        default:
+            displayCurrentPlayer(game.getCurrentPlayer());
+            break;
+        }
     }
 
     function addMoveResultToList(moveResult) {
@@ -31,6 +63,10 @@
                 .text(textNotation)
             );
         }
+    }
+
+    function clearMoveList() {
+        $('#moves tr').remove();
     }
 
     function onSquareClicked(position, previousPosition) {
@@ -64,13 +100,7 @@
             return;
         }
 
-        addMoveResultToList(result);
-
-        if (game.isInCheckmate()) {
-            showVictory();
-        } else if (game.isInDraw()) {
-            showDraw();
-        }
+        game.save();
 
         board.removeSelection();
     }
@@ -81,12 +111,17 @@
                 return;
             }
 
+            initializeMenu();
+
             board.initialize();
             board.listenSquareClick(onSquareClicked);
 
-            game.listenCurrentPlayer(function (player) {
-                $("#player_in_turn").text(player);
-            });
+            game.listenCurrentPlayer(displayCurrentPlayer);
+            game.listenState(displayState);
+            game.moveLog.listenAdd(addMoveResultToList);
+            game.moveLog.listenClear(clearMoveList);
+
+            game.load(board);
 
             initialized = true;
         }
