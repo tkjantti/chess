@@ -330,6 +330,46 @@
 
     var Rules = function () {};
 
+    Rules.prototype.setStartingPositions = function (board) {
+        board.clear();
+
+        board.setPiece(new CHESS_APP.Point(0, 0), new CHESS_APP.Piece("black", "rook"));
+        board.setPiece(new CHESS_APP.Point(0, 1), new CHESS_APP.Piece("black", "knight"));
+        board.setPiece(new CHESS_APP.Point(0, 2), new CHESS_APP.Piece("black", "bishop"));
+        board.setPiece(new CHESS_APP.Point(0, 3), new CHESS_APP.Piece("black", "queen"));
+        board.setPiece(new CHESS_APP.Point(0, 4), new CHESS_APP.Piece("black", "king"));
+        board.setPiece(new CHESS_APP.Point(0, 5), new CHESS_APP.Piece("black", "bishop"));
+        board.setPiece(new CHESS_APP.Point(0, 6), new CHESS_APP.Piece("black", "knight"));
+        board.setPiece(new CHESS_APP.Point(0, 7), new CHESS_APP.Piece("black", "rook"));
+
+        board.setPiece(new CHESS_APP.Point(1, 0), new CHESS_APP.Piece("black", "pawn"));
+        board.setPiece(new CHESS_APP.Point(1, 1), new CHESS_APP.Piece("black", "pawn"));
+        board.setPiece(new CHESS_APP.Point(1, 2), new CHESS_APP.Piece("black", "pawn"));
+        board.setPiece(new CHESS_APP.Point(1, 3), new CHESS_APP.Piece("black", "pawn"));
+        board.setPiece(new CHESS_APP.Point(1, 4), new CHESS_APP.Piece("black", "pawn"));
+        board.setPiece(new CHESS_APP.Point(1, 5), new CHESS_APP.Piece("black", "pawn"));
+        board.setPiece(new CHESS_APP.Point(1, 6), new CHESS_APP.Piece("black", "pawn"));
+        board.setPiece(new CHESS_APP.Point(1, 7), new CHESS_APP.Piece("black", "pawn"));
+
+        board.setPiece(new CHESS_APP.Point(6, 0), new CHESS_APP.Piece("white", "pawn"));
+        board.setPiece(new CHESS_APP.Point(6, 1), new CHESS_APP.Piece("white", "pawn"));
+        board.setPiece(new CHESS_APP.Point(6, 2), new CHESS_APP.Piece("white", "pawn"));
+        board.setPiece(new CHESS_APP.Point(6, 3), new CHESS_APP.Piece("white", "pawn"));
+        board.setPiece(new CHESS_APP.Point(6, 4), new CHESS_APP.Piece("white", "pawn"));
+        board.setPiece(new CHESS_APP.Point(6, 5), new CHESS_APP.Piece("white", "pawn"));
+        board.setPiece(new CHESS_APP.Point(6, 6), new CHESS_APP.Piece("white", "pawn"));
+        board.setPiece(new CHESS_APP.Point(6, 7), new CHESS_APP.Piece("white", "pawn"));
+
+        board.setPiece(new CHESS_APP.Point(7, 0), new CHESS_APP.Piece("white", "rook"));
+        board.setPiece(new CHESS_APP.Point(7, 1), new CHESS_APP.Piece("white", "knight"));
+        board.setPiece(new CHESS_APP.Point(7, 2), new CHESS_APP.Piece("white", "bishop"));
+        board.setPiece(new CHESS_APP.Point(7, 3), new CHESS_APP.Piece("white", "queen"));
+        board.setPiece(new CHESS_APP.Point(7, 4), new CHESS_APP.Piece("white", "king"));
+        board.setPiece(new CHESS_APP.Point(7, 5), new CHESS_APP.Piece("white", "bishop"));
+        board.setPiece(new CHESS_APP.Point(7, 6), new CHESS_APP.Piece("white", "knight"));
+        board.setPiece(new CHESS_APP.Point(7, 7), new CHESS_APP.Piece("white", "rook"));
+    };
+
     Rules.prototype.opponentPlayer = function (player) {
         return (player === "white") ? "black" : "white";
     };

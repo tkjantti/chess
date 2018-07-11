@@ -59,5 +59,9 @@
             '-' + move.destination.toString();
     };
 
+    MoveResult.prototype.serialize = function () {
+        return this.actualMoves[0].serialize();
+    };
+
     exports.MoveResult = MoveResult;
 })(this.CHESS_APP = this.CHESS_APP || {});

@@ -26,6 +26,7 @@ module.exports = function(config) {
             'src/js/chess-MoveResult.js',
             'src/js/chess-MoveLog.js',
             'src/js/chess-rules.js',
+            'src/js/chess-Storage.js',
             'src/js/chess-game.js',
             'test/**/*.js'
         ],
