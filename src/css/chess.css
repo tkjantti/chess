@@ -26,6 +26,11 @@
     text-transform: uppercase;
 }
 
+#gameStatus.error {
+    background-color: red;
+    color: white;
+}
+
 #menu {
     position: fixed;
     left: 0;

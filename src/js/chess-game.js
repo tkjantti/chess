@@ -16,8 +16,9 @@
         }
     }
 
-    var Game = function (rules) {
+    var Game = function (rules, errorHandler) {
         this.rules = rules;
+        this.errorHandler = errorHandler;
         this.currentPlayer = "white";
         this.moveLog = new CHESS_APP.MoveLog();
         this.storage = new CHESS_APP.Storage();
@@ -31,7 +32,14 @@
     Game.STATE_CHECKMATE = 2;
 
     Game.prototype.load = function (board) {
-        var moves = this.storage.loadMoves();
+        var moves;
+
+        try {
+            moves = this.storage.loadMoves();
+        } catch (e) {
+            moves = [];
+            this.errorHandler.showError("Error loading previous game.", e);
+        }
 
         this.rules.setStartingPositions(board);
 

@@ -1,10 +1,27 @@
+/* jshint devel:true */
 
 (function (exports) {
     "use strict";
 
+    function showMessage(message, style) {
+        $('#gameStatus').removeClass();
+        $('#gameStatusText').text(message);
+        if (style) {
+            $('#gameStatus').addClass(style);
+        }
+    }
+
+    var errorHandler = {
+        showError: function (message, exception) {
+            showMessage(message, "error");
+            console.log("Error: " + message);
+            console.log(exception);
+        }
+    };
+
     var initialized = false;
     var board = new CHESS_APP.DomBoard();
-    var game = new CHESS_APP.Game(new CHESS_APP.Rules());
+    var game = new CHESS_APP.Game(new CHESS_APP.Rules(), errorHandler);
 
     function initializeMenu() {
         $("#newGame").click(function (event) {
@@ -14,21 +31,18 @@
     }
 
     function displayCurrentPlayer(player) {
-        $('#gameStatusText').text("Player in turn: " + player);
+        showMessage("Player in turn: " + player);
     }
 
     function displayState(state) {
         switch (state) {
         case CHESS_APP.Game.STATE_CHECKMATE:
-            $('#gameStatusText').text('Checkmate! Winner: ' + game.getCurrentPlayer());
-            $('#gameStatus').addClass("victory");
+            showMessage('Checkmate! Winner: ' + game.getCurrentPlayer(), "victory");
             break;
         case CHESS_APP.Game.STATE_DRAW:
-            $('#gameStatusText').text("Draw!");
-            $('#gameStatus').addClass("draw");
+            showMessage("Draw!", "draw");
             break;
         default:
-            $('#gameStatus').removeClass();
             displayCurrentPlayer(game.getCurrentPlayer());
             break;
         }

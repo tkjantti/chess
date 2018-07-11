@@ -4,13 +4,16 @@ describe('Game', function () {
 
     var game;
     var rules = new CHESS_APP.Rules();
+    var errorHandler = {
+        showError: function () {}
+    };
     var board;
     var source;
     var destination;
 
     beforeEach(function () {
         rules = new CHESS_APP.Rules();
-        game = new CHESS_APP.Game(rules);
+        game = new CHESS_APP.Game(rules, errorHandler);
         board = new CHESS_APP.InMemoryBoard(8, 8);
         source = new CHESS_APP.Point(4, 4);
         destination = new CHESS_APP.Point(5, 4);
